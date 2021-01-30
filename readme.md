@@ -91,13 +91,15 @@ For example the `text` type runs the validators
 
 Available default types:
 
-- `text`
-- `number`
-- `email`
-- `phone`
-- `date`
-- `time`
-- `password`
+| Type | Validations |
+| --- | --- |
+| `text` | `[isString]` |
+| `number` | `[isNumber]` |
+| `email` | TODO |
+| `phone` | TODO |
+| `date` | TODO |
+| `time` | TODO |
+| `password` | TODO |
 
 ### Extending default types
 
@@ -200,6 +202,7 @@ const options = {
     required?: string;
     validators?: string;
   };
+  types?: object
 }
 ```
 
@@ -230,6 +233,22 @@ const options = {
         type: "newKey3",
         required: "newKey4",
         validators: "newKey5",
+    }
+}
+
+new Valigator(options);
+```
+
+### Default type overriding
+
+If you don't like the way we validate our default types you can override them. You can also add new types in the same way.
+
+```js
+const options = {
+    types: {
+        string: {
+          validators: [someValidator, someOtherValidator]
+        }
     }
 }
 
