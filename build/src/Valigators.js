@@ -51,88 +51,37 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Valigator = exports.customValidator = exports.minMaxLength = exports.maxLength = exports.minLength = void 0;
-/**
- * See: https://codeburst.io/perpetual-currying-in-javascript-5ae1c749adc5 for good explanation of this function and currying
- * @param fn Function to curry
- * @returns Curried function
- */
-var curry = function (fn) {
-    var innerFn = function (N, args) {
-        return function () {
-            var x = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                x[_i] = arguments[_i];
-            }
-            if (N <= x.length) {
-                return fn.apply(void 0, __spreadArrays(args, x));
-            }
-            return innerFn(N - x.length, __spreadArrays(args, x));
-        };
-    };
-    return innerFn(fn.length, []);
-};
-/**
- * Checks if value is a string
- * @param value Value to check
- * @returns Boolean value representing whether string or not
- */
-function _isString(value) {
-    return typeof value === "string";
-}
-/**
- * Checks if value is a number
- * @param value Value to check
- * @returns Boolean value representing whether number or not
- */
-function _isNumber(value) {
-    return typeof value === "number";
-}
-/**
- * Checks that a value has length greater than min value inclusive
- * @param min Min value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _minLength(min, value) {
-    return value.length >= min;
-}
-/**
- * Checks that a value has length less than max value inclusive
- * @param max Max value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _maxLength(max, value) {
-    return value.length <= max;
-}
-/**
- * Checks whether a value has length between min and max value inclusive
- * @param min Min value
- * @param max Max value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _minMaxLength(min, max, value) {
-    return value.length >= min && value.length <= max;
-}
-var isString = _isString;
-var isNumber = _isNumber;
-exports.minLength = curry(_minLength);
-exports.maxLength = curry(_maxLength);
-exports.minMaxLength = curry(_minMaxLength);
+exports.Valigator = exports.customValidator = exports.containsRegex = exports.containsSymbol = exports.containsLower = exports.containsUpper = exports.containsNumber = exports.oneOf = exports.decimalPoints = exports.minDecimalPoint = exports.maxDecimalPoint = exports.substring = exports.length = exports.minMaxLength = exports.maxLength = exports.minLength = exports.isNumber = exports.isString = void 0;
+var Helpers_1 = require("./Helpers");
+var HelperValidators_1 = require("./HelperValidators");
+exports.isString = HelperValidators_1._isString;
+exports.isNumber = HelperValidators_1._isNumber;
+exports.minLength = Helpers_1.curry(HelperValidators_1._minLength);
+exports.maxLength = Helpers_1.curry(HelperValidators_1._maxLength);
+exports.minMaxLength = Helpers_1.curry(HelperValidators_1._minMaxLength);
+exports.length = Helpers_1.curry(HelperValidators_1._length);
+exports.substring = Helpers_1.curry(HelperValidators_1._substring);
+exports.maxDecimalPoint = Helpers_1.curry(HelperValidators_1._maxDecimalPoint);
+exports.minDecimalPoint = Helpers_1.curry(HelperValidators_1._minDecimalPoint);
+exports.decimalPoints = Helpers_1.curry(HelperValidators_1._decimalPoints);
+exports.oneOf = Helpers_1.curry(HelperValidators_1._oneOf);
+exports.containsNumber = HelperValidators_1._containsNumber;
+exports.containsUpper = HelperValidators_1._containsUpper;
+exports.containsLower = HelperValidators_1._containsLower;
+exports.containsSymbol = HelperValidators_1._containsSymbol;
+exports.containsRegex = Helpers_1.curry(HelperValidators_1._containsRegex);
 function customValidator(func) {
-    return curry(func);
+    return Helpers_1.curry(func);
 }
 exports.customValidator = customValidator;
 var Valigator = /** @class */ (function () {
     function Valigator(options) {
         this.types = {
             text: {
-                validators: [isString],
+                validators: [exports.isString],
             },
             number: {
-                validators: [isNumber],
+                validators: [exports.isNumber],
             },
         };
         this.messages = {

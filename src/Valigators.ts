@@ -43,83 +43,47 @@ validate_callback(data, shape, onError, onSuccess?)
 
 */
 
+import { curry } from "./Helpers";
+import {
+  _containsLower,
+  _containsNumber,
+  _containsRegex,
+  _containsSymbol,
+  _containsUpper,
+  _decimalPoints,
+  _isNumber,
+  _isString,
+  _length,
+  _maxDecimalPoint,
+  _maxLength,
+  _minDecimalPoint,
+  _minLength,
+  _minMaxLength,
+  _oneOf,
+  _substring,
+} from "./HelperValidators";
+
 interface type {
   name: string;
   validators: Function[];
 }
 
-/**
- * See: https://codeburst.io/perpetual-currying-in-javascript-5ae1c749adc5 for good explanation of this function and currying
- * @param fn Function to curry
- * @returns Curried function
- */
-const curry = (fn) => {
-  const innerFn = (N, args) => {
-    return (...x) => {
-      if (N <= x.length) {
-        return fn(...args, ...x);
-      }
-      return innerFn(N - x.length, [...args, ...x]);
-    };
-  };
-
-  return innerFn(fn.length, []);
-};
-
-/**
- * Checks if value is a string
- * @param value Value to check
- * @returns Boolean value representing whether string or not
- */
-function _isString(value: any) {
-  return typeof value === "string";
-}
-
-/**
- * Checks if value is a number
- * @param value Value to check
- * @returns Boolean value representing whether number or not
- */
-function _isNumber(value: any) {
-  return typeof value === "number";
-}
-
-/**
- * Checks that a value has length greater than min value inclusive
- * @param min Min value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _minLength(min: Number, value: any) {
-  return value.length >= min;
-}
-
-/**
- * Checks that a value has length less than max value inclusive
- * @param max Max value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _maxLength(max: Number, value: any) {
-  return value.length <= max;
-}
-
-/**
- * Checks whether a value has length between min and max value inclusive
- * @param min Min value
- * @param max Max value
- * @param value Value to check
- * @returns Boolean value representing whether right length or not
- */
-function _minMaxLength(min: Number, max: Number, value: any) {
-  return value.length >= min && value.length <= max;
-}
-
-const isString = _isString;
-const isNumber = _isNumber;
+export const isString = _isString;
+export const isNumber = _isNumber;
 export const minLength = curry(_minLength);
 export const maxLength = curry(_maxLength);
 export const minMaxLength = curry(_minMaxLength);
+export const length = curry(_length);
+export const substring = curry(_substring);
+export const maxDecimalPoint = curry(_maxDecimalPoint);
+export const minDecimalPoint = curry(_minDecimalPoint);
+export const decimalPoints = curry(_decimalPoints);
+export const oneOf = curry(_oneOf);
+export const containsNumber = _containsNumber;
+export const containsUpper = _containsUpper;
+export const containsLower = _containsLower;
+export const containsSymbol = _containsSymbol;
+export const containsRegex = curry(_containsRegex);
 
 export function customValidator(func: Function) {
   return curry(func);
@@ -479,29 +443,29 @@ export class Valigator {
 
 // Main debugging function
 // function main() {
-  // console.log("MAIN PROCESS");
-  // const val = new Valigator({
-  //   keys: {
-  //     type: "test"
-  //   }
-  // });
+// console.log("MAIN PROCESS");
+// const val = new Valigator({
+//   keys: {
+//     type: "test"
+//   }
+// });
 
-  // const data = {
-  //   name: "Will",
-  //   age: 10
-  // };
+// const data = {
+//   name: "Will",
+//   age: 10
+// };
 
-  // const shape = {
-  //   name: {
-  //     "test": "text",
-  //   },
-  //   age: {
-  //     "test": "text",
-  //   },
-  // };
+// const shape = {
+//   name: {
+//     "test": "text",
+//   },
+//   age: {
+//     "test": "text",
+//   },
+// };
 
-  // const res = val.validate_more(data, shape);
-  // console.log(res);
+// const res = val.validate_more(data, shape);
+// console.log(res);
 
 //   const valigator = new Valigator();
 

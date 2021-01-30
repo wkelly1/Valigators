@@ -2,7 +2,7 @@
   "name": "valigators",
   "version": "1.0.0",
   "description": "A simple validation library for any data type",
-  "main": "index.js",
+  "main": "Valigators.js",
   "scripts": {
     "dev": "tsc --watch",
     "test": "jest --coverage"

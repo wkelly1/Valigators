@@ -2,6 +2,8 @@
 
 Valigators is a simple library for validating that data matches a specific 'shape'
 
+Note: This is still is not yet at release stage and is still in development
+
 ## Usage
 
 ```javascript
@@ -83,14 +85,19 @@ A type is the expected data type. It consists of a set of validators that will r
 
 For example the `text` type runs the validators
 
-```javascript
-[isString];
+```js
+[isString]
 ```
 
-Avaliable default types:
+Available default types:
 
 - `text`
 - `number`
+- `email`
+- `phone`
+- `date`
+- `time`
+- `password`
 
 ### Extending default types
 
@@ -113,7 +120,7 @@ const type = {
     type: "your_new_type"
 }
 
-const data = ...// Some valid data
+const data = ... // Some valid data
 
 valigator.validate(data, type);
 ```
@@ -127,6 +134,19 @@ The library has a set of pre-written validators for you to use:
 - `minLength(min)` - If length of value is greater or equal to the min value
 - `maxLength(max)` - If length of value is less than or equal to the max value
 - `minMaxLength(min, max)` - If length of value is greater or equal to than the min value and less than or equal to the max value
+- `length()`
+- `substring()`
+- `maxDecimalPoint()`
+- `minDecimalPoint()`
+- `decimalPoints()`
+- `isString()`
+- `isNumber()`
+- `oneOf()`
+- `containsNumber()`
+- `containsUpper()`
+- `containsLower()`
+- `containsSymbol()`
+- `containsRegex()`
 
 These can be used on their own as well as in `validate()`
 
