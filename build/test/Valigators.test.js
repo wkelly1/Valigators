@@ -21,7 +21,7 @@ test("Testing maxLength", function () {
     expect(Valigators_1.maxLength(5)("test")).toBe(true);
 });
 test("Testing Validate catches incorrect shape", function () {
-    var validate = new Valigators_1.Validate();
+    var validate = new Valigators_1.Valigator();
     expect(function () { return validate.validate("hi", { test: "test" }); }).toThrow("Invalid shape object");
     expect(function () { return validate.validate("hi", { type: "test", other: 2 }); }).toThrow("Invalid shape object");
     expect(function () {
@@ -30,7 +30,7 @@ test("Testing Validate catches incorrect shape", function () {
     expect(function () { return validate.validate({ example: "hi" }, []); }).toThrow("Invalid value for property shape");
 });
 test("Testing Validate on text", function () {
-    var validate = new Valigators_1.Validate();
+    var validate = new Valigators_1.Valigator();
     expect(validate.validate("hi", {
         type: "text",
     })).toBe(true);
@@ -88,7 +88,7 @@ test("Testing Validate on text", function () {
     })).toBe(false);
 });
 test("Testing validate on required parameters", function () {
-    var validate = new Valigators_1.Validate();
+    var validate = new Valigators_1.Valigator();
     expect(validate.validate({ name: "bob" }, {
         name: {
             type: "text",
@@ -113,7 +113,7 @@ test("Testing validate on required parameters", function () {
     })).toBe(true);
 });
 test("Testing default validators", function () {
-    var validate = new Valigators_1.Validate();
+    var validate = new Valigators_1.Valigator();
     expect(validate.validate({ name: "bob" }, {
         name: {
             type: "number",
@@ -129,7 +129,7 @@ test("Testing default validators", function () {
     })).toBe(false);
 });
 test("Testing additional validators", function () {
-    var validate = new Valigators_1.Validate();
+    var validate = new Valigators_1.Valigator();
     expect(validate.validate({ name: "bob" }, {
         name: {
             type: "text",

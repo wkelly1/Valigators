@@ -3,7 +3,7 @@ import {
   minLength,
   maxLength,
   customValidator,
-  Validate,
+  Valigator,
 } from "../src/Valigators";
 
 test("Testing minMaxLength", () => {
@@ -29,7 +29,7 @@ test("Testing maxLength", () => {
 });
 
 test("Testing Validate catches incorrect shape", () => {
-  const validate = new Validate();
+  const validate = new Valigator();
 
   expect(() => validate.validate("hi", { test: "test" })).toThrow(
     "Invalid shape object"
@@ -46,7 +46,7 @@ test("Testing Validate catches incorrect shape", () => {
 });
 
 test("Testing Validate on text", () => {
-  const validate = new Validate();
+  const validate = new Valigator();
 
   expect(
     validate.validate("hi", {
@@ -153,7 +153,7 @@ test("Testing Validate on text", () => {
 });
 
 test("Testing validate on required parameters", () => {
-  const validate = new Validate();
+  const validate = new Valigator();
   expect(
     validate.validate(
       { name: "bob" },
@@ -196,7 +196,7 @@ test("Testing validate on required parameters", () => {
 });
 
 test("Testing default validators", () => {
-  const validate = new Validate();
+  const validate = new Valigator();
   expect(
     validate.validate(
       { name: "bob" },
@@ -226,7 +226,7 @@ test("Testing default validators", () => {
 });
 
 test("Testing additional validators", () => {
-  const validate = new Validate();
+  const validate = new Valigator();
   expect(
     validate.validate(
       { name: "bob" },

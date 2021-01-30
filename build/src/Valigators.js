@@ -51,7 +51,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Validate = exports.customValidator = exports.minMaxLength = exports.maxLength = exports.minLength = void 0;
+exports.Valigator = exports.customValidator = exports.minMaxLength = exports.maxLength = exports.minLength = void 0;
 /**
  * See: https://codeburst.io/perpetual-currying-in-javascript-5ae1c749adc5 for good explanation of this function and currying
  * @param fn Function to curry
@@ -125,8 +125,8 @@ function customValidator(func) {
     return curry(func);
 }
 exports.customValidator = customValidator;
-var Validate = /** @class */ (function () {
-    function Validate(options) {
+var Valigator = /** @class */ (function () {
+    function Valigator(options) {
         this.types = {
             text: {
                 validators: [isString],
@@ -178,7 +178,7 @@ var Validate = /** @class */ (function () {
             }
         }
     }
-    Validate.prototype.isType = function (val) {
+    Valigator.prototype.isType = function (val) {
         return this.types[val] !== undefined;
     };
     /**
@@ -186,7 +186,7 @@ var Validate = /** @class */ (function () {
      * @param val Value to check
      * @returns Boolean representing whether validation passed
      */
-    Validate.prototype.isShape = function (val) {
+    Valigator.prototype.isShape = function (val) {
         if (typeof val === "object") {
             if (val[this.keys.type] !== undefined) {
                 if (typeof val[this.keys.type] === "string") {
@@ -206,7 +206,7 @@ var Validate = /** @class */ (function () {
      * @param obj Object to check
      * @returns Boolean representing whether validation passed
      */
-    Validate.prototype.checkShapeObject = function (obj) {
+    Valigator.prototype.checkShapeObject = function (obj) {
         if (typeof obj !== "object") {
             return false;
         }
@@ -219,7 +219,7 @@ var Validate = /** @class */ (function () {
         }
         return true;
     };
-    Validate.prototype.validateShape = function (shape) {
+    Valigator.prototype.validateShape = function (shape) {
         if (typeof shape !== "object" || Array.isArray(shape)) {
             throw Error("Invalid value for property shape");
         }
@@ -227,7 +227,7 @@ var Validate = /** @class */ (function () {
             throw Error("Invalid shape object");
         }
     };
-    Validate.prototype.runValidations = function (data, shape) {
+    Valigator.prototype.runValidations = function (data, shape) {
         // Run any user defined validators
         var validators = shape[this.keys.validators];
         if (validators) {
@@ -248,7 +248,7 @@ var Validate = /** @class */ (function () {
         }
         return true;
     };
-    Validate.prototype.checkDataShape = function (data, shape) {
+    Valigator.prototype.checkDataShape = function (data, shape) {
         var _this = this;
         if (typeof data !== "object") {
             // data is some primative type; string, number etc
@@ -300,7 +300,7 @@ var Validate = /** @class */ (function () {
         }
         return true;
     };
-    Validate.prototype.buildErrorMessageObject = function (shape, message) {
+    Valigator.prototype.buildErrorMessageObject = function (shape, message) {
         var output = {};
         for (var key in shape) {
             if (typeof shape[key] !== "object") {
@@ -320,7 +320,7 @@ var Validate = /** @class */ (function () {
     //     type: "text",
     //     validators: [minLength(1)],
     //   },
-    Validate.prototype.checkDataShapeMore = function (data, shape) {
+    Valigator.prototype.checkDataShapeMore = function (data, shape) {
         var output = {};
         if (typeof data !== "object") {
             // data is some primative type; string, number etc
@@ -403,7 +403,7 @@ var Validate = /** @class */ (function () {
      * @param shape Shape the data is supposed to match
      * @returns Boolean representing if data is valid or not
      */
-    Validate.prototype.validate = function (data, shape) {
+    Valigator.prototype.validate = function (data, shape) {
         this.validateShape(shape);
         return this.checkDataShape(data, shape);
     };
@@ -413,38 +413,70 @@ var Validate = /** @class */ (function () {
      * @param shape Shape the data is supposed to match
      * @returns Object representing what passed and what failed
      */
-    Validate.prototype.validate_more = function (data, shape) {
+    Valigator.prototype.validate_more = function (data, shape) {
         this.validateShape(shape);
         var res = this.checkDataShapeMore(data, shape);
         return res;
     };
-    return Validate;
+    return Valigator;
 }());
-exports.Validate = Validate;
+exports.Valigator = Valigator;
 // export default function test():void{
 //     console.log("IT works");
 // }
 // Main debugging function
 function main() {
-    console.log("MAIN PROCESS");
-    var val = new Validate({
-        keys: {
-            type: "test"
-        }
-    });
-    var data = {
-        name: "Will",
-        age: 10
+    // console.log("MAIN PROCESS");
+    // const val = new Valigator({
+    //   keys: {
+    //     type: "test"
+    //   }
+    // });
+    // const data = {
+    //   name: "Will",
+    //   age: 10
+    // };
+    // const shape = {
+    //   name: {
+    //     "test": "text",
+    //   },
+    //   age: {
+    //     "test": "text",
+    //   },
+    // };
+    // const res = val.validate_more(data, shape);
+    // console.log(res);
+    var valigator = new Valigator();
+    var valid_data = {
+        name: "bob",
+        age: 12,
+        example: {
+            foo: "bar",
+        },
+    };
+    var invalid_data = {
+        // name: "bob" <- removed this value
+        age: 12,
+        example: {
+            foo: "bar",
+        },
     };
     var shape = {
         name: {
-            "test": "text",
+            type: "text",
+            validators: [],
         },
         age: {
-            "test": "text",
+            type: "number",
+        },
+        example: {
+            // Works with nested objects
+            foo: {
+                type: "text",
+                required: false,
+            },
         },
     };
-    var res = val.validate_more(data, shape);
-    console.log(res);
+    console.log(valigator.validate_more(invalid_data, shape));
 }
 main();

@@ -140,7 +140,7 @@ interface options {
   };
 }
 
-export class Validate {
+export class Valigator {
   private types = {
     text: {
       validators: [isString],
@@ -420,7 +420,7 @@ export class Validate {
             } else {
               let cur = {};
               cur[this.keys.success] = true;
-             
+
               output[key] = cur;
             }
           } else {
@@ -433,13 +433,13 @@ export class Validate {
       }
 
       for (const key in data) {
-        if (!output[key]){
+        if (!output[key]) {
           if (typeof data !== "object") {
-            output[key] = this.checkDataShapeMore(data[key], {})
+            output[key] = this.checkDataShapeMore(data[key], {});
           } else {
-            let cur = {}
+            let cur = {};
             cur[this.keys.success] = false;
-            cur[this.keys.message] = this.messages.unexpectedValue
+            cur[this.keys.message] = this.messages.unexpectedValue;
             output[key] = cur;
           }
         }
@@ -479,29 +479,76 @@ export class Validate {
 
 // Main debugging function
 function main() {
-  console.log("MAIN PROCESS");
-  const val = new Validate({
-    keys: {
-      type: "test"
-    }
-  });
+  // console.log("MAIN PROCESS");
+  // const val = new Valigator({
+  //   keys: {
+  //     type: "test"
+  //   }
+  // });
 
-  const data = {
-    name: "Will",
-    age: 10
+  // const data = {
+  //   name: "Will",
+  //   age: 10
+  // };
+
+  // const shape = {
+  //   name: {
+  //     "test": "text",
+  //   },
+  //   age: {
+  //     "test": "text",
+  //   },
+  // };
+
+  // const res = val.validate_more(data, shape);
+  // console.log(res);
+
+  const valigator = new Valigator();
+
+  const valid_data = {
+    name: "bob",
+    age: 12,
+    example: {
+      foo: "bar",
+    },
+  };
+
+  const invalid_data = {
+    // name: "bob" <- removed this value
+    age: 12,
+    example: {
+      foo: "bar",
+    },
   };
 
   const shape = {
     name: {
-      "test": "text",
+      type: "text", // Required attribute
+      validators: [], // Optional list is extra validators to run
     },
     age: {
-      "test": "text",
+      type: "number",
+    },
+    example: {
+      // Works with nested objects
+      foo: {
+        type: "text",
+        required: false,
+      },
     },
   };
-
-  const res = val.validate_more(data, shape);
-  console.log(res);
+  console.log(valigator.validate_more(invalid_data, shape));
 }
 
 main();
+
+let test = {
+  name: {
+    success: false,
+    message: "Value is required but is missing",
+  },
+  age: { success: true },
+  example: {
+    foo: { success: true },
+  },
+};
