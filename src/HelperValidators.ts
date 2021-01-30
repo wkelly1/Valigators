@@ -18,6 +18,10 @@ export function _isNumber(value: any) {
   return typeof value === "number";
 }
 
+export function _isArray(value: any) {
+  return Array.isArray(value);
+}
+
 /**
  * Checks that a value has length greater than min value inclusive
  * @param min Min value
@@ -169,15 +173,69 @@ export function _containsRegex(reg: RegExp, value: any): boolean {
 
 /**
  * Used if you you don't mind if some of the validators fail as long as one passes
- * 
+ *
  * @param validators Functions to run
  * @param value Value to check
  * @returns Boolean value if one of the functions passes
  */
-export function _or(validators:Function[], value:any): boolean{
-    return validators.some((validator) => run(validator(value)))
+export function _or(validators: Function[], value: any): boolean {
+  return validators.some((validator) => run(validator(value)));
 }
 
-export function _isType(clas:any, value:any): boolean{
-    return (value instanceof clas)
+export function _isInstance(typeClass: any, value: any): boolean {
+  return value instanceof typeClass;
+}
+
+export function _isEven(value: any): boolean {
+  if (_isNumber(value)) {
+    return value % 2 === 0;
+  }
+  return false;
+}
+
+export function _isOdd(value: any): boolean {
+  if (_isNumber(value)) {
+    return (value + 1) % 2 === 0;
+  }
+  return false;
+}
+
+export function _isPrime(value: any): boolean {
+  if (_isNumber(value)) {
+    if (value === 1) {
+      return false;
+    } else if (value === 2) {
+      return true;
+    } else {
+      for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        if (value % i === 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
+export function _isSquare(value: any): boolean {
+  if (_isNumber(value)) {
+    return value > 0 && Math.sqrt(value) % 1 === 0;
+  }
+  return false;
+}
+
+export function _isNegative(value: any): boolean {
+  if (_isNumber(value)) {
+    return value < 0;
+  }
+  return false;
+}
+
+export function _isPositive(value: any): boolean {
+  if (_isNumber(value)) {
+    return value > 0;
+  }
+  return false;
 }

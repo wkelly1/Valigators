@@ -68,8 +68,6 @@ interface type {
   validators: Function[];
 }
 
-
-
 export const isString = run(_isString);
 export const isNumber = run(_isNumber);
 export const minLength = run(curry(_minLength));
@@ -86,8 +84,6 @@ export const containsUpper = run(_containsUpper);
 export const containsLower = run(_containsLower);
 export const containsSymbol = run(_containsSymbol);
 export const containsRegex = run(curry(_containsRegex));
-
-
 
 export function customValidator(func: Function) {
   return run(curry(func));
@@ -106,6 +102,7 @@ interface options {
     required?: string;
     validators?: string;
   };
+  types?: object;
 }
 
 export class Valigator {
@@ -173,6 +170,20 @@ export class Valigator {
           this.keys.validators = options.keys.validators;
         }
       }
+
+      if (options.types) {
+        for (const key in options.types) {
+          console.log(options.types[key])
+          if (
+            Object.keys(options.types[key]).length === 1 &&
+            options.types[key].validators
+          ) {
+            this.types[key] = options.types[key];
+          }
+        }
+      }
+
+      console.log(this.types)
     }
   }
 
@@ -447,26 +458,31 @@ export class Valigator {
 
 // Main debugging function
 // function main() {
-// console.log("MAIN PROCESS");
-// const val = new Valigator({
-//   keys: {
-//     type: "test"
-//   }
-// });
+//   console.log("MAIN PROCESS");
+//   const val = new Valigator({
+//     types: {
+//       test: {
+//         validators: [containsLower]
+//       }
+//     }
+//   });
 
-// const data = {
-//   name: "Will",
-//   age: 10
-// };
+//   const data = {
+//     name: "WILL",
+//     age: 10,
+//   };
 
-// const shape = {
-//   name: {
-//     "test": "text",
-//   },
-//   age: {
-//     "test": "text",
-//   },
-// };
+//   const shape = {
+//     name: {
+//       type: "test",
+//     },
+//     age: {
+//       type: "text",
+//     },
+//   };
+//   console.log(val.validate_more(data, shape));
+// }
+// main();
 
 // const res = val.validate_more(data, shape);
 // console.log(res);
@@ -505,7 +521,7 @@ export class Valigator {
 //       },
 //     },
 //   };
-//   console.log(valigator.validate_more(invalid_data, shape));
+//   
 // }
 
 // main();

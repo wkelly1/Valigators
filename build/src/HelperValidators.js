@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._or = exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isNumber = exports._isString = void 0;
+exports._isPositive = exports._isNegative = exports._isSquare = exports._isPrime = exports._isOdd = exports._isEven = exports._isInstance = exports._or = exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isArray = exports._isNumber = exports._isString = void 0;
 var Helpers_1 = require("./Helpers");
 /**
  * Checks if value is a string
@@ -20,6 +20,10 @@ function _isNumber(value) {
     return typeof value === "number";
 }
 exports._isNumber = _isNumber;
+function _isArray(value) {
+    return Array.isArray(value);
+}
+exports._isArray = _isArray;
 /**
  * Checks that a value has length greater than min value inclusive
  * @param min Min value
@@ -183,3 +187,62 @@ function _or(validators, value) {
     return validators.some(function (validator) { return Helpers_1.run(validator(value)); });
 }
 exports._or = _or;
+function _isInstance(typeClass, value) {
+    return value instanceof typeClass;
+}
+exports._isInstance = _isInstance;
+function _isEven(value) {
+    if (_isNumber(value)) {
+        return value % 2 === 0;
+    }
+    return false;
+}
+exports._isEven = _isEven;
+function _isOdd(value) {
+    if (_isNumber(value)) {
+        return (value + 1) % 2 === 0;
+    }
+    return false;
+}
+exports._isOdd = _isOdd;
+function _isPrime(value) {
+    if (_isNumber(value)) {
+        if (value === 1) {
+            return false;
+        }
+        else if (value === 2) {
+            return true;
+        }
+        else {
+            for (var i = 3; i <= Math.sqrt(n); i += 2) {
+                if (value % i === 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    return false;
+}
+exports._isPrime = _isPrime;
+function _isSquare(value) {
+    if (_isNumber(value)) {
+        return value > 0 && Math.sqrt(value) % 1 === 0;
+    }
+    return false;
+}
+exports._isSquare = _isSquare;
+function _isNegative(value) {
+    if (_isNumber(value)) {
+        return value < 0;
+    }
+    return false;
+}
+exports._isNegative = _isNegative;
+function _isPositive(value) {
+    if (_isNumber(value)) {
+        return value > 0;
+    }
+    return false;
+}
+exports._isPositive = _isPositive;

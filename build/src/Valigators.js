@@ -125,6 +125,16 @@ var Valigator = /** @class */ (function () {
                     this.keys.validators = options.keys.validators;
                 }
             }
+            if (options.types) {
+                for (var key in options.types) {
+                    console.log(options.types[key]);
+                    if (Object.keys(options.types[key]).length === 1 &&
+                        options.types[key].validators) {
+                        this.types[key] = options.types[key];
+                    }
+                }
+            }
+            console.log(this.types);
         }
     }
     Valigator.prototype.isType = function (val) {
@@ -375,24 +385,29 @@ exports.Valigator = Valigator;
 // }
 // Main debugging function
 // function main() {
-// console.log("MAIN PROCESS");
-// const val = new Valigator({
-//   keys: {
-//     type: "test"
-//   }
-// });
-// const data = {
-//   name: "Will",
-//   age: 10
-// };
-// const shape = {
-//   name: {
-//     "test": "text",
-//   },
-//   age: {
-//     "test": "text",
-//   },
-// };
+//   console.log("MAIN PROCESS");
+//   const val = new Valigator({
+//     types: {
+//       test: {
+//         validators: [containsLower]
+//       }
+//     }
+//   });
+//   const data = {
+//     name: "WILL",
+//     age: 10,
+//   };
+//   const shape = {
+//     name: {
+//       type: "test",
+//     },
+//     age: {
+//       type: "text",
+//     },
+//   };
+//   console.log(val.validate_more(data, shape));
+// }
+// main();
 // const res = val.validate_more(data, shape);
 // console.log(res);
 //   const valigator = new Valigator();
@@ -426,6 +441,6 @@ exports.Valigator = Valigator;
 //       },
 //     },
 //   };
-//   console.log(valigator.validate_more(invalid_data, shape));
+//   
 // }
 // main();
