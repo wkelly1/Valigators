@@ -1,4 +1,4 @@
-import { getDecimalPoints } from "./Helpers";
+import { getDecimalPoints, run } from "./Helpers";
 
 /**
  * Checks if value is a string
@@ -165,4 +165,19 @@ export function _containsSymbol(value: any): boolean {
  */
 export function _containsRegex(reg: RegExp, value: any): boolean {
   return reg.test(value.toString());
+}
+
+/**
+ * Used if you you don't mind if some of the validators fail as long as one passes
+ * 
+ * @param validators Functions to run
+ * @param value Value to check
+ * @returns Boolean value if one of the functions passes
+ */
+export function _or(validators:Function[], value:any): boolean{
+    return validators.some((validator) => run(validator(value)))
+}
+
+export function _isType(clas:any, value:any): boolean{
+    return (value instanceof clas)
 }

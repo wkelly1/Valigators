@@ -7,7 +7,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.curry = exports.getDecimalPoints = void 0;
+exports.run = exports.curry = exports.getDecimalPoints = void 0;
 /**
  * Helper function to get the number of decimal points of a number
  * @param value Value to get
@@ -39,3 +39,19 @@ var curry = function (fn) {
     return innerFn(fn.length, []);
 };
 exports.curry = curry;
+/**
+ * Wraps a function in a try catch to make it safe
+ * @param fn Function to convert
+ * @returns Safe function
+ */
+function run(fn) {
+    return function () {
+        try {
+            return fn.apply(null, arguments);
+        }
+        catch (ex) {
+            return true;
+        }
+    };
+}
+exports.run = run;

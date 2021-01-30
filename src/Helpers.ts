@@ -14,14 +14,29 @@ export function getDecimalPoints(value: number): number {
  * @returns Curried function
  */
 export const curry = (fn) => {
-    const innerFn = (N, args) => {
-      return (...x) => {
-        if (N <= x.length) {
-          return fn(...args, ...x);
-        }
-        return innerFn(N - x.length, [...args, ...x]);
-      };
+  const innerFn = (N, args) => {
+    return (...x) => {
+      if (N <= x.length) {
+        return fn(...args, ...x);
+      }
+      return innerFn(N - x.length, [...args, ...x]);
     };
-  
-    return innerFn(fn.length, []);
   };
+
+  return innerFn(fn.length, []);
+};
+
+/**
+ * Wraps a function in a try catch to make it safe
+ * @param fn Function to convert
+ * @returns Safe function
+ */
+export function run(fn: Function): Function {
+  return function () {
+    try {
+      return fn.apply(null, arguments);
+    } catch (ex) {
+      return true;
+    }
+  };
+}

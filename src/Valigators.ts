@@ -43,7 +43,7 @@ validate_callback(data, shape, onError, onSuccess?)
 
 */
 
-import { curry } from "./Helpers";
+import { curry, run } from "./Helpers";
 import {
   _containsLower,
   _containsNumber,
@@ -68,25 +68,29 @@ interface type {
   validators: Function[];
 }
 
-export const isString = _isString;
-export const isNumber = _isNumber;
-export const minLength = curry(_minLength);
-export const maxLength = curry(_maxLength);
-export const minMaxLength = curry(_minMaxLength);
-export const length = curry(_length);
-export const substring = curry(_substring);
-export const maxDecimalPoint = curry(_maxDecimalPoint);
-export const minDecimalPoint = curry(_minDecimalPoint);
-export const decimalPoints = curry(_decimalPoints);
-export const oneOf = curry(_oneOf);
-export const containsNumber = _containsNumber;
-export const containsUpper = _containsUpper;
-export const containsLower = _containsLower;
-export const containsSymbol = _containsSymbol;
-export const containsRegex = curry(_containsRegex);
+
+
+export const isString = run(_isString);
+export const isNumber = run(_isNumber);
+export const minLength = run(curry(_minLength));
+export const maxLength = run(curry(_maxLength));
+export const minMaxLength = run(curry(_minMaxLength));
+export const length = run(curry(_length));
+export const substring = run(curry(_substring));
+export const maxDecimalPoint = run(curry(_maxDecimalPoint));
+export const minDecimalPoint = run(curry(_minDecimalPoint));
+export const decimalPoints = run(curry(_decimalPoints));
+export const oneOf = run(curry(_oneOf));
+export const containsNumber = run(_containsNumber);
+export const containsUpper = run(_containsUpper);
+export const containsLower = run(_containsLower);
+export const containsSymbol = run(_containsSymbol);
+export const containsRegex = run(curry(_containsRegex));
+
+
 
 export function customValidator(func: Function) {
-  return curry(func);
+  return run(curry(func));
 }
 
 interface options {

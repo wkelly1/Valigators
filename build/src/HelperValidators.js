@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isNumber = exports._isString = void 0;
+exports._or = exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isNumber = exports._isString = void 0;
 var Helpers_1 = require("./Helpers");
 /**
  * Checks if value is a string
@@ -172,3 +172,14 @@ function _containsRegex(reg, value) {
     return reg.test(value.toString());
 }
 exports._containsRegex = _containsRegex;
+/**
+ * Used if you you don't mind if some of the validators fail as long as one passes
+ *
+ * @param validators Functions to run
+ * @param value Value to check
+ * @returns Boolean value if one of the functions passes
+ */
+function _or(validators, value) {
+    return validators.some(function (validator) { return Helpers_1.run(validator(value)); });
+}
+exports._or = _or;
