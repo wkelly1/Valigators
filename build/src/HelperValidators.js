@@ -214,7 +214,7 @@ function _isPrime(value) {
             return true;
         }
         else {
-            for (var i = 3; i <= Math.sqrt(n); i += 2) {
+            for (var i = 3; i <= Math.sqrt(value); i += 2) {
                 if (value % i === 0) {
                     return false;
                 }

@@ -207,7 +207,7 @@ export function _isPrime(value: any): boolean {
     } else if (value === 2) {
       return true;
     } else {
-      for (let i = 3; i <= Math.sqrt(n); i += 2) {
+      for (let i = 3; i <= Math.sqrt(value); i += 2) {
         if (value % i === 0) {
           return false;
         }
