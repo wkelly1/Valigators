@@ -68,6 +68,7 @@ interface type {
   validators: Function[];
 }
 
+
 export const isString = run(_isString);
 export const isNumber = run(_isNumber);
 export const minLength = run(curry(_minLength));
@@ -105,6 +106,9 @@ interface options {
   types?: object;
 }
 
+/**
+ * Valigator class is used to check that some data matches some specified shape
+ */
 export class Valigator {
   private types = {
     text: {

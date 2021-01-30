@@ -67,7 +67,6 @@ valigator.validate_more(invalid_data, shape);
 //     foo: { success: true },
 //   },
 // };
-
 ```
 
 ## The shape object
@@ -76,8 +75,8 @@ This is where we define what the data should look like.
 
 ### Attributes
 
-- `type` - this is the type that the data should be (required attribute)
-- `required` - Is the value required in the data structure
+-   `type` - this is the type that the data should be (required attribute)
+-   `required` - Is the value required in the data structure
 
 ### Types
 
@@ -91,15 +90,15 @@ For example the `text` type runs the validators
 
 Available default types:
 
-| Type | Validations |
-| --- | --- |
-| `text` | `[isString]` |
-| `number` | `[isNumber]` |
-| `email` | TODO |
-| `phone` | TODO |
-| `date` | TODO |
-| `time` | TODO |
-| `password` | TODO |
+| Type       | Validations  |
+| ---------- | ------------ |
+| `text`     | `[isString]` |
+| `number`   | `[isNumber]` |
+| `email`    | TODO         |
+| `phone`    | TODO         |
+| `date`     | TODO         |
+| `time`     | TODO         |
+| `password` | TODO         |
 
 ### Extending default types
 
@@ -133,24 +132,24 @@ The back bone of the library are validator functions. These are functions that y
 
 The library has a set of pre-written validators for you to use:
 
-| Validator | Description |
-| --- | --- |
-| `minLength(min)` | If length of value is greater or equal to the `min` value |
-| `maxLength(max)` | If length of value is less than or equal to the `max` value |
+| Validator                | Description                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `minLength(min)`         | If length of value is greater or equal to the `min` value                                                |
+| `maxLength(max)`         | If length of value is less than or equal to the `max` value                                              |
 | `minMaxLength(min, max)` | If length of value is greater or equal to than the `min` value and less than or equal to the `max` value |
-| `length(n)` | If the length of the value is equal to n |
-| `substring(inner)` | If the string converted value contains substring `inner` |
-| `maxDecimalPoint(max)` | If the value is a number and has less than or equal to `max` decimal places |
-| `minDecimalPoint(min)` | If the value is a number and greater than or equal to `min` decimal places |
-| `decimalPoints(n)` | If the value is a number and has exactly `n` decimal places |
-| `isString()` | If the value is a string |
-| `isNumber()` | If the value is a number |
-| `oneOf(elems)` | If the value is equal to one of the elements in the array `elems` (e.g. `["one", "two"]`) |
-| `containsNumber()` | If the string converted value contains a number |
-| `containsUpper()` | If the string converted value contains an upper case character |
-| `containsLower()` | If the string converted value contains a lower case character |
-| `containsSymbol()` | If the string converted value contains one of the symbols `[|\\/~^:,;?!&%$@*+]` |
-| `containsRegex(reg)` | If the string converted value contains matches the regular expression `reg` (e.g. `/[A-Z]/`) |
+| `length(n)`              | If the length of the value is equal to n                                                                 |
+| `substring(inner)`       | If the string converted value contains substring `inner`                                                 |
+| `maxDecimalPoint(max)`   | If the value is a number and has less than or equal to `max` decimal places                              |
+| `minDecimalPoint(min)`   | If the value is a number and greater than or equal to `min` decimal places                               |
+| `decimalPoints(n)`       | If the value is a number and has exactly `n` decimal places                                              |
+| `isString()`             | If the value is a string                                                                                 |
+| `isNumber()`             | If the value is a number                                                                                 |
+| `oneOf(elems)`           | If the value is equal to one of the elements in the array `elems` (e.g. `["one", "two"]`)                |
+| `containsNumber()`       | If the string converted value contains a number                                                          |
+| `containsUpper()`        | If the string converted value contains an upper case character                                           |
+| `containsLower()`        | If the string converted value contains a lower case character                                            |
+| `containsSymbol()`       | If the string converted value contains one of the symbols `[|\\/~^:,;?!&%$@*+]`                          |
+| `containsRegex(reg)`     | If the string converted value contains matches the regular expression `reg` (e.g. `/[A-Z]/`)             |
 
 These can be used on their own as well as in `validate()`
 
@@ -186,7 +185,7 @@ The last parameter of the function must be the data value. You can specify as ma
 
 ## Options
 
-You can specify a set of options for the ```Valigator```
+You can specify a set of options for the `Valigator`
 
 ```typescript
 const options = {
@@ -209,6 +208,7 @@ const options = {
 ### Custom default error messages
 
 To update the default error message:
+
 ```js
 const options = {
     messages: {
@@ -223,7 +223,7 @@ new Valigator(options);
 
 ### Naming conflicts
 
-Sometimes your data will match the keys we use in the shape as well as in the output. You can change any of the values using the ```keys``` option.
+Sometimes your data will match the keys we use in the shape as well as in the output. You can change any of the values using the `keys` option.
 
 ```js
 const options = {
@@ -254,3 +254,46 @@ const options = {
 
 new Valigator(options);
 ```
+
+# API
+
+<!-- Generated by documentation.js. Update this documentation by updating the source code. -->
+
+### Table of Contents
+
+-   [Valigator](#valigator)
+    -   [Parameters](#parameters)
+    -   [validate](#validate)
+        -   [Parameters](#parameters-1)
+    -   [validate_more](#validate_more)
+        -   [Parameters](#parameters-2)
+
+## Valigator
+
+Valigator class is used to check that some data matches some specified shape
+
+### Parameters
+
+-   `options` **options?** 
+
+### validate
+
+Checks whether some data matches a specified shape and just returns a boolean value as a result
+
+#### Parameters
+
+-   `data` **any** Data to check
+-   `shape` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Shape the data is supposed to match
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing if data is valid or not
+
+### validate_more
+
+Checks whether some data matches a specified shape and returns an object containing all the places where it failed and their corresponding messages
+
+#### Parameters
+
+-   `data` **any** Data to check
+-   `shape` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Shape the data is supposed to match
+
+Returns **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Object representing what passed and what failed

@@ -74,6 +74,9 @@ function customValidator(func) {
     return Helpers_1.run(Helpers_1.curry(func));
 }
 exports.customValidator = customValidator;
+/**
+ * Valigator class is used to check that some data matches some specified shape
+ */
 var Valigator = /** @class */ (function () {
     function Valigator(options) {
         this.types = {

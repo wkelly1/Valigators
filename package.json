@@ -5,7 +5,8 @@
   "main": "Valigators.js",
   "scripts": {
     "dev": "tsc --watch",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "updateReadme": "documentation readme src/Valigators.ts --section=API --parse-extension ts"
   },
   "keywords": [
     "validation",
