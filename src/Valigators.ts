@@ -478,7 +478,7 @@ export class Valigator {
 // }
 
 // Main debugging function
-function main() {
+// function main() {
   // console.log("MAIN PROCESS");
   // const val = new Valigator({
   //   keys: {
@@ -503,52 +503,41 @@ function main() {
   // const res = val.validate_more(data, shape);
   // console.log(res);
 
-  const valigator = new Valigator();
+//   const valigator = new Valigator();
 
-  const valid_data = {
-    name: "bob",
-    age: 12,
-    example: {
-      foo: "bar",
-    },
-  };
+//   const valid_data = {
+//     name: "bob",
+//     age: 12,
+//     example: {
+//       foo: "bar",
+//     },
+//   };
 
-  const invalid_data = {
-    // name: "bob" <- removed this value
-    age: 12,
-    example: {
-      foo: "bar",
-    },
-  };
+//   const invalid_data = {
+//     // name: "bob" <- removed this value
+//     age: 12,
+//     example: {
+//       foo: "bar",
+//     },
+//   };
 
-  const shape = {
-    name: {
-      type: "text", // Required attribute
-      validators: [], // Optional list is extra validators to run
-    },
-    age: {
-      type: "number",
-    },
-    example: {
-      // Works with nested objects
-      foo: {
-        type: "text",
-        required: false,
-      },
-    },
-  };
-  console.log(valigator.validate_more(invalid_data, shape));
-}
+//   const shape = {
+//     name: {
+//       type: "text", // Required attribute
+//       validators: [], // Optional list is extra validators to run
+//     },
+//     age: {
+//       type: "number",
+//     },
+//     example: {
+//       // Works with nested objects
+//       foo: {
+//         type: "text",
+//         required: false,
+//       },
+//     },
+//   };
+//   console.log(valigator.validate_more(invalid_data, shape));
+// }
 
-main();
-
-let test = {
-  name: {
-    success: false,
-    message: "Value is required but is missing",
-  },
-  age: { success: true },
-  example: {
-    foo: { success: true },
-  },
-};
+// main();

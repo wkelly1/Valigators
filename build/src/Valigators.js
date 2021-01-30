@@ -425,58 +425,58 @@ exports.Valigator = Valigator;
 //     console.log("IT works");
 // }
 // Main debugging function
-function main() {
-    // console.log("MAIN PROCESS");
-    // const val = new Valigator({
-    //   keys: {
-    //     type: "test"
-    //   }
-    // });
-    // const data = {
-    //   name: "Will",
-    //   age: 10
-    // };
-    // const shape = {
-    //   name: {
-    //     "test": "text",
-    //   },
-    //   age: {
-    //     "test": "text",
-    //   },
-    // };
-    // const res = val.validate_more(data, shape);
-    // console.log(res);
-    var valigator = new Valigator();
-    var valid_data = {
-        name: "bob",
-        age: 12,
-        example: {
-            foo: "bar",
-        },
-    };
-    var invalid_data = {
-        // name: "bob" <- removed this value
-        age: 12,
-        example: {
-            foo: "bar",
-        },
-    };
-    var shape = {
-        name: {
-            type: "text",
-            validators: [],
-        },
-        age: {
-            type: "number",
-        },
-        example: {
-            // Works with nested objects
-            foo: {
-                type: "text",
-                required: false,
-            },
-        },
-    };
-    console.log(valigator.validate_more(invalid_data, shape));
-}
-main();
+// function main() {
+// console.log("MAIN PROCESS");
+// const val = new Valigator({
+//   keys: {
+//     type: "test"
+//   }
+// });
+// const data = {
+//   name: "Will",
+//   age: 10
+// };
+// const shape = {
+//   name: {
+//     "test": "text",
+//   },
+//   age: {
+//     "test": "text",
+//   },
+// };
+// const res = val.validate_more(data, shape);
+// console.log(res);
+//   const valigator = new Valigator();
+//   const valid_data = {
+//     name: "bob",
+//     age: 12,
+//     example: {
+//       foo: "bar",
+//     },
+//   };
+//   const invalid_data = {
+//     // name: "bob" <- removed this value
+//     age: 12,
+//     example: {
+//       foo: "bar",
+//     },
+//   };
+//   const shape = {
+//     name: {
+//       type: "text", // Required attribute
+//       validators: [], // Optional list is extra validators to run
+//     },
+//     age: {
+//       type: "number",
+//     },
+//     example: {
+//       // Works with nested objects
+//       foo: {
+//         type: "text",
+//         required: false,
+//       },
+//     },
+//   };
+//   console.log(valigator.validate_more(invalid_data, shape));
+// }
+// main();
