@@ -381,6 +381,11 @@ export class Valigator {
           cur[this.keys.success] = false;
           cur[this.keys.message] = this.messages.invalidValue;
           return cur;
+        } else {
+          // valid data
+          let cur = {};
+          cur[this.keys.success] = true;
+          return cur;
         }
       } else {
         // Invalid shape
@@ -457,7 +462,20 @@ export class Valigator {
    * Checks whether some data matches a specified shape and just returns a boolean value as a result
    * @param data Data to check
    * @param shape Shape the data is supposed to match
-   * @returns Boolean representing if data is valid or not
+   * @returns {Boolean} representing if data is valid or not
+   * @example 
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate(10, {type: "number"});
+   * // => true
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+   * // => true
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+   * // => true
    */
   public validate(data: any, shape: object): boolean {
     this.validateShape(shape);
@@ -469,6 +487,19 @@ export class Valigator {
    * @param data Data to check
    * @param shape Shape the data is supposed to match
    * @returns Object representing what passed and what failed
+   * @example
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate_more(10, {type: "number"});
+   * // => {success: true}
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+   * // => { names: { first: { success: true }, last: { success: true } } }
+   * 
+   * const valigator = new Valigator();
+   * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+   * // => { names: { first: { success: true }, last: { success: true } } }
    */
   public validate_more(data: any, shape: object): object {
     this.validateShape(shape);
@@ -477,6 +508,11 @@ export class Valigator {
     return res;
   }
 }
+
+// const valigator = new Valigator();
+// console.log(valigator.validate_more(10, {type: "number"}));
+// console.log(valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}}))
+// console.log(valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}}))
 
 // export default function test():void{
 //     console.log("IT works");

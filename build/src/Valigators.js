@@ -51,11 +51,12 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Valigator = exports.customValidator = exports.containsRegex = exports.containsSymbol = exports.containsLower = exports.containsUpper = exports.containsNumber = exports.oneOf = exports.decimalPoints = exports.minDecimalPoint = exports.maxDecimalPoint = exports.substring = exports.length = exports.minMaxLength = exports.maxLength = exports.minLength = exports.isNumber = exports.isString = void 0;
+exports.Valigator = exports.customValidator = exports.equals = exports.isPositive = exports.isNegative = exports.isCube = exports.isSquare = exports.isPrime = exports.isOdd = exports.isEven = exports.isInstanceOf = exports.or = exports.containsRegex = exports.containsSymbol = exports.containsLower = exports.containsUpper = exports.containsNumber = exports.oneOf = exports.decimalPoints = exports.minDecimalPoint = exports.maxDecimalPoint = exports.substring = exports.length = exports.minMaxLength = exports.maxLength = exports.minLength = exports.isArray = exports.isNumber = exports.isString = void 0;
 var Helpers_1 = require("./Helpers");
 var HelperValidators_1 = require("./HelperValidators");
 exports.isString = Helpers_1.run(HelperValidators_1._isString);
 exports.isNumber = Helpers_1.run(HelperValidators_1._isNumber);
+exports.isArray = Helpers_1.run(HelperValidators_1._isArray);
 exports.minLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._minLength));
 exports.maxLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._maxLength));
 exports.minMaxLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._minMaxLength));
@@ -70,6 +71,16 @@ exports.containsUpper = Helpers_1.run(HelperValidators_1._containsUpper);
 exports.containsLower = Helpers_1.run(HelperValidators_1._containsLower);
 exports.containsSymbol = Helpers_1.run(HelperValidators_1._containsSymbol);
 exports.containsRegex = Helpers_1.run(Helpers_1.curry(HelperValidators_1._containsRegex));
+exports.or = Helpers_1.run(Helpers_1.curry(HelperValidators_1._or));
+exports.isInstanceOf = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isInstanceOf));
+exports.isEven = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isEven));
+exports.isOdd = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isOdd));
+exports.isPrime = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isPrime));
+exports.isSquare = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isSquare));
+exports.isCube = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isCube));
+exports.isNegative = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isNegative));
+exports.isPositive = Helpers_1.run(Helpers_1.curry(HelperValidators_1._isPositive));
+exports.equals = Helpers_1.run(Helpers_1.curry(HelperValidators_1._equals));
 function customValidator(func) {
     return Helpers_1.run(Helpers_1.curry(func));
 }
@@ -294,6 +305,12 @@ var Valigator = /** @class */ (function () {
                     cur[this.keys.message] = this.messages.invalidValue;
                     return cur;
                 }
+                else {
+                    // valid data
+                    var cur = {};
+                    cur[this.keys.success] = true;
+                    return cur;
+                }
             }
             else {
                 // Invalid shape
@@ -363,7 +380,20 @@ var Valigator = /** @class */ (function () {
      * Checks whether some data matches a specified shape and just returns a boolean value as a result
      * @param data Data to check
      * @param shape Shape the data is supposed to match
-     * @returns Boolean representing if data is valid or not
+     * @returns {Boolean} representing if data is valid or not
+     * @example
+     *
+     * const valigator = new Valigator();
+     * valigator.validate(10, {type: "number"});
+     * // => true
+     *
+     * const valigator = new Valigator();
+     * valigator.validate({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+     * // => true
+     *
+     * const valigator = new Valigator();
+     * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+     * // => true
      */
     Valigator.prototype.validate = function (data, shape) {
         this.validateShape(shape);
@@ -374,6 +404,19 @@ var Valigator = /** @class */ (function () {
      * @param data Data to check
      * @param shape Shape the data is supposed to match
      * @returns Object representing what passed and what failed
+     * @example
+     *
+     * const valigator = new Valigator();
+     * valigator.validate_more(10, {type: "number"});
+     * // => {success: true}
+     *
+     * const valigator = new Valigator();
+     * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+     * // => { names: { first: { success: true }, last: { success: true } } }
+     *
+     * const valigator = new Valigator();
+     * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+     * // => { names: { first: { success: true }, last: { success: true } } }
      */
     Valigator.prototype.validate_more = function (data, shape) {
         this.validateShape(shape);
@@ -383,6 +426,10 @@ var Valigator = /** @class */ (function () {
     return Valigator;
 }());
 exports.Valigator = Valigator;
+// const valigator = new Valigator();
+// console.log(valigator.validate_more(10, {type: "number"}));
+// console.log(valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}}))
+// console.log(valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}}))
 // export default function test():void{
 //     console.log("IT works");
 // }

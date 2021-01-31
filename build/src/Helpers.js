@@ -50,7 +50,7 @@ function run(fn) {
             return fn.apply(null, arguments);
         }
         catch (ex) {
-            return true;
+            return false;
         }
     };
 }
