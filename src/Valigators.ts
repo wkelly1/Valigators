@@ -51,6 +51,8 @@ import {
   _containsSymbol,
   _containsUpper,
   _decimalPoints,
+  _isArray,
+  _isInstanceOf,
   _isNumber,
   _isString,
   _length,
@@ -60,7 +62,16 @@ import {
   _minLength,
   _minMaxLength,
   _oneOf,
+  _or,
   _substring,
+  _isEven,
+  _isOdd,
+  _isPrime,
+  _isSquare,
+  _isNegative,
+  _isPositive,
+  _isCube,
+  _equals
 } from "./HelperValidators";
 
 interface type {
@@ -71,6 +82,7 @@ interface type {
 
 export const isString = run(_isString);
 export const isNumber = run(_isNumber);
+export const isArray = run(_isArray);
 export const minLength = run(curry(_minLength));
 export const maxLength = run(curry(_maxLength));
 export const minMaxLength = run(curry(_minMaxLength));
@@ -85,6 +97,16 @@ export const containsUpper = run(_containsUpper);
 export const containsLower = run(_containsLower);
 export const containsSymbol = run(_containsSymbol);
 export const containsRegex = run(curry(_containsRegex));
+export const or = run(curry(_or));
+export const isInstanceOf = run(curry(_isInstanceOf));
+export const isEven = run(curry(_isEven));
+export const isOdd = run(curry(_isOdd));
+export const isPrime = run(curry(_isPrime));
+export const isSquare = run(curry(_isSquare));
+export const isCube = run(curry(_isCube));
+export const isNegative = run(curry(_isNegative));
+export const isPositive = run(curry(_isPositive));
+export const equals = run(curry(_equals));
 
 export function customValidator(func: Function) {
   return run(curry(func));

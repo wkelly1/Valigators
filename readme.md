@@ -142,14 +142,26 @@ The library has a set of pre-written validators for you to use:
 | `maxDecimalPoint(max)`   | If the value is a number and has less than or equal to `max` decimal places                              |
 | `minDecimalPoint(min)`   | If the value is a number and greater than or equal to `min` decimal places                               |
 | `decimalPoints(n)`       | If the value is a number and has exactly `n` decimal places                                              |
-| `isString()`             | If the value is a string                                                                                 |
-| `isNumber()`             | If the value is a number                                                                                 |
+| `isString`             | If the value is a string                                                                                 |
+| `isNumber`             | If the value is a number                                                                                 |
+| `isArray`             | If the value is an array                                                                                 |
 | `oneOf(elems)`           | If the value is equal to one of the elements in the array `elems` (e.g. `["one", "two"]`)                |
 | `containsNumber()`       | If the string converted value contains a number                                                          |
 | `containsUpper()`        | If the string converted value contains an upper case character                                           |
 | `containsLower()`        | If the string converted value contains a lower case character                                            |
 | `containsSymbol()`       | If the string converted value contains one of the symbols `[|\\/~^:,;?!&%$@*+]`                          |
 | `containsRegex(reg)`     | If the string converted value contains matches the regular expression `reg` (e.g. `/[A-Z]/`)             |
+| `or(validators)` | Takes an array of validators and runs each one and returns true if any of the validators return true, false otherwise (e.g. `validators([isNumber, isString])` will only be true if the value is a number or a string)|
+| `isInstanceOf(func)` | Checks if the value instanceof func |
+| `isEven` | Checks if the value is a number and even |
+| `isOdd` | Checks if the value is a number and odd |
+| `isPrime` | Checks if the value is a number and prime |
+| `isSquare` | Checks if the value is a number and a square number |
+| `isCube` | Checks if the value is a number and is a cube number |
+| `isNegative` | Checks if the value is a number and negative (0 is not negative) |
+| `isPositive` | Checks if the value is a number and positive (0 is not positive) |
+| `equals(to)` | Checks if the value is equal to `to`. It does more than `===` and compares the value. This means you can compare an arrays contents as well as objects with this  |
+
 
 These can be used on their own as well as in `validate()`
 

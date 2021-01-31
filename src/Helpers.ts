@@ -36,7 +36,7 @@ export function run(fn: Function): Function {
     try {
       return fn.apply(null, arguments);
     } catch (ex) {
-      return true;
+      return false;
     }
   };
 }
