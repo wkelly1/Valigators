@@ -49,16 +49,14 @@ valigator.validate(valid_data, shape); // Returns true
 valigator.validate(invalid_data, shape); // Returns false
 
 valigator.validate_more(valid_data, shape);
-// Returns:
-//     {
+// => {
 //      name: { success: true },
 //      age: { success: true },
 //      example: { foo: { success: true } }
 //     }
 
 valigator.validate_more(invalid_data, shape);
-// Returns:
-// {
+// => {
 //   name: {
 //     success: false,
 //     message: "Value is required but is missing",

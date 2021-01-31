@@ -116,7 +116,8 @@ var Valigator = /** @class */ (function () {
                     this.messages.invalidValue = options.messages.invalidValue;
                 }
                 if (options.messages.unexpectedValue) {
-                    this.messages.unexpectedValue = options.messages.unexpectedValue;
+                    this.messages.unexpectedValue =
+                        options.messages.unexpectedValue;
                 }
                 if (options.messages.required) {
                     this.messages.required = options.messages.required;

@@ -380,8 +380,12 @@ function _equals(equal, value) {
             return false;
         if (["[object Array]", "[object Object]"].indexOf(type) < 0)
             return false;
-        var valueLen = type === "[object Array]" ? value.length : Object.keys(value).length;
-        var otherLen = type === "[object Array]" ? equal.length : Object.keys(equal).length;
+        var valueLen = type === "[object Array]"
+            ? value.length
+            : Object.keys(value).length;
+        var otherLen = type === "[object Array]"
+            ? equal.length
+            : Object.keys(equal).length;
         if (valueLen !== otherLen)
             return false;
         var compare = function (item1, item2) {

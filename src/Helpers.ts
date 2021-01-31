@@ -4,8 +4,8 @@
  * @returns Number of decimal points number has
  */
 export function getDecimalPoints(value: number): number {
-  let index = value.toString().indexOf(".");
-  return index === -1 ? 0 : value.toString().length - index - 1;
+    const index = value.toString().indexOf(".");
+    return index === -1 ? 0 : value.toString().length - index - 1;
 }
 
 /**
@@ -14,16 +14,16 @@ export function getDecimalPoints(value: number): number {
  * @returns Curried function
  */
 export const curry = (fn) => {
-  const innerFn = (N, args) => {
-    return (...x) => {
-      if (N <= x.length) {
-        return fn(...args, ...x);
-      }
-      return innerFn(N - x.length, [...args, ...x]);
+    const innerFn = (N, args) => {
+        return (...x) => {
+            if (N <= x.length) {
+                return fn(...args, ...x);
+            }
+            return innerFn(N - x.length, [...args, ...x]);
+        };
     };
-  };
 
-  return innerFn(fn.length, []);
+    return innerFn(fn.length, []);
 };
 
 /**
@@ -32,11 +32,11 @@ export const curry = (fn) => {
  * @returns Safe function
  */
 export function run(fn: Function): Function {
-  return function () {
-    try {
-      return fn.apply(null, arguments);
-    } catch (ex) {
-      return false;
-    }
-  };
+    return function () {
+        try {
+            return fn.apply(null, arguments);
+        } catch (ex) {
+            return false;
+        }
+    };
 }
