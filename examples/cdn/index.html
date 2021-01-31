@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CDN Example</title>
+    </head>
+    <body>
+        <h1>Check out your console</h1>
+        <script src="./node_modules/valigators/dist/bundle.usm.js"></script>
+        <script>
+            const {Valigator, minLength} = window.Valigators;
+
+            let valigator = new Valigator();
+
+            const valid_data = {
+                name: "bob",
+                age: 12,
+                example: {
+                    foo: "bar",
+                },
+            };
+
+            const shape = {
+                name: {
+                    type: "text", // Required attribute
+                    validators: [minLength(2)], // Optional list is extra validators to run
+                },
+                age: {
+                    type: "number",
+                },
+                example: {
+                    // Works with nested objects
+                    foo: {
+                        type: "text",
+                        required: false,
+                    },
+                },
+            };
+            // => true
+            console.log("Running code in index.html");
+            console.log("Output:", valigator.validate(valid_data, shape));
+        </script>
+    </body>
+</html>

@@ -60,15 +60,19 @@ var curry = function (fn) {
  * @param fn Function to convert
  * @returns Safe function
  */
-function run(fn) {
-    return function () {
+function run(func) {
+    return (function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
         try {
-            return fn.apply(null, arguments);
+            return func.apply(void 0, args);
         }
         catch (ex) {
             return false;
         }
-    };
+    });
 }
 
 /*
@@ -316,11 +320,11 @@ function _containsLower(value) {
  */
 function _containsSymbol(value) {
     if (isNumber(value) || isString(value)) {
-        return /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(value.toString());
+        return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
     }
     if (value instanceof Array) {
         return value.some(function (val) {
-            return /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(val.toString());
+            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString());
         });
     }
     return false;
@@ -338,7 +342,7 @@ function _containsRegex(reg, value) {
         return reg.test(value.toString());
     }
     if (value instanceof Array) {
-        return value.some(function (val) { return reg.test(value.toString()); });
+        return value.some(function (val) { return reg.test(val.toString()); });
     }
     return false;
 }
@@ -489,8 +493,12 @@ function _equals(equal, value) {
             return false;
         if (["[object Array]", "[object Object]"].indexOf(type) < 0)
             return false;
-        var valueLen = type === "[object Array]" ? value.length : Object.keys(value).length;
-        var otherLen = type === "[object Array]" ? equal.length : Object.keys(equal).length;
+        var valueLen = type === "[object Array]"
+            ? value.length
+            : Object.keys(value).length;
+        var otherLen = type === "[object Array]"
+            ? equal.length
+            : Object.keys(equal).length;
         if (valueLen !== otherLen)
             return false;
         var compare = function (item1, item2) {
@@ -520,7 +528,7 @@ function _equals(equal, value) {
         }
         else {
             for (var key in value) {
-                if (value.hasOwnProperty(key)) {
+                if (Object.hasOwnProperty.call(value, key)) {
                     if (compare(value[key], equal[key]) === false)
                         return false;
                 }
@@ -637,7 +645,8 @@ var Valigator = /** @class */ (function () {
                     this.messages.invalidValue = options.messages.invalidValue;
                 }
                 if (options.messages.unexpectedValue) {
-                    this.messages.unexpectedValue = options.messages.unexpectedValue;
+                    this.messages.unexpectedValue =
+                        options.messages.unexpectedValue;
                 }
                 if (options.messages.required) {
                     this.messages.required = options.messages.required;

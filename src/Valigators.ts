@@ -72,12 +72,8 @@ import {
     _isPositive,
     _isCube,
     _equals,
+    ValidatorFunc,
 } from "./HelperValidators";
-
-interface type {
-    name: string;
-    validators: Function[];
-}
 
 export const isString = run(_isString);
 export const isNumber = run(_isNumber);
@@ -107,7 +103,9 @@ export const isNegative = run(curry(_isNegative));
 export const isPositive = run(curry(_isPositive));
 export const equals = run(curry(_equals));
 
-export function customValidator(func: Function) {
+export function customValidator<T extends (...args: any[]) => boolean>(
+    func: T
+): (...x: any[]) => boolean {
     return run(curry(func));
 }
 
@@ -124,7 +122,7 @@ interface options {
         required?: string;
         validators?: string;
     };
-    types?: object;
+    types?: Record<string, any>;
 }
 
 /**
@@ -259,7 +257,7 @@ export class Valigator {
         return true;
     }
 
-    private validateShape(shape: object): void {
+    private validateShape(shape: Record<string, any>): void {
         if (typeof shape !== "object" || Array.isArray(shape)) {
             throw Error("Invalid value for property shape");
         }
@@ -268,9 +266,10 @@ export class Valigator {
         }
     }
 
-    private runValidations(data: any, shape: object): boolean {
+    private runValidations(data: any, shape: Record<string, any>): boolean {
         // Run any user defined validators
-        const validators: Function[] | undefined = shape[this.keys.validators];
+        const validators: ValidatorFunc[] | undefined =
+            shape[this.keys.validators];
         if (validators) {
             if (Array.isArray(validators)) {
                 for (let i = 0; i < validators.length; i++) {
@@ -292,7 +291,7 @@ export class Valigator {
         return true;
     }
 
-    private checkDataShape(data: any, shape: object): boolean {
+    private checkDataShape(data: any, shape: Record<string, any>): boolean {
         if (typeof data !== "object") {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
@@ -350,7 +349,10 @@ export class Valigator {
         return true;
     }
 
-    private buildErrorMessageObject(shape: object, message: string): object {
+    private buildErrorMessageObject(
+        shape: Record<string, any>,
+        message: string
+    ): Record<string, any> {
         const output = {};
         for (const key in shape) {
             if (typeof shape[key] !== "object") {
@@ -374,7 +376,10 @@ export class Valigator {
     //     type: "text",
     //     validators: [minLength(1)],
     //   },
-    private checkDataShapeMore(data: any, shape: object): object {
+    private checkDataShapeMore(
+        data: any,
+        shape: Record<string, any>
+    ): Record<string, any> {
         const output = {};
         if (typeof data !== "object") {
             // data is some primative type; string, number etc
@@ -484,7 +489,7 @@ export class Valigator {
      * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
      * // => true
      */
-    public validate(data: any, shape: object): boolean {
+    public validate(data: any, shape: Record<string, any>): boolean {
         this.validateShape(shape);
         return this.checkDataShape(data, shape);
     }
@@ -512,7 +517,10 @@ export class Valigator {
      * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
      * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
      */
-    public validate_more(data: any, shape: object): object {
+    public validate_more(
+        data: any,
+        shape: Record<string, any>
+    ): Record<string, any> {
         this.validateShape(shape);
         const res = this.checkDataShapeMore(data, shape);
 

@@ -1,12 +1,14 @@
 import { getDecimalPoints, run } from "./Helpers";
 import { isNumber, isString } from "./Valigators";
 
+export type ValidatorFunc = (...args) => boolean;
+
 /**
  * Checks if value is a string
  * @param value Value to check
  * @returns {boolean} Boolean value representing whether string or not
  */
-export function _isString(value: any): boolean {
+export function _isString(value: unknown): boolean {
     return typeof value === "string";
 }
 
@@ -15,11 +17,11 @@ export function _isString(value: any): boolean {
  * @param value Value to check
  * @returns {boolean} Boolean value representing whether number or not
  */
-export function _isNumber(value: any): boolean {
+export function _isNumber(value: unknown): boolean {
     return typeof value === "number";
 }
 
-export function _isArray(value: any): boolean {
+export function _isArray(value: unknown): boolean {
     return Array.isArray(value);
 }
 
@@ -29,7 +31,7 @@ export function _isArray(value: any): boolean {
  * @param value Value to check
  * @returns {boolean} Boolean value representing whether right length or not
  */
-export function _minLength(min: number, value: any): boolean {
+export function _minLength(min: number, value: any[]): boolean {
     if (_isArray(value)) {
         return value.length >= min;
     } else {
@@ -187,13 +189,11 @@ export function _containsLower(value: any): boolean {
  */
 export function _containsSymbol(value: any): boolean {
     if (isNumber(value) || isString(value)) {
-        return /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(
-            value.toString()
-        );
+        return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
     }
     if (value instanceof Array) {
         return value.some((val) =>
-            /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(val.toString())
+            /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString())
         );
     }
     return false;
@@ -212,7 +212,7 @@ export function _containsRegex(reg: RegExp, value: any): boolean {
         return reg.test(value.toString());
     }
     if (value instanceof Array) {
-        return value.some((val) => reg.test(value.toString()));
+        return value.some((val) => reg.test(val.toString()));
     }
     return false;
 }
@@ -224,7 +224,7 @@ export function _containsRegex(reg: RegExp, value: any): boolean {
  * @param value Value to check
  * @returns {boolean} Boolean value if one of the functions passes
  */
-export function _or(validators: Function[], value: any): boolean {
+export function _or(validators: ValidatorFunc[], value: any): boolean {
     console.log("res: ", run(validators[0])(value));
     return validators.some((validator) => run(validator)(value));
 }
@@ -414,7 +414,7 @@ export function _equals(equal: any, value: any): boolean {
             }
         } else {
             for (const key in value) {
-                if (value.hasOwnProperty(key)) {
+                if (Object.hasOwnProperty.call(value, key)) {
                     if (compare(value[key], equal[key]) === false) return false;
                 }
             }

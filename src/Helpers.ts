@@ -31,12 +31,12 @@ export const curry = (fn) => {
  * @param fn Function to convert
  * @returns Safe function
  */
-export function run(fn: Function): Function {
-    return function () {
+export function run<T extends (...args: any[]) => any>(func: T): T {
+    return <T>((...args: any[]) => {
         try {
-            return fn.apply(null, arguments);
+            return func(...args);
         } catch (ex) {
             return false;
         }
-    };
+    });
 }

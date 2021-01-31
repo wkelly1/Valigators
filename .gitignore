@@ -1,3 +1,6 @@
 /node_modules
 /coverage
 /build
+/examples/ssr/node_modules
+/examples/cra/node_modules
+/examples/cdn/node_modules

@@ -684,14 +684,14 @@ test("Testing additional validators", () => {
         )
     ).toBe(false);
 
-    const cusValidateExample = customValidator((a: any, res: any) => true);
+    const cusValidateExample = customValidator((a: any, res: any) => res === a);
     expect(
         validate.validate(
             { name: "bob" },
             {
                 name: {
                     type: "text",
-                    validators: [cusValidateExample(2)],
+                    validators: [cusValidateExample("bob")],
                 },
             }
         )
