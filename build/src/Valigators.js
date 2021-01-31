@@ -417,6 +417,10 @@ var Valigator = /** @class */ (function () {
      * const valigator = new Valigator();
      * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
      * // => { names: { first: { success: true }, last: { success: true } } }
+     *
+     * const valigator = new Valigator();
+     * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
+     * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
      */
     Valigator.prototype.validate_more = function (data, shape) {
         this.validateShape(shape);
@@ -426,71 +430,3 @@ var Valigator = /** @class */ (function () {
     return Valigator;
 }());
 exports.Valigator = Valigator;
-// const valigator = new Valigator();
-// console.log(valigator.validate_more(10, {type: "number"}));
-// console.log(valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}}))
-// console.log(valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}}))
-// export default function test():void{
-//     console.log("IT works");
-// }
-// Main debugging function
-// function main() {
-//   console.log("MAIN PROCESS");
-//   const val = new Valigator({
-//     types: {
-//       test: {
-//         validators: [containsLower]
-//       }
-//     }
-//   });
-//   const data = {
-//     name: "WILL",
-//     age: 10,
-//   };
-//   const shape = {
-//     name: {
-//       type: "test",
-//     },
-//     age: {
-//       type: "text",
-//     },
-//   };
-//   console.log(val.validate_more(data, shape));
-// }
-// main();
-// const res = val.validate_more(data, shape);
-// console.log(res);
-//   const valigator = new Valigator();
-//   const valid_data = {
-//     name: "bob",
-//     age: 12,
-//     example: {
-//       foo: "bar",
-//     },
-//   };
-//   const invalid_data = {
-//     // name: "bob" <- removed this value
-//     age: 12,
-//     example: {
-//       foo: "bar",
-//     },
-//   };
-//   const shape = {
-//     name: {
-//       type: "text", // Required attribute
-//       validators: [], // Optional list is extra validators to run
-//     },
-//     age: {
-//       type: "number",
-//     },
-//     example: {
-//       // Works with nested objects
-//       foo: {
-//         type: "text",
-//         required: false,
-//       },
-//     },
-//   };
-//   
-// }
-// main();
