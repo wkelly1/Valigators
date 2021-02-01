@@ -90,8 +90,8 @@ This is where we define what the data should look like.
 
 ### Attributes
 
--   `type` - this is the type that the data should be (required attribute)
--   `required` - Is the value required in the data structure
+- `type` - this is the type that the data should be (required attribute)
+- `required` - Is the value required in the data structure
 
 ### Types
 
@@ -149,35 +149,37 @@ The back bone of the library are validator functions. These are functions that y
 
 The library has a set of pre-written validators for you to use:
 
-| Validator                | Description                                                                                                                                                                                                                                  |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `minLength(min)`         | If length of value is greater or equal to the `min` value                                                                                                                                                                                    |
-| `maxLength(max)`         | If length of value is less than or equal to the `max` value                                                                                                                                                                                  |
-| `minMaxLength(min, max)` | If length of value is greater or equal to than the `min` value and less than or equal to the `max` value                                                                                                                                     |
-| `length(n)`              | If the length of the value is equal to n                                                                                                                                                                                                     |
-| `substring(inner)`       | If the string converted value contains substring `inner`                                                                                                                                                                                     |
-| `maxDecimalPoint(max)`   | If the value is a number and has less than or equal to `max` decimal places                                                                                                                                                                  |
-| `minDecimalPoint(min)`   | If the value is a number and greater than or equal to `min` decimal places                                                                                                                                                                   |
-| `decimalPoints(n)`       | If the value is a number and has exactly `n` decimal places                                                                                                                                                                                  |
-| `isString`               | If the value is a string                                                                                                                                                                                                                     |
-| `isNumber`               | If the value is a number                                                                                                                                                                                                                     |
-| `isArray`                | If the value is an array                                                                                                                                                                                                                     |
-| `oneOf(elems)`           | If the value is equal to one of the elements in the array `elems` (e.g. `["one", "two"]`)                                                                                                                                                    |
-| `containsNumber()`       | If the string converted value contains a number                                                                                                                                                                                              |
-| `containsUpper()`        | If the string converted value contains an upper case character                                                                                                                                                                               |
-| `containsLower()`        | If the string converted value contains a lower case character                                                                                                                                                                                |
+| Validator                | Description                                                                                                                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `isString`               | If the value is a string                                                                                                                                                                                               |
+| `isNumber`               | If the value is a number                                                                                                                                                                                               |
+| `isArray`                | If the value is an array                                                                                                                                                                                               |
+| `isBoolean`              | If the value is a boolean                                                                                                                                                                                              |
+| `isNull`                 | If the value is null                                                                                                                                                                                                   |
+| `minLength(min)`         | If length of value is greater or equal to the `min` value                                                                                                                                                              |
+| `maxLength(max)`         | If length of value is less than or equal to the `max` value                                                                                                                                                            |
+| `minMaxLength(min, max)` | If length of value is greater or equal to than the `min` value and less than or equal to the `max` value                                                                                                               |
+| `length(n)`              | If the length of the value is equal to n                                                                                                                                                                               |
+| `substring(inner)`       | If the string converted value contains substring `inner`                                                                                                                                                               |
+| `maxDecimalPoint(max)`   | If the value is a number and has less than or equal to `max` decimal places                                                                                                                                            |
+| `minDecimalPoint(min)`   | If the value is a number and greater than or equal to `min` decimal places                                                                                                                                             |
+| `decimalPoints(n)`       | If the value is a number and has exactly `n` decimal places                                                                                                                                                            |
+| `oneOf(elems)`           | If the value is equal to one of the elements in the array `elems` (e.g. `["one", "two"]`)                                                                                                                              |
+| `containsNumber()`       | If the string converted value contains a number                                                                                                                                                                        |
+| `containsUpper()`        | If the string converted value contains an upper case character                                                                                                                                                         |
+| `containsLower()`        | If the string converted value contains a lower case character                                                                                                                                                          |
 | `containsSymbol()`       | If the string converted value contains one of the symbols `[                                                                                                                                                           | \\/~^:,;?!&%$@\*+]` |
-| `containsRegex(reg)`     | If the string converted value contains matches the regular expression `reg` (e.g. `/[A-Z]/`)                                                                                                                                                 |
-| `or(validators)`         | Takes an array of validators and runs each one and returns true if any of the validators return true, false otherwise (e.g. `validators([isNumber, isString])` will only be true if the value is a number or a string)                       |
-| `isInstanceOf(func)`     | Checks if the value instanceof func                                                                                                                                                                                                          |
-| `isEven`                 | Checks if the value is a number and even                                                                                                                                                                                                     |
-| `isOdd`                  | Checks if the value is a number and odd                                                                                                                                                                                                      |
-| `isPrime`                | Checks if the value is a number and prime                                                                                                                                                                                                    |
-| `isSquare`               | Checks if the value is a number and a square number                                                                                                                                                                                          |
-| `isCube`                 | Checks if the value is a number and is a cube number                                                                                                                                                                                         |
-| `isNegative`             | Checks if the value is a number and negative (0 is not negative)                                                                                                                                                                             |
-| `isPositive`             | Checks if the value is a number and positive (0 is not positive)                                                                                                                                                                             |
-| `equals(to)`             | Checks if the value is equal to `to`. It does more than `===` and compares the value. This means you can compare an arrays contents as well as objects with this                                                                             |
+| `containsRegex(reg)`     | If the string converted value contains matches the regular expression `reg` (e.g. `/[A-Z]/`)                                                                                                                           |
+| `or(validators)`         | Takes an array of validators and runs each one and returns true if any of the validators return true, false otherwise (e.g. `validators([isNumber, isString])` will only be true if the value is a number or a string) |
+| `isInstanceOf(func)`     | Checks if the value instanceof func                                                                                                                                                                                    |
+| `isEven`                 | Checks if the value is a number and even                                                                                                                                                                               |
+| `isOdd`                  | Checks if the value is a number and odd                                                                                                                                                                                |
+| `isPrime`                | Checks if the value is a number and prime                                                                                                                                                                              |
+| `isSquare`               | Checks if the value is a number and a square number                                                                                                                                                                    |
+| `isCube`                 | Checks if the value is a number and is a cube number                                                                                                                                                                   |
+| `isNegative`             | Checks if the value is a number and negative (0 is not negative)                                                                                                                                                       |
+| `isPositive`             | Checks if the value is a number and positive (0 is not positive)                                                                                                                                                       |
+| `equals(to)`             | Checks if the value is equal to `to`. It does more than `===` and compares the value. This means you can compare an arrays contents as well as objects with this                                                       |
 
 These can be used on their own as well as in `validate()`
 
@@ -251,6 +253,8 @@ To actually check the contents of the array you can use any of the array validat
 | `between(start, end, shape)` | Checks that every element between the `start` (inclusive) index and `end` (inclusive) index match the shape |
 | `upto(end, shape)`           | Checks that every element up to `end` (inclusive) matches the shape                                         |
 | `exact(array)`               | Checks that the value matches the `array` exactly                                                           |
+
+Note: you can also perform other checks such as `maxLength` on arrays using the [validators](#validators)
 
 ## Options
 
@@ -330,14 +334,14 @@ new Valigator(options);
 
 ### Table of Contents
 
--   [Valigator](#valigator)
-    -   [Parameters](#parameters)
-    -   [validate](#validate)
-        -   [Parameters](#parameters-1)
-        -   [Examples](#examples)
-    -   [validate_more](#validate_more)
-        -   [Parameters](#parameters-2)
-        -   [Examples](#examples-1)
+- [Valigator](#valigator)
+  - [Parameters](#parameters)
+  - [validate](#validate)
+    - [Parameters](#parameters-1)
+    - [Examples](#examples)
+  - [validate_more](#validate_more)
+    - [Parameters](#parameters-2)
+    - [Examples](#examples-1)
 
 ## Valigator
 
@@ -345,7 +349,7 @@ Valigator class is used to check that some data matches some specified shape
 
 ### Parameters
 
--   `options` **options?** 
+- `options` **options?**
 
 ### validate
 
@@ -353,8 +357,8 @@ Checks whether some data matches a specified shape and just returns a boolean va
 
 #### Parameters
 
--   `data` **any** Data to check
--   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+- `data` **any** Data to check
+- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 
@@ -380,8 +384,8 @@ Checks whether some data matches a specified shape and returns an object contain
 
 #### Parameters
 
--   `data` **any** Data to check
--   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+- `data` **any** Data to check
+- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 

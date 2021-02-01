@@ -21,14 +21,29 @@ function _isNumber(value) {
     return typeof value === "number";
 }
 exports._isNumber = _isNumber;
+/**
+ * Checks if value is an array
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether array or not
+ */
 function _isArray(value) {
     return Array.isArray(value);
 }
 exports._isArray = _isArray;
+/**
+ * Checks if value is a boolean
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether boolean or not
+ */
 function _isBoolean(value) {
     return typeof value === "boolean";
 }
 exports._isBoolean = _isBoolean;
+/**
+ * Checks if value is null
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether null or not
+ */
 function _isNull(value) {
     return value === null;
 }
