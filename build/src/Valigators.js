@@ -51,12 +51,14 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Valigator = exports.customValidator = exports.equals = exports.isPositive = exports.isNegative = exports.isCube = exports.isSquare = exports.isPrime = exports.isOdd = exports.isEven = exports.isInstanceOf = exports.or = exports.containsRegex = exports.containsSymbol = exports.containsLower = exports.containsUpper = exports.containsNumber = exports.oneOf = exports.decimalPoints = exports.minDecimalPoint = exports.maxDecimalPoint = exports.substring = exports.length = exports.minMaxLength = exports.maxLength = exports.minLength = exports.isArray = exports.isNumber = exports.isString = void 0;
+exports.Valigator = exports.customValidator = exports.equals = exports.isPositive = exports.isNegative = exports.isCube = exports.isSquare = exports.isPrime = exports.isOdd = exports.isEven = exports.isInstanceOf = exports.or = exports.containsRegex = exports.containsSymbol = exports.containsLower = exports.containsUpper = exports.containsNumber = exports.oneOf = exports.decimalPoints = exports.minDecimalPoint = exports.maxDecimalPoint = exports.substring = exports.length = exports.minMaxLength = exports.maxLength = exports.minLength = exports.isNull = exports.isBoolean = exports.isArray = exports.isNumber = exports.isString = void 0;
 var Helpers_1 = require("./Helpers");
 var HelperValidators_1 = require("./HelperValidators");
 exports.isString = Helpers_1.run(HelperValidators_1._isString);
 exports.isNumber = Helpers_1.run(HelperValidators_1._isNumber);
 exports.isArray = Helpers_1.run(HelperValidators_1._isArray);
+exports.isBoolean = Helpers_1.run(HelperValidators_1._isBoolean);
+exports.isNull = Helpers_1.run(HelperValidators_1._isNull);
 exports.minLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._minLength));
 exports.maxLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._maxLength));
 exports.minMaxLength = Helpers_1.run(Helpers_1.curry(HelperValidators_1._minMaxLength));
@@ -99,6 +101,12 @@ var Valigator = /** @class */ (function () {
             },
             array: {
                 validators: [exports.isArray],
+            },
+            boolean: {
+                validators: [exports.isBoolean],
+            },
+            null: {
+                validators: [exports.isNull],
             },
         };
         this.messages = {
@@ -442,12 +450,12 @@ var Valigator = /** @class */ (function () {
     return Valigator;
 }());
 exports.Valigator = Valigator;
-// let val = new Valigator();
-// const data = { test: [1, 2, 3] };
-// const shape = {
-//   test: {
-//     type: "array",
-//     validators: [],
-//   },
-// };
-// console.log(val.validate_more(data, shape));
+var val = new Valigator();
+var data = { example: [1, 2, 3] };
+var shape = {
+    example: {
+        type: "array",
+        validators: [],
+    },
+};
+console.log(val.validate_more(data, shape));

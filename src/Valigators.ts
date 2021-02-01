@@ -73,11 +73,15 @@ import {
   _isCube,
   _equals,
   ValidatorFunc,
+  _isBoolean,
+  _isNull,
 } from "./HelperValidators";
 
 export const isString = run(_isString);
 export const isNumber = run(_isNumber);
 export const isArray = run(_isArray);
+export const isBoolean = run(_isBoolean);
+export const isNull = run(_isNull);
 export const minLength = run(curry(_minLength));
 export const maxLength = run(curry(_maxLength));
 export const minMaxLength = run(curry(_minMaxLength));
@@ -138,6 +142,12 @@ export class Valigator {
     },
     array: {
       validators: [isArray],
+    },
+    boolean: {
+      validators: [isBoolean],
+    },
+    null: {
+      validators: [isNull],
     },
   };
 
@@ -531,13 +541,13 @@ export class Valigator {
   }
 }
 
-// let val = new Valigator();
+let val = new Valigator();
 
-// const data = { test: [1, 2, 3] };
-// const shape = {
-//   test: {
-//     type: "array",
-//     validators: [],
-//   },
-// };
-// console.log(val.validate_more(data, shape));
+const data = { example: [1, 2, 3] };
+const shape = {
+  example: {
+    type: "array",
+    validators: [],
+  },
+};
+console.log(val.validate_more(data, shape));

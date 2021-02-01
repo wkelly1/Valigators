@@ -105,15 +105,17 @@ For example the `text` type runs the validators
 
 Available default types:
 
-| Type       | Validations  |
-| ---------- | ------------ |
-| `text`     | `[isString]` |
-| `number`   | `[isNumber]` |
-| `email`    | TODO         |
-| `phone`    | TODO         |
-| `date`     | TODO         |
-| `time`     | TODO         |
-| `password` | TODO         |
+| Type       | Validations   |
+| ---------- | ------------- |
+| `text`     | `[isString]`  |
+| `number`   | `[isNumber]`  |
+| `array`    | `[isArray]`   |
+| `boolean`  | `[isBoolean]` |
+| `email`    | TODO          |
+| `phone`    | TODO          |
+| `date`     | TODO          |
+| `time`     | TODO          |
+| `password` | TODO          |
 
 ### Extending default types
 
@@ -208,6 +210,47 @@ valigator.validate(data, type);
 ```
 
 The last parameter of the function must be the data value. You can specify as many other parameters as you need.
+
+## Arrays
+
+It is possible to validate arrays as well as nested arrays. To do this use the `array` type.
+
+Example with array on its own:
+
+```js
+const data = [1, 2, 3];
+const shape = {
+  type: "array",
+  validators: [],
+};
+val.validate_more(data, shape);
+// => { success: true }
+```
+
+Example with nested array:
+
+```js
+const data = { example: [1, 2, 3] };
+const shape = {
+  example: {
+    type: "array",
+    validators: [],
+  },
+};
+val.validate_more(data, shape);
+// => { example: { success: true } }
+```
+
+To actually check the contents of the array you can use any of the array validators.
+
+| Validator                    | Description                                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `all(shape)`                 | Checks that every element in the array matches the `shape`                                                  |
+| `some(shape)`                | Checks that one or more elements in the array match the `shape`                                             |
+| `fromN(start, shape)`        | Checks that every element from the start index `start` (inclusive) match the `shape`                        |
+| `between(start, end, shape)` | Checks that every element between the `start` (inclusive) index and `end` (inclusive) index match the shape |
+| `upto(end, shape)`           | Checks that every element up to `end` (inclusive) matches the shape                                         |
+| `exact(array)`               | Checks that the value matches the `array` exactly                                                           |
 
 ## Options
 

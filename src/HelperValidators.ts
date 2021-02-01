@@ -9,7 +9,7 @@ export type ValidatorFunc = (...args) => boolean;
  * @returns {boolean} Boolean value representing whether string or not
  */
 export function _isString(value: unknown): boolean {
-    return typeof value === "string";
+  return typeof value === "string";
 }
 
 /**
@@ -18,11 +18,19 @@ export function _isString(value: unknown): boolean {
  * @returns {boolean} Boolean value representing whether number or not
  */
 export function _isNumber(value: unknown): boolean {
-    return typeof value === "number";
+  return typeof value === "number";
 }
 
 export function _isArray(value: unknown): boolean {
-    return Array.isArray(value);
+  return Array.isArray(value);
+}
+
+export function _isBoolean(value: unknown): boolean {
+  return typeof value === "boolean";
+}
+
+export function _isNull(value: unknown): boolean {
+  return value === null;
 }
 
 /**
@@ -32,11 +40,11 @@ export function _isArray(value: unknown): boolean {
  * @returns {boolean} Boolean value representing whether right length or not
  */
 export function _minLength(min: number, value: any[]): boolean {
-    if (_isArray(value)) {
-        return value.length >= min;
-    } else {
-        return value.toString().length >= min;
-    }
+  if (_isArray(value)) {
+    return value.length >= min;
+  } else {
+    return value.toString().length >= min;
+  }
 }
 
 /**
@@ -46,11 +54,11 @@ export function _minLength(min: number, value: any[]): boolean {
  * @returns {boolean} Boolean value representing whether right length or not
  */
 export function _maxLength(max: number, value: any): boolean {
-    if (_isArray(value)) {
-        return value.length <= max;
-    } else {
-        return value.toString().length <= max;
-    }
+  if (_isArray(value)) {
+    return value.length <= max;
+  } else {
+    return value.toString().length <= max;
+  }
 }
 
 /**
@@ -61,11 +69,11 @@ export function _maxLength(max: number, value: any): boolean {
  * @returns {boolean} Boolean value representing whether right length or not
  */
 export function _minMaxLength(min: number, max: number, value: any): boolean {
-    if (_isArray(value)) {
-        return value.length >= min && value.length <= max;
-    } else {
-        return value.toString().length >= min && value.toString().length <= max;
-    }
+  if (_isArray(value)) {
+    return value.length >= min && value.length <= max;
+  } else {
+    return value.toString().length >= min && value.toString().length <= max;
+  }
 }
 
 /**
@@ -75,11 +83,11 @@ export function _minMaxLength(min: number, max: number, value: any): boolean {
  * @returns {boolean} Boolean value representing whether right length or not
  */
 export function _length(n: number, value: any): boolean {
-    if (_isArray(value)) {
-        return value.length === n;
-    } else {
-        return value.toString().length === n;
-    }
+  if (_isArray(value)) {
+    return value.length === n;
+  } else {
+    return value.toString().length === n;
+  }
 }
 
 /**
@@ -89,7 +97,7 @@ export function _length(n: number, value: any): boolean {
  * @returns {boolean} Boolean value representing whether it contains substring
  */
 export function _substring(inner: string, value: any): boolean {
-    return value.toString().includes(inner.toString());
+  return value.toString().includes(inner.toString());
 }
 
 /**
@@ -99,11 +107,11 @@ export function _substring(inner: string, value: any): boolean {
  * @returns {boolean} Boolean value representing has correct decimal points
  */
 export function _maxDecimalPoint(max: number, value: any): boolean {
-    if (_isNumber(value)) {
-        return getDecimalPoints(value) <= max;
-    } else {
-        return false;
-    }
+  if (_isNumber(value)) {
+    return getDecimalPoints(value) <= max;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -113,11 +121,11 @@ export function _maxDecimalPoint(max: number, value: any): boolean {
  * @returns {boolean} Boolean value representing has correct decimal points
  */
 export function _minDecimalPoint(min: number, value: any): boolean {
-    if (_isNumber(value)) {
-        return getDecimalPoints(value) >= min;
-    } else {
-        return false;
-    }
+  if (_isNumber(value)) {
+    return getDecimalPoints(value) >= min;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -127,11 +135,11 @@ export function _minDecimalPoint(min: number, value: any): boolean {
  * @returns {boolean} Boolean value representing has correct decimal points
  */
 export function _decimalPoints(n: number, value: any): boolean {
-    if (_isNumber(value)) {
-        return getDecimalPoints(value) === n;
-    } else {
-        return false;
-    }
+  if (_isNumber(value)) {
+    return getDecimalPoints(value) === n;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -141,7 +149,7 @@ export function _decimalPoints(n: number, value: any): boolean {
  * @returns {boolean} Boolean representing whether the value matches one of the elems
  */
 export function _oneOf(elems: any[], value: any): boolean {
-    return elems.includes(value);
+  return elems.includes(value);
 }
 
 /**
@@ -150,10 +158,10 @@ export function _oneOf(elems: any[], value: any): boolean {
  * @returns {boolean} Boolean value representing whether contains a number
  */
 export function _containsNumber(value: any): boolean {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
-        return /\d/.test(value.toString());
-    }
-    return false;
+  if (value instanceof Array || isNumber(value) || isString(value)) {
+    return /\d/.test(value.toString());
+  }
+  return false;
 }
 
 /**
@@ -162,10 +170,10 @@ export function _containsNumber(value: any): boolean {
  * @returns {boolean} Boolean value representing whether contains an upper case character
  */
 export function _containsUpper(value: any): boolean {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
-        return /[A-Z]/.test(value.toString());
-    }
-    return false;
+  if (value instanceof Array || isNumber(value) || isString(value)) {
+    return /[A-Z]/.test(value.toString());
+  }
+  return false;
 }
 
 /**
@@ -174,10 +182,10 @@ export function _containsUpper(value: any): boolean {
  * @returns {boolean} Boolean value representing whether contains an lower case character
  */
 export function _containsLower(value: any): boolean {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
-        return /[a-z]/.test(value.toString());
-    }
-    return false;
+  if (value instanceof Array || isNumber(value) || isString(value)) {
+    return /[a-z]/.test(value.toString());
+  }
+  return false;
 }
 
 /**
@@ -188,15 +196,15 @@ export function _containsLower(value: any): boolean {
  * @returns {boolean} Boolean value representing whether contains a symbol
  */
 export function _containsSymbol(value: any): boolean {
-    if (isNumber(value) || isString(value)) {
-        return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
-    }
-    if (value instanceof Array) {
-        return value.some((val) =>
-            /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString())
-        );
-    }
-    return false;
+  if (isNumber(value) || isString(value)) {
+    return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
+  }
+  if (value instanceof Array) {
+    return value.some((val) =>
+      /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString())
+    );
+  }
+  return false;
 }
 
 /**
@@ -208,13 +216,13 @@ export function _containsSymbol(value: any): boolean {
  * @returns {boolean} Boolean value representing whether contains a specified regex
  */
 export function _containsRegex(reg: RegExp, value: any): boolean {
-    if (isNumber(value) || isString(value)) {
-        return reg.test(value.toString());
-    }
-    if (value instanceof Array) {
-        return value.some((val) => reg.test(val.toString()));
-    }
-    return false;
+  if (isNumber(value) || isString(value)) {
+    return reg.test(value.toString());
+  }
+  if (value instanceof Array) {
+    return value.some((val) => reg.test(val.toString()));
+  }
+  return false;
 }
 
 /**
@@ -225,8 +233,8 @@ export function _containsRegex(reg: RegExp, value: any): boolean {
  * @returns {boolean} Boolean value if one of the functions passes
  */
 export function _or(validators: ValidatorFunc[], value: any): boolean {
-    console.log("res: ", run(validators[0])(value));
-    return validators.some((validator) => run(validator)(value));
+  console.log("res: ", run(validators[0])(value));
+  return validators.some((validator) => run(validator)(value));
 }
 
 /**
@@ -236,7 +244,7 @@ export function _or(validators: ValidatorFunc[], value: any): boolean {
  * @returns {boolean} Boolean
  */
 export function _isInstanceOf(typeClass: any, value: any): boolean {
-    return value instanceof typeClass;
+  return value instanceof typeClass;
 }
 
 /**
@@ -245,13 +253,13 @@ export function _isInstanceOf(typeClass: any, value: any): boolean {
  * @returns {boolean} Boolean representing whether is a even or not
  */
 export function _isEven(value: any): boolean {
-    if (_isNumber(value)) {
-        if (value === 0) {
-            return false;
-        }
-        return value % 2 === 0;
+  if (_isNumber(value)) {
+    if (value === 0) {
+      return false;
     }
-    return false;
+    return value % 2 === 0;
+  }
+  return false;
 }
 
 /**
@@ -260,13 +268,13 @@ export function _isEven(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a odd or not
  */
 export function _isOdd(value: any): boolean {
-    if (!_isNumber(value)) {
-        return false;
-    }
-    if (value === 0 || value < 0) {
-        return false;
-    }
-    return !_isEven(value);
+  if (!_isNumber(value)) {
+    return false;
+  }
+  if (value === 0 || value < 0) {
+    return false;
+  }
+  return !_isEven(value);
 }
 
 /**
@@ -275,31 +283,31 @@ export function _isOdd(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a prime or not
  */
 export function _isPrime(value: any): boolean {
-    if (_isNumber(value)) {
-        if (value <= 1) {
-            return false;
-        }
-
-        if (value <= 3) {
-            return true;
-        }
-
-        if (value % 2 === 0 || value % 3 === 0) {
-            return false;
-        }
-
-        let i = 5;
-        while (i * i <= value) {
-            if (value % i === 0 || value % (i + 2) === 0) {
-                return false;
-            }
-            i += 6;
-        }
-
-        return true;
+  if (_isNumber(value)) {
+    if (value <= 1) {
+      return false;
     }
 
-    return false;
+    if (value <= 3) {
+      return true;
+    }
+
+    if (value % 2 === 0 || value % 3 === 0) {
+      return false;
+    }
+
+    let i = 5;
+    while (i * i <= value) {
+      if (value % i === 0 || value % (i + 2) === 0) {
+        return false;
+      }
+      i += 6;
+    }
+
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -308,10 +316,10 @@ export function _isPrime(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a prime or not
  */
 export function _isSquare(value: any): boolean {
-    if (_isNumber(value)) {
-        return value > 0 && Math.sqrt(value) % 1 === 0;
-    }
-    return false;
+  if (_isNumber(value)) {
+    return value > 0 && Math.sqrt(value) % 1 === 0;
+  }
+  return false;
 }
 
 /**
@@ -321,24 +329,24 @@ export function _isSquare(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a cube or not
  */
 export function _isCube(value: any): boolean {
-    if (_isNumber(value)) {
-        let start = 1;
-        let end: number = value;
-        while (start <= end) {
-            const mid: number = Math.floor((start + end) / 2);
-            if (mid * mid * mid === value) {
-                return true;
-            }
+  if (_isNumber(value)) {
+    let start = 1;
+    let end: number = value;
+    while (start <= end) {
+      const mid: number = Math.floor((start + end) / 2);
+      if (mid * mid * mid === value) {
+        return true;
+      }
 
-            if (mid * mid * mid < value) {
-                start = mid + 1;
-            } else {
-                end = mid - 1;
-            }
-        }
+      if (mid * mid * mid < value) {
+        start = mid + 1;
+      } else {
+        end = mid - 1;
+      }
     }
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -347,10 +355,10 @@ export function _isCube(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a negative number or not
  */
 export function _isNegative(value: any): boolean {
-    if (_isNumber(value)) {
-        return value < 0;
-    }
-    return false;
+  if (_isNumber(value)) {
+    return value < 0;
+  }
+  return false;
 }
 
 /**
@@ -359,10 +367,10 @@ export function _isNegative(value: any): boolean {
  * @returns {boolean} Boolean representing whether is a positive number or not
  */
 export function _isPositive(value: any): boolean {
-    if (_isNumber(value)) {
-        return value > 0;
-    }
-    return false;
+  if (_isNumber(value)) {
+    return value > 0;
+  }
+  return false;
 }
 
 /**
@@ -372,56 +380,50 @@ export function _isPositive(value: any): boolean {
  * @returns {boolean} {boolean} Boolean representing if they are equal
  */
 export function _equals(equal: any, value: any): boolean {
-    if (typeof equal === "object" && typeof value === "object") {
-        // SOURCE: https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
-        const type = Object.prototype.toString.call(value);
+  if (typeof equal === "object" && typeof value === "object") {
+    // SOURCE: https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
+    const type = Object.prototype.toString.call(value);
 
-        if (type !== Object.prototype.toString.call(equal)) return false;
+    if (type !== Object.prototype.toString.call(equal)) return false;
 
-        if (["[object Array]", "[object Object]"].indexOf(type) < 0)
-            return false;
+    if (["[object Array]", "[object Object]"].indexOf(type) < 0) return false;
 
-        const valueLen =
-            type === "[object Array]"
-                ? value.length
-                : Object.keys(value).length;
-        const otherLen =
-            type === "[object Array]"
-                ? equal.length
-                : Object.keys(equal).length;
-        if (valueLen !== otherLen) return false;
+    const valueLen =
+      type === "[object Array]" ? value.length : Object.keys(value).length;
+    const otherLen =
+      type === "[object Array]" ? equal.length : Object.keys(equal).length;
+    if (valueLen !== otherLen) return false;
 
-        const compare = function (item1: any, item2: any) {
-            const itemType = Object.prototype.toString.call(item1);
+    const compare = function (item1: any, item2: any) {
+      const itemType = Object.prototype.toString.call(item1);
 
-            if (["[object Array]", "[object Object]"].indexOf(itemType) >= 0) {
-                if (!_equals(item1, item2)) return false;
-            } else {
-                if (itemType !== Object.prototype.toString.call(item2))
-                    return false;
+      if (["[object Array]", "[object Object]"].indexOf(itemType) >= 0) {
+        if (!_equals(item1, item2)) return false;
+      } else {
+        if (itemType !== Object.prototype.toString.call(item2)) return false;
 
-                if (itemType === "[object Function]") {
-                    if (item1.toString() !== item2.toString()) return false;
-                } else {
-                    if (item1 !== item2) return false;
-                }
-            }
-        };
-
-        if (type === "[object Array]") {
-            for (let i = 0; i < valueLen; i++) {
-                if (compare(value[i], equal[i]) === false) return false;
-            }
+        if (itemType === "[object Function]") {
+          if (item1.toString() !== item2.toString()) return false;
         } else {
-            for (const key in value) {
-                if (Object.hasOwnProperty.call(value, key)) {
-                    if (compare(value[key], equal[key]) === false) return false;
-                }
-            }
+          if (item1 !== item2) return false;
         }
+      }
+    };
 
-        // If nothing failed, return true
-        return true;
+    if (type === "[object Array]") {
+      for (let i = 0; i < valueLen; i++) {
+        if (compare(value[i], equal[i]) === false) return false;
+      }
+    } else {
+      for (const key in value) {
+        if (Object.hasOwnProperty.call(value, key)) {
+          if (compare(value[key], equal[key]) === false) return false;
+        }
+      }
     }
-    return equal === value;
+
+    // If nothing failed, return true
+    return true;
+  }
+  return equal === value;
 }

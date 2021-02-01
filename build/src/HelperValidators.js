@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._equals = exports._isPositive = exports._isNegative = exports._isCube = exports._isSquare = exports._isPrime = exports._isOdd = exports._isEven = exports._isInstanceOf = exports._or = exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isArray = exports._isNumber = exports._isString = void 0;
+exports._equals = exports._isPositive = exports._isNegative = exports._isCube = exports._isSquare = exports._isPrime = exports._isOdd = exports._isEven = exports._isInstanceOf = exports._or = exports._containsRegex = exports._containsSymbol = exports._containsLower = exports._containsUpper = exports._containsNumber = exports._oneOf = exports._decimalPoints = exports._minDecimalPoint = exports._maxDecimalPoint = exports._substring = exports._length = exports._minMaxLength = exports._maxLength = exports._minLength = exports._isNull = exports._isBoolean = exports._isArray = exports._isNumber = exports._isString = void 0;
 var Helpers_1 = require("./Helpers");
 var Valigators_1 = require("./Valigators");
 /**
@@ -25,6 +25,14 @@ function _isArray(value) {
     return Array.isArray(value);
 }
 exports._isArray = _isArray;
+function _isBoolean(value) {
+    return typeof value === "boolean";
+}
+exports._isBoolean = _isBoolean;
+function _isNull(value) {
+    return value === null;
+}
+exports._isNull = _isNull;
 /**
  * Checks that a value has length greater than min value inclusive
  * @param min Min value
@@ -380,12 +388,8 @@ function _equals(equal, value) {
             return false;
         if (["[object Array]", "[object Object]"].indexOf(type) < 0)
             return false;
-        var valueLen = type === "[object Array]"
-            ? value.length
-            : Object.keys(value).length;
-        var otherLen = type === "[object Array]"
-            ? equal.length
-            : Object.keys(equal).length;
+        var valueLen = type === "[object Array]" ? value.length : Object.keys(value).length;
+        var otherLen = type === "[object Array]" ? equal.length : Object.keys(equal).length;
         if (valueLen !== otherLen)
             return false;
         var compare = function (item1, item2) {
