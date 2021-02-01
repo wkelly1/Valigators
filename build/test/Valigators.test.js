@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Valigators_1 = require("../src/Valigators");
+var Valigators_1 = require("../src/lib/Valigators");
 test("Testing isString", function () {
     expect(Valigators_1.isString("t")).toBe(true);
     expect(Valigators_1.isString(1)).toBe(false);
@@ -386,7 +386,9 @@ test("Testing equals", function () {
 test("Testing Validate catches incorrect shape", function () {
     var validate = new Valigators_1.Valigator();
     expect(function () { return validate.validate("hi", { test: "test" }); }).toThrow("Invalid shape object");
-    expect(function () { return validate.validate("hi", { type: "test", other: 2 }); }).toThrow("Invalid shape object");
+    expect(function () {
+        return validate.validate("hi", { type: "test", other: 2 });
+    }).toThrow("Invalid shape object");
     expect(function () {
         return validate.validate("hi", { test: "test", other: { test: 1 } });
     }).toThrow("Invalid shape object");

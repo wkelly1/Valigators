@@ -28,7 +28,8 @@ import {
     isNegative,
     isPositive,
     equals,
-} from "../src/Valigators";
+} from "../src/lib/Valigators";
+import { TShape, TValidator } from "../src/lib/Valigators.types";
 
 test("Testing isString", () => {
     expect(isString("t")).toBe(true);
@@ -467,13 +468,13 @@ test("Testing Validate catches incorrect shape", () => {
     expect(() => validate.validate("hi", { test: "test" })).toThrow(
         "Invalid shape object"
     );
-    expect(() => validate.validate("hi", { type: "test", other: 2 })).toThrow(
-        "Invalid shape object"
-    );
     expect(() =>
-        validate.validate("hi", { test: "test", other: { test: 1 } })
+        validate.validate("hi", { type: "test", other: 2 } as any)
     ).toThrow("Invalid shape object");
-    expect(() => validate.validate({ example: "hi" }, [])).toThrow(
+    expect(() =>
+        validate.validate("hi", { test: "test", other: { test: 1 } } as any)
+    ).toThrow("Invalid shape object");
+    expect(() => validate.validate({ example: "hi" }, [] as any)).toThrow(
         "Invalid value for property shape"
     );
 });
@@ -684,7 +685,10 @@ test("Testing additional validators", () => {
         )
     ).toBe(false);
 
-    const cusValidateExample = customValidator((a: any, res: any) => res === a);
+    const cusValidateExample = customValidator(
+        (a: unknown, res: unknown) => res === a
+    );
+
     expect(
         validate.validate(
             { name: "bob" },

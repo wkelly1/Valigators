@@ -1,3 +1,5 @@
+import { TValidator } from "./Valigators.types";
+
 /**
  * Helper function to get the number of decimal points of a number
  * @param value Value to get
@@ -13,9 +15,9 @@ export function getDecimalPoints(value: number): number {
  * @param fn Function to curry
  * @returns Curried function
  */
-export const curry = (fn) => {
-    const innerFn = (N, args) => {
-        return (...x) => {
+export function curry<T>(fn: (...args: any[]) => T) {
+    const innerFn = (N: number, args: unknown[]) => {
+        return (...x: unknown[]) => {
             if (N <= x.length) {
                 return fn(...args, ...x);
             }
@@ -24,19 +26,17 @@ export const curry = (fn) => {
     };
 
     return innerFn(fn.length, []);
-};
+}
 
 /**
  * Wraps a function in a try catch to make it safe
  * @param fn Function to convert
  * @returns Safe function
  */
-export function run<T extends (...args: any[]) => any>(func: T): T {
-    return <T>((...args: any[]) => {
-        try {
-            return func(...args);
-        } catch (ex) {
-            return false;
-        }
-    });
+export function run(func: TValidator): TValidator {
+    try {
+        return func;
+    } catch (ex) {
+        return (...args) => false;
+    }
 }

@@ -75,73 +75,6 @@ function run(func) {
     });
 }
 
-/*
-Whats the point of this?
- - Data validation is annoying and I don't like doing it
- - I wanted a library where you give it some data and you say what shape the data should be and it tells you if its correct or not
-
-data = {
-    name: "test",
-    email: "example@example.com"
-    phone: "038486265"
-}
-shape = {
-    name: {type: "text", validators: [maxLength(2), minLength(10), allowedReg(""), bannedReg()]},
-    email: {type: "email", validators: []}
-    phone: {type: "numAsText", validators: []}
-}
--- Shape with nested objects
-shape = {
-    name: {
-        type: "text", // type value always required
-        validators: [maxLength(2), minLength(10), allowedReg(""), bannedReg()] // Defines any additional validations
-    },
-    email: {type: "email", validators: []}
-    numbers: {
-        work: {
-            type: "phone"
-        },
-        home: {
-            type: "phone"
-        }
-    }
-}
-
-
-*** Takes data and its shape and returns a boolean whether it passed or not
-validate(data, shape)
-
-*** Takes data and its shape and returns an object specifying what passed, what failed
-validate_more(data, shape)
-
-*** Takes data, its shape and two call back methods that run when it finds error data
-validate_callback(data, shape, onError, onSuccess?)
-- onError -> (error) => {}
-
-*/
-var isString = run(_isString);
-var isNumber = run(_isNumber);
-run(curry(_minLength));
-run(curry(_maxLength));
-run(curry(_minMaxLength));
-run(curry(_length));
-run(curry(_substring));
-run(curry(_maxDecimalPoint));
-run(curry(_minDecimalPoint));
-run(curry(_decimalPoints));
-run(curry(_oneOf));
-run(curry(_containsRegex));
-run(curry(_or));
-run(curry(_isInstanceOf));
-run(curry(_isEven));
-run(curry(_isOdd));
-run(curry(_isPrime));
-run(curry(_isSquare));
-run(curry(_isCube));
-run(curry(_isNegative));
-run(curry(_isPositive));
-run(curry(_equals));
-
 /**
  * Checks if value is a string
  * @param value Value to check
@@ -158,8 +91,29 @@ function _isString(value) {
 function _isNumber(value) {
     return typeof value === "number";
 }
+/**
+ * Checks if value is an array
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether array or not
+ */
 function _isArray(value) {
     return Array.isArray(value);
+}
+/**
+ * Checks if value is a boolean
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether boolean or not
+ */
+function _isBoolean(value) {
+    return typeof value === "boolean";
+}
+/**
+ * Checks if value is null
+ * @param value Value to check
+ * @returns {boolean} Boolean value representing whether null or not
+ */
+function _isNull(value) {
+    return value === null;
 }
 /**
  * Checks that a value has length greater than min value inclusive
@@ -284,7 +238,7 @@ function _oneOf(elems, value) {
  * @returns {boolean} Boolean value representing whether contains a number
  */
 function _containsNumber(value) {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
+    if (value instanceof Array || _isNumber(value) || _isString(value)) {
         return /\d/.test(value.toString());
     }
     return false;
@@ -295,7 +249,7 @@ function _containsNumber(value) {
  * @returns {boolean} Boolean value representing whether contains an upper case character
  */
 function _containsUpper(value) {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
+    if (value instanceof Array || _isNumber(value) || _isString(value)) {
         return /[A-Z]/.test(value.toString());
     }
     return false;
@@ -306,7 +260,7 @@ function _containsUpper(value) {
  * @returns {boolean} Boolean value representing whether contains an lower case character
  */
 function _containsLower(value) {
-    if (value instanceof Array || isNumber(value) || isString(value)) {
+    if (value instanceof Array || _isNumber(value) || _isString(value)) {
         return /[a-z]/.test(value.toString());
     }
     return false;
@@ -319,7 +273,7 @@ function _containsLower(value) {
  * @returns {boolean} Boolean value representing whether contains a symbol
  */
 function _containsSymbol(value) {
-    if (isNumber(value) || isString(value)) {
+    if (_isNumber(value) || _isString(value)) {
         return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
     }
     if (value instanceof Array) {
@@ -338,7 +292,7 @@ function _containsSymbol(value) {
  * @returns {boolean} Boolean value representing whether contains a specified regex
  */
 function _containsRegex(reg, value) {
-    if (isNumber(value) || isString(value)) {
+    if (_isNumber(value) || _isString(value)) {
         return reg.test(value.toString());
     }
     if (value instanceof Array) {
@@ -493,12 +447,8 @@ function _equals(equal, value) {
             return false;
         if (["[object Array]", "[object Object]"].indexOf(type) < 0)
             return false;
-        var valueLen = type === "[object Array]"
-            ? value.length
-            : Object.keys(value).length;
-        var otherLen = type === "[object Array]"
-            ? equal.length
-            : Object.keys(equal).length;
+        var valueLen = type === "[object Array]" ? value.length : Object.keys(value).length;
+        var otherLen = type === "[object Array]" ? equal.length : Object.keys(equal).length;
         if (valueLen !== otherLen)
             return false;
         var compare = function (item1, item2) {
@@ -584,9 +534,11 @@ validate_callback(data, shape, onError, onSuccess?)
 - onError -> (error) => {}
 
 */
-var isString$1 = run(_isString);
-var isNumber$1 = run(_isNumber);
+var isString = run(_isString);
+var isNumber = run(_isNumber);
 var isArray = run(_isArray);
+var isBoolean = run(_isBoolean);
+var isNull = run(_isNull);
 var minLength = run(curry(_minLength));
 var maxLength = run(curry(_maxLength));
 var minMaxLength = run(curry(_minMaxLength));
@@ -611,25 +563,35 @@ var isCube = run(curry(_isCube));
 var isNegative = run(curry(_isNegative));
 var isPositive = run(curry(_isPositive));
 var equals = run(curry(_equals));
-function customValidator(func) {
-    return run(curry(func));
-}
 /**
  * Valigator class is used to check that some data matches some specified shape
  */
 var Valigator = /** @class */ (function () {
+    /**
+     * Valigator constructor
+     * @param options Optional settings
+     */
     function Valigator(options) {
         this.types = {
             text: {
-                validators: [isString$1],
+                validators: [isString],
             },
             number: {
-                validators: [isNumber$1],
+                validators: [isNumber],
+            },
+            array: {
+                validators: [isArray],
+            },
+            boolean: {
+                validators: [isBoolean],
+            },
+            null: {
+                validators: [isNull],
             },
         };
         this.messages = {
             invalidValue: "Invalid value for data",
-            unexpectedValue: "Value is unexpected",
+            unexpectedValue: "Value you provided is unexpected",
             required: "Value is required but is missing",
         };
         this.keys = {
@@ -645,8 +607,7 @@ var Valigator = /** @class */ (function () {
                     this.messages.invalidValue = options.messages.invalidValue;
                 }
                 if (options.messages.unexpectedValue) {
-                    this.messages.unexpectedValue =
-                        options.messages.unexpectedValue;
+                    this.messages.unexpectedValue = options.messages.unexpectedValue;
                 }
                 if (options.messages.required) {
                     this.messages.required = options.messages.required;
@@ -753,7 +714,7 @@ var Valigator = /** @class */ (function () {
     };
     Valigator.prototype.checkDataShape = function (data, shape) {
         var _this = this;
-        if (typeof data !== "object") {
+        if (typeof data !== "object" || Array.isArray(data)) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
@@ -825,7 +786,7 @@ var Valigator = /** @class */ (function () {
     //   },
     Valigator.prototype.checkDataShapeMore = function (data, shape) {
         var output = {};
-        if (typeof data !== "object") {
+        if (typeof data !== "object" || Array.isArray(data)) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
@@ -849,7 +810,7 @@ var Valigator = /** @class */ (function () {
         }
         else {
             // First check that every required value in shape is in data
-            for (var key in shape) {
+            for (var key in data) {
                 if (Object.keys(data).includes(key)) {
                     if (this.isShape(shape[key])) {
                         // Reached depth
@@ -867,7 +828,16 @@ var Valigator = /** @class */ (function () {
                         }
                     }
                     else {
-                        output[key] = this.checkDataShapeMore(data[key], shape[key]);
+                        if (!shape[key]) {
+                            var cur = {};
+                            cur[this.keys.success] = false;
+                            cur[this.keys.message] = this.messages.unexpectedValue;
+                            output[key] = cur;
+                        }
+                        else {
+                            console.log(data[key], shape[key]);
+                            output[key] = this.checkDataShapeMore(data[key], shape[key]);
+                        }
                     }
                 }
                 else {
@@ -959,33 +929,47 @@ var Valigator = /** @class */ (function () {
     };
     return Valigator;
 }());
+var val = new Valigator();
+var data = { example: [1, 2, 3] };
+var shape = {
+    example: {
+        type: "array",
+        validators: [],
+    },
+};
+console.log(val.validate_more(data, shape));
+
+var validators = {
+    isString: isString,
+    isNumber: isNumber,
+    isArray: isArray,
+    isBoolean: isBoolean,
+    isNull: isNull,
+    minLength: minLength,
+    maxLength: maxLength,
+    minMaxLength: minMaxLength,
+    length: length,
+    substring: substring,
+    maxDecimalPoint: maxDecimalPoint,
+    minDecimalPoint: minDecimalPoint,
+    decimalPoints: decimalPoints,
+    oneOf: oneOf,
+    containsNumber: containsNumber,
+    containsUpper: containsUpper,
+    containsLower: containsLower,
+    containsSymbol: containsSymbol,
+    containsRegex: containsRegex,
+    or: or,
+    isInstanceOf: isInstanceOf,
+    isEven: isEven,
+    isOdd: isOdd,
+    isPrime: isPrime,
+    isSquare: isSquare,
+    isCube: isCube,
+    isNegative: isNegative,
+    isPositive: isPositive,
+    equals: equals,
+};
 
 exports.Valigator = Valigator;
-exports.containsLower = containsLower;
-exports.containsNumber = containsNumber;
-exports.containsRegex = containsRegex;
-exports.containsSymbol = containsSymbol;
-exports.containsUpper = containsUpper;
-exports.customValidator = customValidator;
-exports.decimalPoints = decimalPoints;
-exports.equals = equals;
-exports.isArray = isArray;
-exports.isCube = isCube;
-exports.isEven = isEven;
-exports.isInstanceOf = isInstanceOf;
-exports.isNegative = isNegative;
-exports.isNumber = isNumber$1;
-exports.isOdd = isOdd;
-exports.isPositive = isPositive;
-exports.isPrime = isPrime;
-exports.isSquare = isSquare;
-exports.isString = isString$1;
-exports.length = length;
-exports.maxDecimalPoint = maxDecimalPoint;
-exports.maxLength = maxLength;
-exports.minDecimalPoint = minDecimalPoint;
-exports.minLength = minLength;
-exports.minMaxLength = minMaxLength;
-exports.oneOf = oneOf;
-exports.or = or;
-exports.substring = substring;
+exports.validators = validators;
