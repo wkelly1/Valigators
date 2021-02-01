@@ -6,9 +6,25 @@ Note: This is still is not yet at release stage and is still in development
 
 ## Usage
 
-```javascript
-import { Valigator } from "./valigators";
+### In Node.js
 
+```javascript
+const { Valigator } = require("valigators");
+```
+
+### ESM
+
+```javascript
+import { Valigator } from "valigators";
+```
+
+### Browser
+
+```html
+<script src="bundle.usm.js"></script>
+```
+
+```javascript
 const valigator = new Valigator();
 
 const valid_data = {
@@ -295,7 +311,7 @@ Checks whether some data matches a specified shape and just returns a boolean va
 #### Parameters
 
 -   `data` **any** Data to check
--   `shape` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Shape the data is supposed to match
+-   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 
@@ -322,7 +338,7 @@ Checks whether some data matches a specified shape and returns an object contain
 #### Parameters
 
 -   `data` **any** Data to check
--   `shape` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Shape the data is supposed to match
+-   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 
@@ -344,4 +360,4 @@ valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "num
 // => { names: { first: { success: false, message: 'Invalid value for data' } } }
 ```
 
-Returns **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Object representing what passed and what failed
+Returns **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Object representing what passed and what failed

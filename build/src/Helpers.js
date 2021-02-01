@@ -44,14 +44,18 @@ exports.curry = curry;
  * @param fn Function to convert
  * @returns Safe function
  */
-function run(fn) {
-    return function () {
+function run(func) {
+    return (function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
         try {
-            return fn.apply(null, arguments);
+            return func.apply(void 0, args);
         }
         catch (ex) {
             return false;
         }
-    };
+    });
 }
 exports.run = run;

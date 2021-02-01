@@ -97,10 +97,13 @@ var Valigator = /** @class */ (function () {
             number: {
                 validators: [exports.isNumber],
             },
+            array: {
+                validators: [exports.isArray],
+            },
         };
         this.messages = {
             invalidValue: "Invalid value for data",
-            unexpectedValue: "Value is unexpected",
+            unexpectedValue: "Value you provided is unexpected",
             required: "Value is required but is missing",
         };
         this.keys = {
@@ -116,8 +119,7 @@ var Valigator = /** @class */ (function () {
                     this.messages.invalidValue = options.messages.invalidValue;
                 }
                 if (options.messages.unexpectedValue) {
-                    this.messages.unexpectedValue =
-                        options.messages.unexpectedValue;
+                    this.messages.unexpectedValue = options.messages.unexpectedValue;
                 }
                 if (options.messages.required) {
                     this.messages.required = options.messages.required;
@@ -224,7 +226,7 @@ var Valigator = /** @class */ (function () {
     };
     Valigator.prototype.checkDataShape = function (data, shape) {
         var _this = this;
-        if (typeof data !== "object") {
+        if (typeof data !== "object" || Array.isArray(data)) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
@@ -296,7 +298,7 @@ var Valigator = /** @class */ (function () {
     //   },
     Valigator.prototype.checkDataShapeMore = function (data, shape) {
         var output = {};
-        if (typeof data !== "object") {
+        if (typeof data !== "object" || Array.isArray(data)) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
@@ -320,7 +322,7 @@ var Valigator = /** @class */ (function () {
         }
         else {
             // First check that every required value in shape is in data
-            for (var key in shape) {
+            for (var key in data) {
                 if (Object.keys(data).includes(key)) {
                     if (this.isShape(shape[key])) {
                         // Reached depth
@@ -338,7 +340,16 @@ var Valigator = /** @class */ (function () {
                         }
                     }
                     else {
-                        output[key] = this.checkDataShapeMore(data[key], shape[key]);
+                        if (!shape[key]) {
+                            var cur = {};
+                            cur[this.keys.success] = false;
+                            cur[this.keys.message] = this.messages.unexpectedValue;
+                            output[key] = cur;
+                        }
+                        else {
+                            console.log(data[key], shape[key]);
+                            output[key] = this.checkDataShapeMore(data[key], shape[key]);
+                        }
                     }
                 }
                 else {
@@ -431,3 +442,12 @@ var Valigator = /** @class */ (function () {
     return Valigator;
 }());
 exports.Valigator = Valigator;
+// let val = new Valigator();
+// const data = { test: [1, 2, 3] };
+// const shape = {
+//   test: {
+//     type: "array",
+//     validators: [],
+//   },
+// };
+// console.log(val.validate_more(data, shape));

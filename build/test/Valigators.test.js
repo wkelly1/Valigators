@@ -505,11 +505,11 @@ test("Testing additional validators", function () {
             validators: [Valigators_1.minLength(6)],
         },
     })).toBe(false);
-    var cusValidateExample = Valigators_1.customValidator(function (a, res) { return true; });
+    var cusValidateExample = Valigators_1.customValidator(function (a, res) { return res === a; });
     expect(validate.validate({ name: "bob" }, {
         name: {
             type: "text",
-            validators: [cusValidateExample(2)],
+            validators: [cusValidateExample("bob")],
         },
     })).toBe(true);
 });

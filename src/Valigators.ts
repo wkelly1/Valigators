@@ -45,34 +45,34 @@ validate_callback(data, shape, onError, onSuccess?)
 
 import { curry, run } from "./Helpers";
 import {
-    _containsLower,
-    _containsNumber,
-    _containsRegex,
-    _containsSymbol,
-    _containsUpper,
-    _decimalPoints,
-    _isArray,
-    _isInstanceOf,
-    _isNumber,
-    _isString,
-    _length,
-    _maxDecimalPoint,
-    _maxLength,
-    _minDecimalPoint,
-    _minLength,
-    _minMaxLength,
-    _oneOf,
-    _or,
-    _substring,
-    _isEven,
-    _isOdd,
-    _isPrime,
-    _isSquare,
-    _isNegative,
-    _isPositive,
-    _isCube,
-    _equals,
-    ValidatorFunc,
+  _containsLower,
+  _containsNumber,
+  _containsRegex,
+  _containsSymbol,
+  _containsUpper,
+  _decimalPoints,
+  _isArray,
+  _isInstanceOf,
+  _isNumber,
+  _isString,
+  _length,
+  _maxDecimalPoint,
+  _maxLength,
+  _minDecimalPoint,
+  _minLength,
+  _minMaxLength,
+  _oneOf,
+  _or,
+  _substring,
+  _isEven,
+  _isOdd,
+  _isPrime,
+  _isSquare,
+  _isNegative,
+  _isPositive,
+  _isCube,
+  _equals,
+  ValidatorFunc,
 } from "./HelperValidators";
 
 export const isString = run(_isString);
@@ -104,426 +104,440 @@ export const isPositive = run(curry(_isPositive));
 export const equals = run(curry(_equals));
 
 export function customValidator<T extends (...args: any[]) => boolean>(
-    func: T
+  func: T
 ): (...x: any[]) => boolean {
-    return run(curry(func));
+  return run(curry(func));
 }
 
 interface options {
-    messages?: {
-        invalidValue?: string;
-        unexpectedValue?: string;
-        required?: string;
-    };
-    keys?: {
-        success?: string;
-        message?: string;
-        type?: string;
-        required?: string;
-        validators?: string;
-    };
-    types?: Record<string, any>;
+  messages?: {
+    invalidValue?: string;
+    unexpectedValue?: string;
+    required?: string;
+  };
+  keys?: {
+    success?: string;
+    message?: string;
+    type?: string;
+    required?: string;
+    validators?: string;
+  };
+  types?: Record<string, any>;
 }
 
 /**
  * Valigator class is used to check that some data matches some specified shape
  */
 export class Valigator {
-    private types = {
-        text: {
-            validators: [isString],
-        },
-        number: {
-            validators: [isNumber],
-        },
-    };
+  private types = {
+    text: {
+      validators: [isString],
+    },
+    number: {
+      validators: [isNumber],
+    },
+    array: {
+      validators: [isArray],
+    },
+  };
 
-    private messages: {
-        invalidValue: string;
-        unexpectedValue: string;
-        required: string;
-    } = {
-        invalidValue: "Invalid value for data",
-        unexpectedValue: "Value is unexpected",
-        required: "Value is required but is missing",
-    };
+  private messages: {
+    invalidValue: string;
+    unexpectedValue: string;
+    required: string;
+  } = {
+    invalidValue: "Invalid value for data",
+    unexpectedValue: "Value you provided is unexpected",
+    required: "Value is required but is missing",
+  };
 
-    private keys: {
-        success: string;
-        message: string;
-        type: string;
-        required: string;
-        validators: string;
-    } = {
-        success: "success",
-        message: "message",
-        type: "type",
-        required: "required",
-        validators: "validators",
-    };
+  private keys: {
+    success: string;
+    message: string;
+    type: string;
+    required: string;
+    validators: string;
+  } = {
+    success: "success",
+    message: "message",
+    type: "type",
+    required: "required",
+    validators: "validators",
+  };
 
-    constructor(options?: options) {
-        if (options) {
-            if (options.messages) {
-                if (options.messages.invalidValue) {
-                    this.messages.invalidValue = options.messages.invalidValue;
-                }
-                if (options.messages.unexpectedValue) {
-                    this.messages.unexpectedValue =
-                        options.messages.unexpectedValue;
-                }
-                if (options.messages.required) {
-                    this.messages.required = options.messages.required;
-                }
-            }
-
-            if (options.keys) {
-                if (options.keys.success) {
-                    this.keys.success = options.keys.success;
-                }
-                if (options.keys.message) {
-                    this.keys.message = options.keys.message;
-                }
-                if (options.keys.type) {
-                    this.keys.type = options.keys.type;
-                }
-                if (options.keys.required) {
-                    this.keys.required = options.keys.required;
-                }
-                if (options.keys.validators) {
-                    this.keys.validators = options.keys.validators;
-                }
-            }
-
-            if (options.types) {
-                for (const key in options.types) {
-                    console.log(options.types[key]);
-                    if (
-                        Object.keys(options.types[key]).length === 1 &&
-                        options.types[key].validators
-                    ) {
-                        this.types[key] = options.types[key];
-                    }
-                }
-            }
-
-            console.log(this.types);
+  constructor(options?: options) {
+    if (options) {
+      if (options.messages) {
+        if (options.messages.invalidValue) {
+          this.messages.invalidValue = options.messages.invalidValue;
         }
-    }
-
-    private isType(val: string): boolean {
-        return this.types[val] !== undefined;
-    }
-
-    /**
-     * Method checks whether a value is an object and if it has correct type key
-     * @param val Value to check
-     * @returns Boolean representing whether validation passed
-     */
-    private isShape(val: any): boolean {
-        if (typeof val === "object") {
-            if (val[this.keys.type] !== undefined) {
-                if (typeof val[this.keys.type] === "string") {
-                    if (this.isType(val[this.keys.type])) {
-                        return true;
-                    }
-                }
-            }
+        if (options.messages.unexpectedValue) {
+          this.messages.unexpectedValue = options.messages.unexpectedValue;
         }
-        return false;
+        if (options.messages.required) {
+          this.messages.required = options.messages.required;
+        }
+      }
+
+      if (options.keys) {
+        if (options.keys.success) {
+          this.keys.success = options.keys.success;
+        }
+        if (options.keys.message) {
+          this.keys.message = options.keys.message;
+        }
+        if (options.keys.type) {
+          this.keys.type = options.keys.type;
+        }
+        if (options.keys.required) {
+          this.keys.required = options.keys.required;
+        }
+        if (options.keys.validators) {
+          this.keys.validators = options.keys.validators;
+        }
+      }
+
+      if (options.types) {
+        for (const key in options.types) {
+          console.log(options.types[key]);
+          if (
+            Object.keys(options.types[key]).length === 1 &&
+            options.types[key].validators
+          ) {
+            this.types[key] = options.types[key];
+          }
+        }
+      }
+
+      console.log(this.types);
+    }
+  }
+
+  private isType(val: string): boolean {
+    return this.types[val] !== undefined;
+  }
+
+  /**
+   * Method checks whether a value is an object and if it has correct type key
+   * @param val Value to check
+   * @returns Boolean representing whether validation passed
+   */
+  private isShape(val: any): boolean {
+    if (typeof val === "object") {
+      if (val[this.keys.type] !== undefined) {
+        if (typeof val[this.keys.type] === "string") {
+          if (this.isType(val[this.keys.type])) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Method checks that the shape matches this structure:
+   *    shape = {
+   *       type: string | foo: shape
+   *    }
+   * @param obj Object to check
+   * @returns Boolean representing whether validation passed
+   */
+  private checkShapeObject(obj: any): boolean {
+    if (typeof obj !== "object") {
+      return false;
     }
 
-    /**
-     * Method checks that the shape matches this structure:
-     *    shape = {
-     *       type: string | foo: shape
-     *    }
-     * @param obj Object to check
-     * @returns Boolean representing whether validation passed
-     */
-    private checkShapeObject(obj: any): boolean {
-        if (typeof obj !== "object") {
+    if (!this.isShape(obj)) {
+      for (const key in obj) {
+        if (!this.checkShapeObject(obj[key])) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  private validateShape(shape: Record<string, any>): void {
+    if (typeof shape !== "object" || Array.isArray(shape)) {
+      throw Error("Invalid value for property shape");
+    }
+    if (!this.checkShapeObject(shape)) {
+      throw Error("Invalid shape object");
+    }
+  }
+
+  private runValidations(data: any, shape: Record<string, any>): boolean {
+    // Run any user defined validators
+    const validators: ValidatorFunc[] | undefined = shape[this.keys.validators];
+    if (validators) {
+      if (Array.isArray(validators)) {
+        for (let i = 0; i < validators.length; i++) {
+          if (!validators[i](data)) {
             return false;
+          }
         }
-
-        if (!this.isShape(obj)) {
-            for (const key in obj) {
-                if (!this.checkShapeObject(obj[key])) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+      }
     }
 
-    private validateShape(shape: Record<string, any>): void {
-        if (typeof shape !== "object" || Array.isArray(shape)) {
-            throw Error("Invalid value for property shape");
-        }
-        if (!this.checkShapeObject(shape)) {
-            throw Error("Invalid shape object");
-        }
+    // Now run the default validators for the type
+    const defaultValidators = this.types[shape[this.keys.type]].validators;
+    for (let i = 0; i < defaultValidators.length; i++) {
+      if (!defaultValidators[i](data)) {
+        return false;
+      }
     }
 
-    private runValidations(data: any, shape: Record<string, any>): boolean {
-        // Run any user defined validators
-        const validators: ValidatorFunc[] | undefined =
-            shape[this.keys.validators];
-        if (validators) {
-            if (Array.isArray(validators)) {
-                for (let i = 0; i < validators.length; i++) {
-                    if (!validators[i](data)) {
-                        return false;
-                    }
-                }
-            }
+    return true;
+  }
+
+  private checkDataShape(data: any, shape: Record<string, any>): boolean {
+    if (typeof data !== "object" || Array.isArray(data)) {
+      // data is some primative type; string, number etc
+      if (this.isShape(shape)) {
+        if (!this.runValidations(data, shape)) {
+          // Invalid data
+          return false;
         }
+      } else {
+        // Invalid shape
+        return false;
+      }
+    } else {
+      // Check that the number of keys in the data match the shape
+      const union: string[] = Array.from(
+        new Set([...Object.keys(data), ...Object.keys(shape)])
+      );
 
-        // Now run the default validators for the type
-        const defaultValidators = this.types[shape[this.keys.type]].validators;
-        for (let i = 0; i < defaultValidators.length; i++) {
-            if (!defaultValidators[i](data)) {
-                return false;
-            }
-        }
+      if (union.length > Object.keys(shape).length) {
+        // Too many keys have been provided
+        return false;
+      }
 
-        return true;
-    }
+      const found: string[] = [];
+      // data is an object
+      for (const key in data) {
+        if (this.isShape(shape[key])) {
+          // Reached depth
+          if (!this.runValidations(data[key], shape[key])) {
+            // Invalid data
+            return false;
+          }
 
-    private checkDataShape(data: any, shape: Record<string, any>): boolean {
-        if (typeof data !== "object") {
-            // data is some primative type; string, number etc
-            if (this.isShape(shape)) {
-                if (!this.runValidations(data, shape)) {
-                    // Invalid data
-                    return false;
-                }
-            } else {
-                // Invalid shape
-                return false;
-            }
+          found.push(key);
         } else {
-            // Check that the number of keys in the data match the shape
-            const union: string[] = Array.from(
-                new Set([...Object.keys(data), ...Object.keys(shape)])
+          if (!this.checkDataShape(data[key], shape[key])) {
+            return false;
+          }
+        }
+      }
+
+      const shapeRequired: string[] = Object.keys(shape)
+        .filter((key) => this.isShape(shape[key]))
+        .filter(
+          (key) =>
+            shape[key][this.keys.required] === undefined ||
+            shape[key][this.keys.required] === true
+        );
+      // console.log(found, shapeRequired, found.every(val => shapeRequired.includes(val)));
+
+      if (!shapeRequired.every((val) => found.includes(val))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private buildErrorMessageObject(
+    shape: Record<string, any>,
+    message: string
+  ): Record<string, any> {
+    const output = {};
+    for (const key in shape) {
+      if (typeof shape[key] !== "object") {
+        const cur = {};
+        cur[this.keys.success] = false;
+        cur[this.keys.message] = message;
+        output[key] = cur;
+      } else {
+        output[key] = this.buildErrorMessageObject(output[key], message);
+      }
+    }
+
+    return output;
+  }
+
+  // {
+  //   name: {
+  //     type: "text",
+  //     validators: [minLength(1)],
+  //   },
+  private checkDataShapeMore(
+    data: any,
+    shape: Record<string, any>
+  ): Record<string, any> {
+    const output = {};
+    if (typeof data !== "object" || Array.isArray(data)) {
+      // data is some primative type; string, number etc
+      if (this.isShape(shape)) {
+        if (!this.runValidations(data, shape)) {
+          // Invalid data
+          const cur = {};
+          cur[this.keys.success] = false;
+          cur[this.keys.message] = this.messages.invalidValue;
+          return cur;
+        } else {
+          // valid data
+          const cur = {};
+          cur[this.keys.success] = true;
+          return cur;
+        }
+      } else {
+        // Invalid shape
+        return this.buildErrorMessageObject(
+          shape,
+          this.messages.unexpectedValue
+        );
+      }
+    } else {
+      // First check that every required value in shape is in data
+      for (const key in data) {
+        if (Object.keys(data).includes(key)) {
+          if (this.isShape(shape[key])) {
+            // Reached depth
+            if (!this.runValidations(data[key], shape[key])) {
+              const cur = {};
+              cur[this.keys.success] = false;
+              cur[this.keys.message] = this.messages.invalidValue;
+
+              // Invalid data
+              output[key] = cur;
+            } else {
+              const cur = {};
+              cur[this.keys.success] = true;
+
+              output[key] = cur;
+            }
+          } else {
+            if (!shape[key]) {
+              const cur = {};
+              cur[this.keys.success] = false;
+              cur[this.keys.message] = this.messages.unexpectedValue;
+              output[key] = cur;
+            } else {
+              console.log(data[key], shape[key]);
+              output[key] = this.checkDataShapeMore(data[key], shape[key]);
+            }
+          }
+        } else {
+          if (this.isShape(shape[key])) {
+            if (
+              shape[key][this.keys.required] === undefined ||
+              shape[key][this.keys.required] === true
+            ) {
+              const cur = {};
+              cur[this.keys.success] = false;
+              cur[this.keys.message] = this.messages.required;
+
+              output[key] = cur;
+            } else {
+              const cur = {};
+              cur[this.keys.success] = true;
+
+              output[key] = cur;
+            }
+          } else {
+            output[key] = this.buildErrorMessageObject(
+              shape[key],
+              this.messages.required
             );
-
-            if (union.length > Object.keys(shape).length) {
-                // Too many keys have been provided
-                return false;
-            }
-
-            const found: string[] = [];
-            // data is an object
-            for (const key in data) {
-                if (this.isShape(shape[key])) {
-                    // Reached depth
-                    if (!this.runValidations(data[key], shape[key])) {
-                        // Invalid data
-                        return false;
-                    }
-
-                    found.push(key);
-                } else {
-                    if (!this.checkDataShape(data[key], shape[key])) {
-                        return false;
-                    }
-                }
-            }
-
-            const shapeRequired: string[] = Object.keys(shape)
-                .filter((key) => this.isShape(shape[key]))
-                .filter(
-                    (key) =>
-                        shape[key][this.keys.required] === undefined ||
-                        shape[key][this.keys.required] === true
-                );
-            // console.log(found, shapeRequired, found.every(val => shapeRequired.includes(val)));
-
-            if (!shapeRequired.every((val) => found.includes(val))) {
-                return false;
-            }
+          }
         }
+      }
 
-        return true;
-    }
-
-    private buildErrorMessageObject(
-        shape: Record<string, any>,
-        message: string
-    ): Record<string, any> {
-        const output = {};
-        for (const key in shape) {
-            if (typeof shape[key] !== "object") {
-                const cur = {};
-                cur[this.keys.success] = false;
-                cur[this.keys.message] = message;
-                output[key] = cur;
-            } else {
-                output[key] = this.buildErrorMessageObject(
-                    output[key],
-                    message
-                );
-            }
+      for (const key in data) {
+        if (!output[key]) {
+          if (typeof data !== "object") {
+            output[key] = this.checkDataShapeMore(data[key], {});
+          } else {
+            const cur = {};
+            cur[this.keys.success] = false;
+            cur[this.keys.message] = this.messages.unexpectedValue;
+            output[key] = cur;
+          }
         }
-
-        return output;
+      }
     }
+    return output;
+  }
 
-    // {
-    //   name: {
-    //     type: "text",
-    //     validators: [minLength(1)],
-    //   },
-    private checkDataShapeMore(
-        data: any,
-        shape: Record<string, any>
-    ): Record<string, any> {
-        const output = {};
-        if (typeof data !== "object") {
-            // data is some primative type; string, number etc
-            if (this.isShape(shape)) {
-                if (!this.runValidations(data, shape)) {
-                    // Invalid data
-                    const cur = {};
-                    cur[this.keys.success] = false;
-                    cur[this.keys.message] = this.messages.invalidValue;
-                    return cur;
-                } else {
-                    // valid data
-                    const cur = {};
-                    cur[this.keys.success] = true;
-                    return cur;
-                }
-            } else {
-                // Invalid shape
-                return this.buildErrorMessageObject(
-                    shape,
-                    this.messages.unexpectedValue
-                );
-            }
-        } else {
-            // First check that every required value in shape is in data
-            for (const key in shape) {
-                if (Object.keys(data).includes(key)) {
-                    if (this.isShape(shape[key])) {
-                        // Reached depth
-                        if (!this.runValidations(data[key], shape[key])) {
-                            const cur = {};
-                            cur[this.keys.success] = false;
-                            cur[this.keys.message] = this.messages.invalidValue;
+  /**
+   * Checks whether some data matches a specified shape and just returns a boolean value as a result
+   * @param data Data to check
+   * @param shape Shape the data is supposed to match
+   * @returns {Boolean} representing if data is valid or not
+   * @example
+   *
+   * const valigator = new Valigator();
+   * valigator.validate(10, {type: "number"});
+   * // => true
+   *
+   * const valigator = new Valigator();
+   * valigator.validate({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+   * // => true
+   *
+   * const valigator = new Valigator();
+   * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+   * // => true
+   */
+  public validate(data: any, shape: Record<string, any>): boolean {
+    this.validateShape(shape);
+    return this.checkDataShape(data, shape);
+  }
 
-                            // Invalid data
-                            output[key] = cur;
-                        } else {
-                            const cur = {};
-                            cur[this.keys.success] = true;
+  /**
+   * Checks whether some data matches a specified shape and returns an object containing all the places where it failed and their corresponding messages
+   * @param data Data to check
+   * @param shape Shape the data is supposed to match
+   * @returns Object representing what passed and what failed
+   * @example
+   *
+   * const valigator = new Valigator();
+   * valigator.validate_more(10, {type: "number"});
+   * // => {success: true}
+   *
+   * const valigator = new Valigator();
+   * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
+   * // => { names: { first: { success: true }, last: { success: true } } }
+   *
+   * const valigator = new Valigator();
+   * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
+   * // => { names: { first: { success: true }, last: { success: true } } }
+   *
+   * const valigator = new Valigator();
+   * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
+   * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
+   */
+  public validate_more(
+    data: any,
+    shape: Record<string, any>
+  ): Record<string, any> {
+    this.validateShape(shape);
+    const res = this.checkDataShapeMore(data, shape);
 
-                            output[key] = cur;
-                        }
-                    } else {
-                        output[key] = this.checkDataShapeMore(
-                            data[key],
-                            shape[key]
-                        );
-                    }
-                } else {
-                    if (this.isShape(shape[key])) {
-                        if (
-                            shape[key][this.keys.required] === undefined ||
-                            shape[key][this.keys.required] === true
-                        ) {
-                            const cur = {};
-                            cur[this.keys.success] = false;
-                            cur[this.keys.message] = this.messages.required;
-
-                            output[key] = cur;
-                        } else {
-                            const cur = {};
-                            cur[this.keys.success] = true;
-
-                            output[key] = cur;
-                        }
-                    } else {
-                        output[key] = this.buildErrorMessageObject(
-                            shape[key],
-                            this.messages.required
-                        );
-                    }
-                }
-            }
-
-            for (const key in data) {
-                if (!output[key]) {
-                    if (typeof data !== "object") {
-                        output[key] = this.checkDataShapeMore(data[key], {});
-                    } else {
-                        const cur = {};
-                        cur[this.keys.success] = false;
-                        cur[this.keys.message] = this.messages.unexpectedValue;
-                        output[key] = cur;
-                    }
-                }
-            }
-        }
-        return output;
-    }
-
-    /**
-     * Checks whether some data matches a specified shape and just returns a boolean value as a result
-     * @param data Data to check
-     * @param shape Shape the data is supposed to match
-     * @returns {Boolean} representing if data is valid or not
-     * @example
-     *
-     * const valigator = new Valigator();
-     * valigator.validate(10, {type: "number"});
-     * // => true
-     *
-     * const valigator = new Valigator();
-     * valigator.validate({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-     * // => true
-     *
-     * const valigator = new Valigator();
-     * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-     * // => true
-     */
-    public validate(data: any, shape: Record<string, any>): boolean {
-        this.validateShape(shape);
-        return this.checkDataShape(data, shape);
-    }
-
-    /**
-     * Checks whether some data matches a specified shape and returns an object containing all the places where it failed and their corresponding messages
-     * @param data Data to check
-     * @param shape Shape the data is supposed to match
-     * @returns Object representing what passed and what failed
-     * @example
-     *
-     * const valigator = new Valigator();
-     * valigator.validate_more(10, {type: "number"});
-     * // => {success: true}
-     *
-     * const valigator = new Valigator();
-     * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-     * // => { names: { first: { success: true }, last: { success: true } } }
-     *
-     * const valigator = new Valigator();
-     * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-     * // => { names: { first: { success: true }, last: { success: true } } }
-     *
-     * const valigator = new Valigator();
-     * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-     * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
-     */
-    public validate_more(
-        data: any,
-        shape: Record<string, any>
-    ): Record<string, any> {
-        this.validateShape(shape);
-        const res = this.checkDataShapeMore(data, shape);
-
-        return res;
-    }
+    return res;
+  }
 }
+
+// let val = new Valigator();
+
+// const data = { test: [1, 2, 3] };
+// const shape = {
+//   test: {
+//     type: "array",
+//     validators: [],
+//   },
+// };
+// console.log(val.validate_more(data, shape));

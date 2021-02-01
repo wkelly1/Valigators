@@ -196,11 +196,11 @@ exports._containsLower = _containsLower;
  */
 function _containsSymbol(value) {
     if (Valigators_1.isNumber(value) || Valigators_1.isString(value)) {
-        return /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(value.toString());
+        return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
     }
     if (value instanceof Array) {
         return value.some(function (val) {
-            return /[\[\]|\\/~^:,;?!&%$@\*\+\-\_#}{<>.=_\)\(£]/.test(val.toString());
+            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString());
         });
     }
     return false;
@@ -219,7 +219,7 @@ function _containsRegex(reg, value) {
         return reg.test(value.toString());
     }
     if (value instanceof Array) {
-        return value.some(function (val) { return reg.test(value.toString()); });
+        return value.some(function (val) { return reg.test(val.toString()); });
     }
     return false;
 }
@@ -415,7 +415,7 @@ function _equals(equal, value) {
         }
         else {
             for (var key in value) {
-                if (value.hasOwnProperty(key)) {
+                if (Object.hasOwnProperty.call(value, key)) {
                     if (compare(value[key], equal[key]) === false)
                         return false;
                 }
