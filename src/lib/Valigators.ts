@@ -76,6 +76,7 @@ import {
     _isNull,
 } from "./HelperValidators";
 
+import { emailRegex } from "./Regex";
 import { TValidator, TTypes, TOptions, TShape, TMsg } from "./Valigators.types";
 
 export const isString: TValidator = run(_isString);
@@ -134,6 +135,9 @@ export class Valigator {
         null: {
             validators: [isNull],
         },
+        email: {
+            validators: [isString, containsRegex(emailRegex)],
+        },
     };
 
     private messages: {
@@ -160,6 +164,7 @@ export class Valigator {
         validators: "validators",
     };
 
+    private requiredValues: unknown[] = [""];
     /**
      * Valigator constructor
      * @param options Optional settings
@@ -213,6 +218,10 @@ export class Valigator {
                         }
                     }
                 }
+            }
+
+            if (options.requiredValues) {
+                this.requiredValues = options.requiredValues;
             }
 
             console.log(this.types);
@@ -359,7 +368,22 @@ export class Valigator {
                 );
             // console.log(found, shapeRequired, found.every(val => shapeRequired.includes(val)));
 
-            if (!shapeRequired.every((val) => found.includes(val))) {
+            console.log(
+                "here",
+                this.requiredValues,
+                found,
+                shapeRequired,
+                data && data
+            );
+            if (
+                !shapeRequired.every(
+                    (val) =>
+                        found.includes(val) &&
+                        data &&
+                        !this.requiredValues.includes(data[val])
+                )
+            ) {
+                console.log("here");
                 return false;
             }
         }
@@ -529,25 +553,28 @@ export class Valigator {
      *
      * const valigator = new Valigator();
      * valigator.validate_more(10, {type: "number"});
-     * // => {success: true}
+     * // => {success: true, values: {success: true}}
      *
      * const valigator = new Valigator();
      * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-     * // => { names: { first: { success: true }, last: { success: true } } }
+     * // => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
      *
      * const valigator = new Valigator();
      * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-     * // => { names: { first: { success: true }, last: { success: true } } }
+     * // => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
      *
      * const valigator = new Valigator();
      * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-     * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
+     * // => {success: false, values: { names: { first: { success: false, message: 'Invalid value for data' } } }}
      */
-    public validate_more(data: unknown, shape: TShape): TMsg {
+    public validate_more(
+        data: unknown,
+        shape: TShape
+    ): { success: boolean; values: TMsg } {
         this.validateShape(shape);
         const res = this.checkDataShapeMore(data, shape);
 
-        return res;
+        return { success: this.checkDataShape(data, shape), values: res };
     }
 }
 

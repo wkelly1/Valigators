@@ -42,7 +42,7 @@
      * @param fn Function to curry
      * @returns Curried function
      */
-    var curry = function (fn) {
+    function curry(fn) {
         var innerFn = function (N, args) {
             return function () {
                 var x = [];
@@ -56,25 +56,25 @@
             };
         };
         return innerFn(fn.length, []);
-    };
+    }
     /**
      * Wraps a function in a try catch to make it safe
      * @param fn Function to convert
      * @returns Safe function
      */
     function run(func) {
-        return (function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            try {
-                return func.apply(void 0, args);
-            }
-            catch (ex) {
+        try {
+            return func;
+        }
+        catch (ex) {
+            return function () {
+                var args = [];
+                for (var _i = 0; _i < arguments.length; _i++) {
+                    args[_i] = arguments[_i];
+                }
                 return false;
-            }
-        });
+            };
+        }
     }
 
     /**
@@ -124,11 +124,11 @@
      * @returns {boolean} Boolean value representing whether right length or not
      */
     function _minLength(min, value) {
-        if (_isArray(value)) {
+        if (Array.isArray(value)) {
             return value.length >= min;
         }
         else {
-            return value.toString().length >= min;
+            return String(value).length >= min;
         }
     }
     /**
@@ -138,11 +138,11 @@
      * @returns {boolean} Boolean value representing whether right length or not
      */
     function _maxLength(max, value) {
-        if (_isArray(value)) {
+        if (Array.isArray(value)) {
             return value.length <= max;
         }
         else {
-            return value.toString().length <= max;
+            return String(value).length <= max;
         }
     }
     /**
@@ -153,11 +153,11 @@
      * @returns {boolean} Boolean value representing whether right length or not
      */
     function _minMaxLength(min, max, value) {
-        if (_isArray(value)) {
+        if (Array.isArray(value)) {
             return value.length >= min && value.length <= max;
         }
         else {
-            return value.toString().length >= min && value.toString().length <= max;
+            return String(value).length >= min && String(value).length <= max;
         }
     }
     /**
@@ -167,11 +167,11 @@
      * @returns {boolean} Boolean value representing whether right length or not
      */
     function _length(n, value) {
-        if (_isArray(value)) {
+        if (Array.isArray(value)) {
             return value.length === n;
         }
         else {
-            return value.toString().length === n;
+            return String(value).length === n;
         }
     }
     /**
@@ -181,7 +181,7 @@
      * @returns {boolean} Boolean value representing whether it contains substring
      */
     function _substring(inner, value) {
-        return value.toString().includes(inner.toString());
+        return String(value).includes(inner.toString());
     }
     /**
      * Checks whether a number has less than or equal to a specified number of decimal points
@@ -190,7 +190,7 @@
      * @returns {boolean} Boolean value representing has correct decimal points
      */
     function _maxDecimalPoint(max, value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return getDecimalPoints(value) <= max;
         }
         else {
@@ -204,7 +204,7 @@
      * @returns {boolean} Boolean value representing has correct decimal points
      */
     function _minDecimalPoint(min, value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return getDecimalPoints(value) >= min;
         }
         else {
@@ -218,7 +218,7 @@
      * @returns {boolean} Boolean value representing has correct decimal points
      */
     function _decimalPoints(n, value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return getDecimalPoints(value) === n;
         }
         else {
@@ -241,7 +241,7 @@
      */
     function _containsNumber(value) {
         if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /\d/.test(value.toString());
+            return /\d/.test(String(value));
         }
         return false;
     }
@@ -252,7 +252,7 @@
      */
     function _containsUpper(value) {
         if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /[A-Z]/.test(value.toString());
+            return /[A-Z]/.test(String(value));
         }
         return false;
     }
@@ -263,7 +263,7 @@
      */
     function _containsLower(value) {
         if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /[a-z]/.test(value.toString());
+            return /[a-z]/.test(String(value));
         }
         return false;
     }
@@ -276,7 +276,7 @@
      */
     function _containsSymbol(value) {
         if (_isNumber(value) || _isString(value)) {
-            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(value.toString());
+            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(String(value));
         }
         if (value instanceof Array) {
             return value.some(function (val) {
@@ -295,7 +295,7 @@
      */
     function _containsRegex(reg, value) {
         if (_isNumber(value) || _isString(value)) {
-            return reg.test(value.toString());
+            return reg.test(String(value));
         }
         if (value instanceof Array) {
             return value.some(function (val) { return reg.test(val.toString()); });
@@ -328,7 +328,7 @@
      * @returns {boolean} Boolean representing whether is a even or not
      */
     function _isEven(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             if (value === 0) {
                 return false;
             }
@@ -342,7 +342,7 @@
      * @returns {boolean} Boolean representing whether is a odd or not
      */
     function _isOdd(value) {
-        if (!_isNumber(value)) {
+        if (typeof value !== "number") {
             return false;
         }
         if (value === 0 || value < 0) {
@@ -356,7 +356,7 @@
      * @returns {boolean} Boolean representing whether is a prime or not
      */
     function _isPrime(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             if (value <= 1) {
                 return false;
             }
@@ -383,7 +383,7 @@
      * @returns {boolean} Boolean representing whether is a prime or not
      */
     function _isSquare(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return value > 0 && Math.sqrt(value) % 1 === 0;
         }
         return false;
@@ -395,7 +395,7 @@
      * @returns {boolean} Boolean representing whether is a cube or not
      */
     function _isCube(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             var start = 1;
             var end = value;
             while (start <= end) {
@@ -419,7 +419,7 @@
      * @returns {boolean} Boolean representing whether is a negative number or not
      */
     function _isNegative(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return value < 0;
         }
         return false;
@@ -430,7 +430,7 @@
      * @returns {boolean} Boolean representing whether is a positive number or not
      */
     function _isPositive(value) {
-        if (_isNumber(value)) {
+        if (typeof value === "number") {
             return value > 0;
         }
         return false;
@@ -449,8 +449,12 @@
                 return false;
             if (["[object Array]", "[object Object]"].indexOf(type) < 0)
                 return false;
-            var valueLen = type === "[object Array]" ? value.length : Object.keys(value).length;
-            var otherLen = type === "[object Array]" ? equal.length : Object.keys(equal).length;
+            var valueLen = type === "[object Array]"
+                ? value.length
+                : Object.keys(value).length;
+            var otherLen = type === "[object Array]"
+                ? equal.length
+                : Object.keys(equal).length;
             if (valueLen !== otherLen)
                 return false;
             var compare = function (item1, item2) {
@@ -609,7 +613,8 @@
                         this.messages.invalidValue = options.messages.invalidValue;
                     }
                     if (options.messages.unexpectedValue) {
-                        this.messages.unexpectedValue = options.messages.unexpectedValue;
+                        this.messages.unexpectedValue =
+                            options.messages.unexpectedValue;
                     }
                     if (options.messages.required) {
                         this.messages.required = options.messages.required;
@@ -637,7 +642,12 @@
                         console.log(options.types[key]);
                         if (Object.keys(options.types[key]).length === 1 &&
                             options.types[key].validators) {
-                            this.types[key] = options.types[key];
+                            if (!options.types[key].validators) {
+                                throw Error("Types need to have an array of validators");
+                            }
+                            else {
+                                this.types[key] = options.types[key];
+                            }
                         }
                     }
                 }
@@ -653,7 +663,7 @@
          * @returns Boolean representing whether validation passed
          */
         Valigator.prototype.isShape = function (val) {
-            if (typeof val === "object") {
+            if (val instanceof Object) {
                 if (val[this.keys.type] !== undefined) {
                     if (typeof val[this.keys.type] === "string") {
                         if (this.isType(val[this.keys.type])) {
@@ -694,8 +704,8 @@
             }
         };
         Valigator.prototype.runValidations = function (data, shape) {
-            // Run any user defined validators
             var validators = shape[this.keys.validators];
+            // Run any user defined validators
             if (validators) {
                 if (Array.isArray(validators)) {
                     for (var i = 0; i < validators.length; i++) {
@@ -705,12 +715,18 @@
                     }
                 }
             }
-            // Now run the default validators for the type
-            var defaultValidators = this.types[shape[this.keys.type]].validators;
-            for (var i = 0; i < defaultValidators.length; i++) {
-                if (!defaultValidators[i](data)) {
-                    return false;
+            var test = shape[this.keys.type];
+            if (typeof test === "string") {
+                // Now run the default validators for the type
+                var defaultValidators = this.types[test].validators;
+                for (var i = 0; i < defaultValidators.length; i++) {
+                    if (!defaultValidators[i](data)) {
+                        return false;
+                    }
                 }
+            }
+            else {
+                throw Error("Invalid shape object");
             }
             return true;
         };
@@ -837,7 +853,6 @@
                                 output[key] = cur;
                             }
                             else {
-                                console.log(data[key], shape[key]);
                                 output[key] = this.checkDataShapeMore(data[key], shape[key]);
                             }
                         }
@@ -931,15 +946,20 @@
         };
         return Valigator;
     }());
-    var val = new Valigator();
-    var data = { example: [1, 2, 3] };
-    var shape = {
-        example: {
-            type: "array",
-            validators: [],
-        },
-    };
-    console.log(val.validate_more(data, shape));
+    // const val = new Valigator();
+    // let test = curry<boolean>(_minLength)(1);
+    // const data = { example: "sdf" };
+    // const shape: TShape = {
+    //     example: {
+    //         example: {
+    //             type: "text",
+    //             validators: [minLength(1)],
+    //         },
+    //     },
+    // };
+    // console.log(val.validate_more(data, shape));
+    // let test2: boolean = minLength(1);
+    // console.log(test);
 
     var validators = {
         isString: isString,

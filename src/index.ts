@@ -31,7 +31,7 @@ import {
     Valigator,
 } from "./lib/Valigators";
 
-export const validators = {
+export {
     isString,
     isNumber,
     isArray,
@@ -61,6 +61,5 @@ export const validators = {
     isNegative,
     isPositive,
     equals,
+    Valigator,
 };
-
-export { Valigator };

@@ -20,6 +20,7 @@ export type TOptions = {
         validators?: string;
     };
     types?: Record<string, TTypes>;
+    requiredValues?: unknown[];
 };
 
 export type TShape = {

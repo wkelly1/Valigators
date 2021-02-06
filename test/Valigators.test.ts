@@ -761,3 +761,25 @@ test("Testing custom options", () => {
         )
     ).toBe(true);
 });
+
+test("Testing required", () => {
+    const validate = new Valigator();
+
+    expect(
+        validate.validate(
+            { name: "" },
+            {
+                name: {
+                    type: "text",
+                },
+            }
+        )
+    ).toBe(false);
+
+    expect(
+        validate.validate(
+            { person: { name: { lastName: "sfs" } } },
+            { person: { name: { lastName: { type: "text" } } } }
+        )
+    ).toBe(true);
+});
