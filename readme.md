@@ -110,19 +110,30 @@ For example the `text` type runs the validators
 
 Available default types:
 
-| Type       | Validations                             |
-| ---------- | --------------------------------------- |
-| `text`     | `[isString]`                            |
-| `number`   | `[isNumber]`                            |
-| `array`    | `[isArray]`                             |
-| `boolean`  | `[isBoolean]`                           |
-| `email`    | `[isString, containsRegex(emailRegex)]` |
-| `phone`    | TODO                                    |
-| `date`     | TODO                                    |
-| `time`     | TODO                                    |
-| `password` | TODO                                    |
+| Type                 | Validations                                                                         |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| `text`               | `[isString]`                                                                        |
+| `number`             | `[isNumber]`                                                                        |
+| `array`              | `[isArray]`                                                                         |
+| `boolean`            | `[isBoolean]`                                                                       |
+| `email`              | `[isString, containsRegex(emailRegex)]`                                             |
+| `phone`              | `[isString, containsRegex(phoneRegex)]`                                             |
+| `date`               | `[isInstanceOf(Date)]`                                                              |
+| `date_string`        | `[isString, containsRegex(dateRegex)]`                                              |
+| `time_hhmm_12h`      | `[isString, containsRegex(time_hhmm_12h)]`                                          |
+| `time_hhmm_24h`      | `[isString, containsRegex(time_hhmm_24h)]`                                          |
+| `time_hhmmss_24h`    | `[isString, containsRegex(time_hhmmss_24h)]`                                        |
+| `time_hhmmss_24h`    | `[isString, containsRegex(time_hhmmss_24h)]`                                        |
+| `password`           | `[isString,containsUpper,containsLower,containsSymbol,containsNumber,minLength(8)]` |
+| `longitude_latitude` | `[isString, containsRegex(longitude_latitude)]`                                     |
+| `credit_card_number` | `[isString, containsRegex(credit_card_number)]`                                     |
+| `ipv4_address`       | `[isString, containsRegex(ipv4_address)]`                                           |
+| `ipv6_address`       | `[isString, containsRegex(ipv6_address)]`                                           |
+| `url`                | `[isString, containsRegex(url)]`                                                    |
 
 See [here](https://github.com/wkelly1/Valigators/blob/development/src/lib/Regex.ts) for raw regex
+
+If you have additional types you want supported please add a feature request.
 
 ### Extending default types
 
