@@ -299,7 +299,7 @@ valigator.validate_more(invalid_data, shape);
 // };
 ```
 
-When a validator failed you will get the default error message "Invalid value for data" (Default can be overwritten [see here](#Custom_default_error_messages)). However you may want individual custom messages for each validator. To do this:
+When a validator failed you will get the default error message "Invalid value for data" (Default can be overwritten [see here](#Custom-default-error-messages)). However you may want individual custom messages for each validator. To do this:
 
 ```js
 const valigator = new Valigator();
@@ -446,72 +446,98 @@ new Valigator(options);
 
 ### Table of Contents
 
--   [containsLower](#containslower)
-    -   [Parameters](#parameters)
--   [containsNumber](#containsnumber)
-    -   [Parameters](#parameters-1)
--   [containsRegex](#containsregex)
-    -   [Parameters](#parameters-2)
--   [containsSymbol](#containssymbol)
-    -   [Parameters](#parameters-3)
--   [containsUpper](#containsupper)
-    -   [Parameters](#parameters-4)
--   [decimalPoints](#decimalpoints)
-    -   [Parameters](#parameters-5)
--   [equals](#equals)
-    -   [Parameters](#parameters-6)
--   [isArray](#isarray)
-    -   [Parameters](#parameters-7)
--   [isBoolean](#isboolean)
-    -   [Parameters](#parameters-8)
--   [isCube](#iscube)
-    -   [Parameters](#parameters-9)
--   [isEven](#iseven)
-    -   [Parameters](#parameters-10)
--   [isInstanceOf](#isinstanceof)
-    -   [Parameters](#parameters-11)
--   [isNegative](#isnegative)
-    -   [Parameters](#parameters-12)
--   [isNull](#isnull)
-    -   [Parameters](#parameters-13)
--   [isNumber](#isnumber)
-    -   [Parameters](#parameters-14)
--   [isOdd](#isodd)
-    -   [Parameters](#parameters-15)
--   [isPositive](#ispositive)
-    -   [Parameters](#parameters-16)
--   [isPrime](#isprime)
-    -   [Parameters](#parameters-17)
--   [isSquare](#issquare)
-    -   [Parameters](#parameters-18)
--   [isString](#isstring)
-    -   [Parameters](#parameters-19)
--   [length](#length)
-    -   [Parameters](#parameters-20)
--   [maxDecimalPoint](#maxdecimalpoint)
-    -   [Parameters](#parameters-21)
--   [maxLength](#maxlength)
-    -   [Parameters](#parameters-22)
--   [minDecimalPoint](#mindecimalpoint)
-    -   [Parameters](#parameters-23)
--   [minLength](#minlength)
-    -   [Parameters](#parameters-24)
--   [minMaxLength](#minmaxlength)
-    -   [Parameters](#parameters-25)
--   [oneOf](#oneof)
-    -   [Parameters](#parameters-26)
--   [or](#or)
-    -   [Parameters](#parameters-27)
--   [substring](#substring)
-    -   [Parameters](#parameters-28)
--   [Valigator](#valigator)
-    -   [Parameters](#parameters-29)
-    -   [validate](#validate)
-        -   [Parameters](#parameters-30)
-        -   [Examples](#examples)
-    -   [validate_more](#validate_more)
-        -   [Parameters](#parameters-31)
-        -   [Examples](#examples-1)
+- [Valigators](#valigators)
+  - [Usage](#usage)
+    - [In Node.js](#in-nodejs)
+    - [ESM](#esm)
+    - [Browser](#browser)
+    - [Example](#example)
+  - [The shape object](#the-shape-object)
+    - [Attributes](#attributes)
+    - [Types](#types)
+    - [Extending default types](#extending-default-types)
+  - [Validators](#validators)
+    - [Custom validator](#custom-validator)
+  - [Arrays](#arrays)
+  - [Messages](#messages)
+    - [Custom messages with custom validators](#custom-messages-with-custom-validators)
+  - [Options](#options)
+    - [Custom default error messages](#custom-default-error-messages)
+    - [Naming conflicts](#naming-conflicts)
+    - [Default type overriding](#default-type-overriding)
+- [API](#api)
+    - [Table of Contents](#table-of-contents)
+  - [containsLower](#containslower)
+    - [Parameters](#parameters)
+  - [containsNumber](#containsnumber)
+    - [Parameters](#parameters-1)
+  - [containsRegex](#containsregex)
+    - [Parameters](#parameters-2)
+  - [containsSymbol](#containssymbol)
+    - [Parameters](#parameters-3)
+  - [containsUpper](#containsupper)
+    - [Parameters](#parameters-4)
+  - [decimalPoints](#decimalpoints)
+    - [Parameters](#parameters-5)
+  - [equals](#equals)
+    - [Parameters](#parameters-6)
+  - [isArray](#isarray)
+    - [Parameters](#parameters-7)
+  - [isBoolean](#isboolean)
+    - [Parameters](#parameters-8)
+  - [isCube](#iscube)
+    - [Parameters](#parameters-9)
+  - [isEven](#iseven)
+    - [Parameters](#parameters-10)
+  - [isInstanceOf](#isinstanceof)
+    - [Parameters](#parameters-11)
+  - [isNegative](#isnegative)
+    - [Parameters](#parameters-12)
+  - [isNull](#isnull)
+    - [Parameters](#parameters-13)
+  - [isNumber](#isnumber)
+    - [Parameters](#parameters-14)
+  - [isOdd](#isodd)
+    - [Parameters](#parameters-15)
+  - [isPositive](#ispositive)
+    - [Parameters](#parameters-16)
+  - [isPrime](#isprime)
+    - [Parameters](#parameters-17)
+  - [isSquare](#issquare)
+    - [Parameters](#parameters-18)
+  - [isString](#isstring)
+    - [Parameters](#parameters-19)
+  - [length](#length)
+    - [Parameters](#parameters-20)
+  - [maxDecimalPoint](#maxdecimalpoint)
+    - [Parameters](#parameters-21)
+  - [maxLength](#maxlength)
+    - [Parameters](#parameters-22)
+  - [minDecimalPoint](#mindecimalpoint)
+    - [Parameters](#parameters-23)
+  - [minLength](#minlength)
+    - [Parameters](#parameters-24)
+  - [minMaxLength](#minmaxlength)
+    - [Parameters](#parameters-25)
+  - [oneOf](#oneof)
+    - [Parameters](#parameters-26)
+  - [or](#or)
+    - [Parameters](#parameters-27)
+  - [substring](#substring)
+    - [Parameters](#parameters-28)
+  - [Valigator](#valigator)
+    - [Parameters](#parameters-29)
+    - [validate](#validate)
+      - [Parameters](#parameters-30)
+      - [Examples](#examples)
+    - [validate_more](#validate_more)
+      - [Parameters](#parameters-31)
+      - [Examples](#examples-1)
+- [Contributing](#contributing)
+  - [Build](#build)
+  - [Code of Conduct](#code-of-conduct)
+  - [Contributing Guide](#contributing-guide)
+  - [Licence](#licence)
 
 ## containsLower
 
@@ -521,7 +547,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an lower case character
 
@@ -533,7 +559,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a number
 
@@ -546,8 +572,8 @@ Type: TValidator
 
 ### Parameters
 
--   `reg`  Regex to test
--   `value`  Value to check
+-   `reg` Regex to test
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a specified regex
 
@@ -560,7 +586,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a symbol
 
@@ -572,7 +598,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an upper case character
 
@@ -584,8 +610,8 @@ Type: TValidator
 
 ### Parameters
 
--   `n`  Value
--   `value`  Value to check
+-   `n` Value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
 
@@ -597,8 +623,8 @@ Type: TValidator
 
 ### Parameters
 
--   `equal`  Value to check equals to
--   `value`  Value to check
+-   `equal` Value to check equals to
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** {boolean} Boolean representing if they are equal
 
@@ -610,7 +636,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether array or not
 
@@ -622,7 +648,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether boolean or not
 
@@ -634,7 +660,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a cube or not
 
@@ -646,7 +672,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a even or not
 
@@ -658,8 +684,8 @@ Type: TValidator
 
 ### Parameters
 
--   `typeClass`  function to test against
--   `value`  Object to test
+-   `typeClass` function to test against
+-   `value` Object to test
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean
 
@@ -671,7 +697,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a negative number or not
 
@@ -683,7 +709,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether null or not
 
@@ -695,7 +721,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether number or not
 
@@ -707,7 +733,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a odd or not
 
@@ -719,7 +745,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a positive number or not
 
@@ -731,7 +757,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
 
@@ -743,7 +769,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
 
@@ -755,7 +781,7 @@ Type: TValidator
 
 ### Parameters
 
--   `value`  Value to check
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether string or not
 
@@ -767,8 +793,8 @@ Type: TValidator
 
 ### Parameters
 
--   `n`  Length
--   `value`  Value to check
+-   `n` Length
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
 
@@ -780,8 +806,8 @@ Type: TValidator
 
 ### Parameters
 
--   `max`  Max value
--   `value`  Value to check
+-   `max` Max value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
 
@@ -793,8 +819,8 @@ Type: TValidator
 
 ### Parameters
 
--   `max`  Max value
--   `value`  Value to check
+-   `max` Max value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
 
@@ -806,8 +832,8 @@ Type: TValidator
 
 ### Parameters
 
--   `min`  Min value
--   `value`  Value to check
+-   `min` Min value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
 
@@ -819,8 +845,8 @@ Type: TValidator
 
 ### Parameters
 
--   `min`  Min value
--   `value`  Value to check
+-   `min` Min value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
 
@@ -832,9 +858,9 @@ Type: TValidator
 
 ### Parameters
 
--   `min`  Min value
--   `max`  Max value
--   `value`  Value to check
+-   `min` Min value
+-   `max` Max value
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
 
@@ -846,8 +872,8 @@ Type: TValidator
 
 ### Parameters
 
--   `elems`  Elements value could be
--   `value`  Value to check
+-   `elems` Elements value could be
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether the value matches one of the elems
 
@@ -859,8 +885,8 @@ Type: TValidator
 
 ### Parameters
 
--   `validators`  Functions to run
--   `value`  Value to check
+-   `validators` Functions to run
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value if one of the functions passes
 
@@ -872,8 +898,8 @@ Type: TValidator
 
 ### Parameters
 
--   `inner`  Substring to check for (converted to string)
--   `value`  Value to check
+-   `inner` Substring to check for (converted to string)
+-   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether it contains substring
 
@@ -942,3 +968,27 @@ valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "num
 ```
 
 Returns **{success: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean), values: TMsg}** Object representing what passed and what failed
+
+# Contributing
+
+## Build
+
+To build the project
+
+```bash
+yarn build
+# or
+npm run build
+```
+
+## [Code of Conduct](CODE_OF_CONDUCT.md)
+
+Please see full [code of conduct](CODE_OF_CONDUCT.md)
+
+## [Contributing Guide](.github/CONTRIBUTING.md)
+
+To contribute to the project please see the [contributing guide](.github/CONTRIBUTING.md)
+
+## Licence
+
+Valigators is [MIT licensed](LICENCE)
