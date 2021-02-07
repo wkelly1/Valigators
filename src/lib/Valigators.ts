@@ -169,6 +169,7 @@ export class Valigator {
         type: string;
         required: string;
         validators: string;
+        messages: string;
         validationErrors: string;
     } = {
         success: "success",
@@ -176,6 +177,7 @@ export class Valigator {
         type: "type",
         required: "required",
         validators: "validators",
+        messages: "messages",
         validationErrors: "validationErrors",
     };
 
@@ -415,20 +417,40 @@ export class Valigator {
         return output;
     }
 
-    private getValidationMessages(data: unknown, shape: TShape): string[] {
+    private getValidationMessages(
+        data: unknown,
+        shape: TShape
+    ): { validator: string; message: string }[] {
         const validators = (shape[
             this.keys.validators
         ] as unknown) as TValidator[];
         // Run any user defined validators
 
-        let msgs: string[] = [];
+        let msgs: { validator: string; message: string }[] = [];
         if (validators) {
             if (Array.isArray(validators)) {
                 for (let i = 0; i < validators.length; i++) {
                     if (!validators[i](data)) {
                         console.log(validators[i](data));
-                        if (shape.messages[validators[i]().id]) {
-                            msgs.push(shape.messages[validators[i]().id]);
+                        if (
+                            (shape[this.keys.messages] || {})[
+                                validators[i]().id
+                            ]
+                        ) {
+                            const error = {
+                                validator: validators[i]().id,
+                                message:
+                                    shape[this.keys.messages][
+                                        validators[i]().id
+                                    ],
+                            };
+                            msgs.push(error);
+                        } else {
+                            const error = {
+                                validator: validators[i]().id,
+                                message: this.messages.invalidValue,
+                            };
+                            msgs.push(error);
                         }
                     }
                 }
@@ -443,25 +465,34 @@ export class Valigator {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
-                    let msg: string[];
-                    if (shape.messages) {
-                        let temp: string[] = this.getValidationMessages(
-                            data,
-                            shape
-                        );
-                        if (temp.length > 0) {
-                            msg = temp;
-                        } else {
-                            msg = [this.messages.invalidValue];
-                        }
-                    } else {
-                        msg = [this.messages.invalidValue];
-                    }
+                    // let msg: string[];
+                    // if (shape.messages) {
+                    //     let temp: string[] = this.getValidationMessages(
+                    //         data,
+                    //         shape
+                    //     );
+                    //     if (temp.length > 0) {
+                    //         msg = temp;
+                    //     } else {
+                    //         msg = [this.messages.invalidValue];
+                    //     }
+                    // } else {
+                    //     msg = [this.messages.invalidValue];
+                    // }
 
-                    // Invalid data
+                    // // Invalid data
+                    // const cur = {};
+                    // cur[this.keys.success] = false;
+                    // cur[this.keys.message] = msg;
+
                     const cur = {};
                     cur[this.keys.success] = false;
-                    cur[this.keys.message] = msg;
+                    cur[this.keys.message] = this.messages.invalidValue;
+
+                    cur[
+                        this.keys.validationErrors
+                    ] = this.getValidationMessages(data, shape);
+
                     return cur;
                 } else {
                     // valid data
@@ -490,24 +521,30 @@ export class Valigator {
                         ) {
                             let msg: string[];
 
-                            if (shape[key]["messages"]) {
-                                let temp: string[] = this.getValidationMessages(
-                                    data[key],
-                                    shape[key] as TShape
-                                );
+                            // if (shape[key]["messages"]) {
+                            //     let temp: string[] = this.getValidationMessages(
+                            //         data[key],
+                            //         shape[key] as TShape
+                            //     );
 
-                                if (temp.length > 0) {
-                                    msg = temp;
-                                } else {
-                                    msg = [this.messages.invalidValue];
-                                }
-                            } else {
-                                msg = [this.messages.invalidValue];
-                            }
+                            //     if (temp.length > 0) {
+                            //         msg = temp;
+                            //     } else {
+                            //         msg = [this.messages.invalidValue];
+                            //     }
+                            // } else {
+                            //     msg = [this.messages.invalidValue];
+                            // }
 
                             const cur = {};
                             cur[this.keys.success] = false;
-                            cur[this.keys.message] = msg;
+                            cur[this.keys.message] = this.messages.invalidValue;
+                            cur[
+                                this.keys.validationErrors
+                            ] = this.getValidationMessages(
+                                data[key],
+                                shape[key] as TShape
+                            );
 
                             // Invalid data
                             output[key] = cur;

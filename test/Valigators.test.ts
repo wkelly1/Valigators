@@ -890,7 +890,7 @@ test("Testing validate_more", () => {
             },
             nested: {
                 success: false,
-                message: ["Value you provided is unexpected"],
+                message: "Value you provided is unexpected",
             },
         },
     });
@@ -910,7 +910,7 @@ test("Testing validate_more", () => {
                 inner: {
                     extra: {
                         success: false,
-                        message: ["Value you provided is unexpected"],
+                        message: "Value you provided is unexpected",
                     },
                 },
             },
@@ -985,7 +985,7 @@ test("Testing validate_more", () => {
         values: {
             bar: {
                 success: false,
-                message: ["Value is required but is missing"],
+                message: "Value is required but is missing",
             },
             foo: {
                 success: true,
@@ -1029,7 +1029,13 @@ test("Testing validate_more", () => {
         values: {
             foo: {
                 success: false,
-                message: ["Invalid value for data"],
+                message: "Invalid value for data",
+                validationErrors: [
+                    {
+                        validator: "minLength",
+                        message: "Invalid value for data",
+                    },
+                ],
             },
         },
     });
@@ -1041,7 +1047,7 @@ test("Testing validate_more", () => {
             {
                 foo: {
                     type: "text",
-                    validators: [minLength(5), maxLength(3)],
+                    validators: [minLength(5), maxLength(2)],
                     messages: {
                         minLength: "Test message",
                         maxLength: "Test message 2",
@@ -1054,7 +1060,11 @@ test("Testing validate_more", () => {
         values: {
             foo: {
                 success: false,
-                message: ["Test message", "Test message 2"],
+                message: "Invalid value for data",
+                validationErrors: [
+                    { validator: "minLength", message: "Test message" },
+                    { validator: "maxLength", message: "Test message 2" },
+                ],
             },
         },
     });

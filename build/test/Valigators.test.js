@@ -632,7 +632,7 @@ test("Testing validate_more", function () {
             },
             nested: {
                 success: false,
-                message: ["Value you provided is unexpected"],
+                message: "Value you provided is unexpected",
             },
         },
     });
@@ -646,7 +646,7 @@ test("Testing validate_more", function () {
                 inner: {
                     extra: {
                         success: false,
-                        message: ["Value you provided is unexpected"],
+                        message: "Value you provided is unexpected",
                     },
                 },
             },
@@ -703,7 +703,7 @@ test("Testing validate_more", function () {
         values: {
             bar: {
                 success: false,
-                message: ["Value is required but is missing"],
+                message: "Value is required but is missing",
             },
             foo: {
                 success: true,
@@ -735,7 +735,13 @@ test("Testing validate_more", function () {
         values: {
             foo: {
                 success: false,
-                message: ["Invalid value for data"],
+                message: "Invalid value for data",
+                validationErrors: [
+                    {
+                        validator: "minLength",
+                        message: "Invalid value for data",
+                    },
+                ],
             },
         },
     });
@@ -743,7 +749,7 @@ test("Testing validate_more", function () {
     expect(validate.validate_more({ foo: "dsf" }, {
         foo: {
             type: "text",
-            validators: [Valigators_1.minLength(5), Valigators_1.maxLength(3)],
+            validators: [Valigators_1.minLength(5), Valigators_1.maxLength(2)],
             messages: {
                 minLength: "Test message",
                 maxLength: "Test message 2",
@@ -754,7 +760,11 @@ test("Testing validate_more", function () {
         values: {
             foo: {
                 success: false,
-                message: ["Test message", "Test message 2"],
+                message: "Invalid value for data",
+                validationErrors: [
+                    { validator: "minLength", message: "Test message" },
+                    { validator: "maxLength", message: "Test message 2" },
+                ],
             },
         },
     });
