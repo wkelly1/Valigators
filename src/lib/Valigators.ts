@@ -171,6 +171,7 @@ export class Valigator {
         validators: string;
         messages: string;
         validationErrors: string;
+        validator: string;
     } = {
         success: "success",
         message: "message",
@@ -179,6 +180,7 @@ export class Valigator {
         validators: "validators",
         messages: "messages",
         validationErrors: "validationErrors",
+        validator: "validator",
     };
 
     private requiredValues: unknown[] = [""];
@@ -216,6 +218,16 @@ export class Valigator {
                 }
                 if (options.keys.validators) {
                     this.keys.validators = options.keys.validators;
+                }
+
+                if (options.keys.messages) {
+                    this.keys.messages = options.keys.messages;
+                }
+                if (options.keys.validationErrors) {
+                    this.keys.validationErrors = options.keys.validationErrors;
+                }
+                if (options.keys.validator) {
+                    this.keys.validator = options.keys.validator;
                 }
             }
 
@@ -420,13 +432,13 @@ export class Valigator {
     private getValidationMessages(
         data: unknown,
         shape: TShape
-    ): { validator: string; message: string }[] {
+    ): { [key: string]: string }[] {
         const validators = (shape[
             this.keys.validators
         ] as unknown) as TValidator[];
         // Run any user defined validators
 
-        let msgs: { validator: string; message: string }[] = [];
+        let msgs: { [key: string]: string }[] = [];
         if (validators) {
             if (Array.isArray(validators)) {
                 for (let i = 0; i < validators.length; i++) {
@@ -437,20 +449,18 @@ export class Valigator {
                                 validators[i]().id
                             ]
                         ) {
-                            const error = {
-                                validator: validators[i]().id,
-                                message:
-                                    shape[this.keys.messages][
-                                        validators[i]().id
-                                    ],
-                            };
+                            let error = {};
+                            error[this.keys.validator] = validators[i]().id;
+                            error[this.keys.message] =
+                                shape[this.keys.messages][validators[i]().id];
                             msgs.push(error);
                         } else {
-                            const error = {
-                                validator: validators[i]().id,
-                                message: this.messages.invalidValue,
-                            };
-                            msgs.push(error);
+                            let error = {};
+                            error[this.keys.validator] = validators[i]().id;
+                            (error[
+                                this.keys.message
+                            ] = this.messages.invalidValue),
+                                msgs.push(error);
                         }
                     }
                 }
