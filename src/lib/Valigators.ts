@@ -60,8 +60,11 @@ import {
     ipv6_address,
     longitude_latitude,
     phoneRegex,
+    time_hhmmss_12h,
+    time_hhmmss_24h,
+    time_hhmm_12h,
+    time_hhmm_24h,
     url,
-    time,
 } from "./Regex";
 import { containsRegex } from "./validators/containsRegex";
 import { isArray } from "./validators/isArray";
@@ -113,8 +116,17 @@ export class Valigator {
         date_string: {
             validators: [isString, containsRegex(dateRegex)],
         },
-        time_string: {
-            validators: [isString, containsRegex(time)],
+        time_hhmm_12h: {
+            validators: [isString, containsRegex(time_hhmm_12h)],
+        },
+        time_hhmm_24h: {
+            validators: [isString, containsRegex(time_hhmm_24h)],
+        },
+        time_hhmmss_12h: {
+            validators: [isString, containsRegex(time_hhmmss_12h)],
+        },
+        time_hhmmss_24h: {
+            validators: [isString, containsRegex(time_hhmmss_24h)],
         },
         longitude_latitude: {
             validators: [isString, containsRegex(longitude_latitude)],
@@ -217,13 +229,11 @@ export class Valigator {
                         Object.keys(options.types[key]).length === 1 &&
                         options.types[key].validators
                     ) {
-                        if (!options.types[key].validators) {
-                            throw Error(
-                                "Types need to have an array of validators"
-                            );
-                        } else {
-                            this.types[key] = options.types[key];
-                        }
+                        this.types[key] = options.types[key];
+                    } else {
+                        throw Error(
+                            "Types need to have an array of validators"
+                        );
                     }
                 }
             }

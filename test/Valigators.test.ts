@@ -6,6 +6,7 @@ import isString from "../src/lib/validators/isString";
 import length from "../src/lib/validators/length";
 import isNumber from "../src/lib/validators/isNumber";
 import isArray from "../src/lib/validators/isArray";
+import isNull from "../src/lib/validators/isNull";
 import maxDecimalPoint from "../src/lib/validators/maxDecimalPoint";
 import minDecimalPoint from "../src/lib/validators/minDecimalPoint";
 import oneOf from "../src/lib/validators/oneOf";
@@ -25,10 +26,7 @@ import isCube from "../src/lib/validators/isCube";
 import isNegative from "../src/lib/validators/isNegative";
 import isPositive from "../src/lib/validators/isPositive";
 import equals from "../src/lib/validators/equals";
-
-import { TShape, TValidator } from "../src/lib/Valigators.types";
 import Valigator, { substring } from "../src";
-import isDateString from "../src/lib/validators/isDateString";
 
 test("Testing isString", () => {
     expect(isString("t")).toBe(true);
@@ -54,6 +52,18 @@ test("Testing isArray", () => {
     expect(isArray([])).toBe(true);
     expect(isArray([1, 2, 3])).toBe(true);
     expect(isArray(["1", "2"])).toBe(true);
+});
+
+test("Testing isNull", () => {
+    expect(isNull("t")).toBe(false);
+    expect(isNull(1)).toBe(false);
+    expect(isNull(1.1)).toBe(false);
+    expect(isNull({ test: "test" })).toBe(false);
+    expect(isNull([])).toBe(false);
+    expect(isNull([1, 2, 3])).toBe(false);
+    expect(isNull(["1", "2"])).toBe(false);
+    expect(isNull(null)).toBe(true);
+    expect(isNull(undefined)).toBe(false);
 });
 
 test("Testing minLength", () => {
@@ -490,6 +500,319 @@ test("Testing Validate catches incorrect shape", () => {
     );
 });
 
+test("Testing types", () => {
+    const validate = new Valigator();
+
+    //text
+    expect(validate.validate("test", { type: "text" })).toBe(true);
+    expect(validate.validate(1, { type: "text" })).toBe(false);
+
+    // number
+    expect(validate.validate(1, { type: "number" })).toBe(true);
+    expect(validate.validate("sdfklj", { type: "number" })).toBe(false);
+
+    // array
+    expect(validate.validate([1, 2, 3], { type: "array" })).toBe(true);
+    expect(validate.validate(["1", "2", "3"], { type: "array" })).toBe(true);
+    expect(validate.validate(1, { type: "array" })).toBe(false);
+
+    // phone
+    expect(validate.validate("07123456789", { type: "phone" })).toBe(true);
+    expect(validate.validate("+949147248435", { type: "phone" })).toBe(true);
+    expect(validate.validate("786-245-2415", { type: "phone" })).toBe(true);
+    expect(validate.validate("sdf", { type: "phone" })).toBe(false);
+    expect(validate.validate("123", { type: "phone" })).toBe(false);
+    expect(validate.validate("071234567893333", { type: "phone" })).toBe(false);
+    expect(validate.validate("+233", { type: "phone" })).toBe(false);
+    expect(validate.validate(1, { type: "phone" })).toBe(false);
+
+    //date
+    expect(validate.validate(new Date("01/02/2020"), { type: "date" })).toBe(
+        true
+    );
+    expect(validate.validate(1, { type: "date" })).toBe(false);
+    expect(validate.validate("sdf", { type: "date" })).toBe(false);
+
+    //date_string
+    expect(validate.validate("01/02/2020", { type: "date_string" })).toBe(true);
+    expect(validate.validate("1/2/2020", { type: "date_string" })).toBe(true);
+    expect(validate.validate("01-02-2020", { type: "date_string" })).toBe(true);
+    expect(validate.validate("0102", { type: "date_string" })).toBe(false);
+    expect(validate.validate("01/02", { type: "date_string" })).toBe(false);
+    expect(validate.validate("01", { type: "date_string" })).toBe(false);
+    expect(validate.validate("01:02:2020", { type: "date_string" })).toBe(
+        false
+    );
+    expect(validate.validate(1, { type: "date_string" })).toBe(false);
+
+    // time_hhmm_12h
+    expect(validate.validate("10:20", { type: "time_hhmm_12h" })).toBe(true);
+    expect(validate.validate("12:00", { type: "time_hhmm_12h" })).toBe(true);
+    expect(validate.validate("05:10", { type: "time_hhmm_12h" })).toBe(true);
+    expect(validate.validate("5:10", { type: "time_hhmm_12h" })).toBe(true);
+    expect(validate.validate("13:10", { type: "time_hhmm_12h" })).toBe(false);
+    expect(validate.validate("13:10:22", { type: "time_hhmm_12h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:10:22", { type: "time_hhmm_12h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:10:60", { type: "time_hhmm_12h" })).toBe(
+        false
+    );
+    expect(validate.validate(1, { type: "time_hhmm_12h" })).toBe(false);
+
+    // time_hhmm_24h
+    expect(validate.validate("10:20", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("12:00", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("05:10", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("5:10", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("13:10", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("15:10", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("00:00", { type: "time_hhmm_24h" })).toBe(true);
+    expect(validate.validate("13:10:22", { type: "time_hhmm_24h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:10:22", { type: "time_hhmm_24h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:10:60", { type: "time_hhmm_24h" })).toBe(
+        false
+    );
+    expect(validate.validate(1, { type: "time_hhmm_24h" })).toBe(false);
+
+    // time_hhmmss_12h
+    expect(validate.validate("10:20", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("12:00", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("05:10", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("5:10", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("13:10", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("15:10", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("00:00", { type: "time_hhmmss_12h" })).toBe(false);
+    expect(validate.validate("13:10:22", { type: "time_hhmmss_12h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:10:22", { type: "time_hhmmss_12h" })).toBe(
+        true
+    );
+    expect(validate.validate("09:20:22", { type: "time_hhmmss_12h" })).toBe(
+        true
+    );
+    expect(validate.validate("1:12:22", { type: "time_hhmmss_12h" })).toBe(
+        true
+    );
+    expect(validate.validate("10:10:60", { type: "time_hhmmss_12h" })).toBe(
+        false
+    );
+    expect(validate.validate("10:61:60", { type: "time_hhmmss_12h" })).toBe(
+        false
+    );
+    expect(validate.validate("14:42:60", { type: "time_hhmmss_12h" })).toBe(
+        false
+    );
+    expect(validate.validate(1, { type: "time_hhmmss_12h" })).toBe(false);
+
+    // time_hhmmss_24h
+    expect(validate.validate("10:20", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("12:00", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("05:10", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("5:10", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("13:10", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("15:10", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("00:00", { type: "time_hhmmss_24h" })).toBe(false);
+    expect(validate.validate("13:10:22", { type: "time_hhmmss_24h" })).toBe(
+        true
+    );
+    expect(validate.validate("10:10:22", { type: "time_hhmmss_24h" })).toBe(
+        true
+    );
+    expect(validate.validate("09:20:22", { type: "time_hhmmss_24h" })).toBe(
+        true
+    );
+    expect(validate.validate("1:12:22", { type: "time_hhmmss_24h" })).toBe(
+        true
+    );
+    expect(validate.validate("10:10:60", { type: "time_hhmmss_24h" })).toBe(
+        false
+    );
+    expect(validate.validate("13:10:60", { type: "time_hhmmss_24h" })).toBe(
+        false
+    );
+    expect(validate.validate("13:10:25", { type: "time_hhmmss_24h" })).toBe(
+        true
+    );
+    expect(validate.validate("10:61:60", { type: "time_hhmmss_24h" })).toBe(
+        false
+    );
+    expect(validate.validate(1, { type: "time_hhmmss_24h" })).toBe(false);
+
+    // password
+    expect(validate.validate("aA1!bcdef", { type: "password" })).toBe(true);
+    expect(validate.validate("123456789", { type: "password" })).toBe(false);
+    expect(validate.validate("abcdefghi", { type: "password" })).toBe(false);
+    expect(validate.validate("ABCDEFGHI", { type: "password" })).toBe(false);
+    expect(validate.validate("!)£$%^&*(", { type: "password" })).toBe(false);
+    expect(validate.validate("aA1!bcd", { type: "password" })).toBe(false);
+    expect(validate.validate("aA1bcdefg", { type: "password" })).toBe(false);
+    expect(validate.validate("aA!bcdefg", { type: "password" })).toBe(false);
+    expect(validate.validate("a!bcdefgh", { type: "password" })).toBe(false);
+    expect(validate.validate(1, { type: "password" })).toBe(false);
+
+    expect(validate.validate("+10,-12", { type: "longitude_latitude" })).toBe(
+        true
+    );
+    expect(
+        validate.validate("+10.0,-12.0", { type: "longitude_latitude" })
+    ).toBe(true);
+    expect(
+        validate.validate("+10.123,-12.123", { type: "longitude_latitude" })
+    ).toBe(true);
+    expect(validate.validate("22,22", { type: "longitude_latitude" })).toBe(
+        true
+    );
+    expect(validate.validate("-22,-22", { type: "longitude_latitude" })).toBe(
+        true
+    );
+    expect(
+        validate.validate("-22.12345678,-22.12345678", {
+            type: "longitude_latitude",
+        })
+    ).toBe(true);
+    expect(
+        validate.validate("-22.12345678-22.12345678", {
+            type: "longitude_latitude",
+        })
+    ).toBe(false);
+    expect(
+        validate.validate("fdgfd", {
+            type: "longitude_latitude",
+        })
+    ).toBe(false);
+    expect(
+        validate.validate("233", {
+            type: "longitude_latitude",
+        })
+    ).toBe(false);
+    expect(
+        validate.validate(",233", {
+            type: "longitude_latitude",
+        })
+    ).toBe(false);
+    expect(validate.validate(1, { type: "longitude_latitude" })).toBe(false);
+
+    expect(
+        validate.validate("123456789123", { type: "credit_card_number" })
+    ).toBe(false);
+    expect(
+        validate.validate("5191511922153163", { type: "credit_card_number" })
+    ).toBe(true);
+    expect(
+        validate.validate("320627372171367", { type: "credit_card_number" })
+    ).toBe(false);
+    expect(
+        validate.validate("38522568168237", { type: "credit_card_number" })
+    ).toBe(true);
+    expect(validate.validate("sdf", { type: "credit_card_number" })).toBe(
+        false
+    );
+    expect(
+        validate.validate("1234566660000222", { type: "credit_card_number" })
+    ).toBe(false);
+    expect(validate.validate(1, { type: "credit_card_number" })).toBe(false);
+
+    expect(validate.validate("0.0.0.0", { type: "ipv4_address" })).toBe(true);
+    expect(validate.validate("255.255.255.255", { type: "ipv4_address" })).toBe(
+        true
+    );
+    expect(validate.validate("1.1.1.1", { type: "ipv4_address" })).toBe(true);
+    expect(validate.validate("192.168.2.144", { type: "ipv4_address" })).toBe(
+        true
+    );
+    expect(validate.validate("256.265.256.256", { type: "ipv4_address" })).toBe(
+        false
+    );
+    expect(validate.validate("1.1.1", { type: "ipv4_address" })).toBe(false);
+    expect(validate.validate("1.1", { type: "ipv4_address" })).toBe(false);
+    expect(validate.validate("1", { type: "ipv4_address" })).toBe(false);
+    expect(validate.validate(1, { type: "ipv4_address" })).toBe(false);
+
+    expect(
+        validate.validate("2035:0db8:15a3:0000:0000:8a2e:0370:7334", {
+            type: "ipv6_address",
+        })
+    ).toBe(true);
+    expect(
+        validate.validate("FE80:0000:0000:0000:0202:B3FF:FE1E:8329", {
+            type: "ipv6_address",
+        })
+    ).toBe(true);
+    expect(
+        validate.validate("2155:225:2CA1:0000:0000:527:5553:12b5", {
+            type: "ipv6_address",
+        })
+    ).toBe(true);
+    expect(
+        validate.validate("2314:0415:2CC1::0167:5653:23b5", {
+            type: "ipv6_address",
+        })
+    ).toBe(true);
+    expect(
+        validate.validate("1.1.1.1", {
+            type: "ipv6_address",
+        })
+    ).toBe(false);
+    expect(
+        validate.validate("192.168.1.1", {
+            type: "ipv6_address",
+        })
+    ).toBe(false);
+    expect(
+        validate.validate("asdfads", {
+            type: "ipv6_address",
+        })
+    ).toBe(false);
+    expect(validate.validate(1, { type: "ipv6_address" })).toBe(false);
+
+    expect(validate.validate("https://test.com", { type: "url" })).toBe(true);
+    expect(validate.validate("https://www.test.com", { type: "url" })).toBe(
+        true
+    );
+    expect(
+        validate.validate("https://subdomain.test.com", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("https://subdomain.test.co.uk", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("https://subdomain.test.ac.uk", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("https://subdomain.test.ac.uk", { type: "url" })
+    ).toBe(true);
+    expect(validate.validate("http://test.com", { type: "url" })).toBe(true);
+    expect(validate.validate("http://www.test.com", { type: "url" })).toBe(
+        true
+    );
+    expect(
+        validate.validate("http://subdomain.test.com", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("http://subdomain.test.co.uk", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("http://subdomain.test.ac.uk", { type: "url" })
+    ).toBe(true);
+    expect(
+        validate.validate("http://subdomain.test.ac.uk", { type: "url" })
+    ).toBe(true);
+    expect(validate.validate("subdomain.test.ac.uk", { type: "url" })).toBe(
+        false
+    );
+    expect(validate.validate("test.ac.uk", { type: "url" })).toBe(false);
+    expect(validate.validate("test", { type: "url" })).toBe(false);
+    expect(validate.validate(1, { type: "url" })).toBe(false);
+});
+
 test("Testing Validate on text", () => {
     const validate = new Valigator();
 
@@ -783,13 +1106,21 @@ test("Testing custom options", () => {
             type: "ty",
             required: "req",
             validators: "val",
+            messages: "mes",
+            validationErrors: "valErr",
+            validator: "val2",
         },
         types: {
             test: {
                 validators: [],
             },
         },
+        requiredValues: ["", null],
     });
+
+    expect(() => {
+        new Valigator({ types: { test: {} as any } });
+    }).toThrow("Types need to have an array of validators");
 
     expect(() => {
         validate.validate(
