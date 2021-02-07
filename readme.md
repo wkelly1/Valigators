@@ -66,22 +66,23 @@ valigator.validate(invalid_data, shape); // Returns false
 
 valigator.validate_more(valid_data, shape);
 // => {
-//      name: { success: true },
-//      age: { success: true },
-//      example: { foo: { success: true } }
-//     }
+//     success: true,
+//     values: {
+//         name: { success: true },
+//         age: { success: true },
+//         example: { foo: { success: true } },
+//     },
+// };
 
 valigator.validate_more(invalid_data, shape);
 // => {
-//   name: {
-//     success: false,
-//     message: "Value is required but is missing",
-//   },
 //   age: { success: true },
-//   example: {
-//     foo: { success: true },
-//   },
-// };
+//   example: { foo: { success: true } },
+//   name: {
+//       success: false,
+//       message: 'Value is required but is missing'
+//     }
+// }
 ```
 
 ## The shape object
@@ -258,6 +259,105 @@ To actually check the contents of the array you can use any of the array validat
 
 Note: you can also perform other checks such as `maxLength` on arrays using the [validators](#validators)
 
+## Messages
+
+By default valigators will display a message detailing what went wrong when you call `validate_more`. If any of the validators fail then you will get details about that in the `validationErrors` key:
+
+```js
+const valigator = new Valigator();
+
+const invalid_data = {
+    example: "bar",
+};
+
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(4)],
+    },
+};
+
+valigator.validate_more(invalid_data, shape);
+// => {
+//     success: false, // Overall success
+//     values: {
+//         example: {
+//             success: false, // Individual success
+//             message: "Invalid value for data", // Individual error message
+//             validationErrors: [
+//                 {
+//                     validator: "minLength",
+//                     message: "Invalid value for data",
+//                 },
+//             ], // List of which validators failed
+//         },
+//     },
+// };
+```
+
+When a validator failed you will get the default error message "Invalid value for data" (Default can be overwritten [see here](#Custom_default_error_messages)). However you may want individual custom messages for each validator. To do this:
+
+```js
+const valigator = new Valigator();
+
+const invalid_data = {
+    example: "bar",
+};
+
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(4)],
+        messages: {
+            minLength: "Oh no, minLength failed", // New message
+        },
+    },
+};
+
+valigator.validate_more(invalid_data, shape);
+// => {
+//     success: false, // Overall success
+//     values: {
+//         example: {
+//             success: false, // Individual success
+//             message: "Invalid value for data", // Individual error message
+//             validationErrors: [
+//                 {
+//                     validator: "minLength",
+//                     message: "Oh no, minLength failed", // <- now showing your message
+//                 },
+//             ], // List of which validators failed
+//         },
+//     },
+// };
+```
+
+The key in the messages field matches the validator function name.
+
+### Custom messages with custom validators
+
+If you have written your own validator then to be able to provide a custom message you need to make sure you provide an id to the validator.
+
+```js
+const my_validator = customValidator((a, b, value) = {
+    return (value % a) === b;
+}, "myValidator") // <- make sure you define the identifier
+```
+
+Now when adding custom messages you can reference it via the identifer (e.g. `myValidator`)
+
+```js
+const shape = {
+    example: {
+        type: "text",
+        validators: [my_validator],
+        messages: {
+            myValidator: "myValidator failed",
+        },
+    },
+};
+```
+
 ## Options
 
 You can specify a set of options for the `Valigator`
@@ -275,6 +375,9 @@ const options = {
     type?: string;
     required?: string;
     validators?: string;
+    messages?: string;
+    validationErrors?: string;
+    validator?: string;
   };
   types?: object
 }
@@ -308,6 +411,9 @@ const options = {
         type: "newKey3",
         required: "newKey4",
         validators: "newKey5",
+        messages: "newKey6",
+        validationErrors: "newKey7",
+        validator: "newKey8",
     },
 };
 
@@ -351,7 +457,7 @@ Valigator class is used to check that some data matches some specified shape
 
 ### Parameters
 
--   `options` **options?**
+-   `options` **TOptions?** Optional settings
 
 ### validate
 
@@ -360,7 +466,7 @@ Checks whether some data matches a specified shape and just returns a boolean va
 #### Parameters
 
 -   `data` **any** Data to check
--   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `shape` **TShape** Shape the data is supposed to match
 
 #### Examples
 
@@ -387,57 +493,26 @@ Checks whether some data matches a specified shape and returns an object contain
 #### Parameters
 
 -   `data` **any** Data to check
--   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `shape` **TShape** Shape the data is supposed to match
 
 #### Examples
 
 ```javascript
 const valigator = new Valigator();
 valigator.validate_more(10, {type: "number"});
-// => { success: true, values: { success: true } }
+// => {success: true, values: {success: true}}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-// => {
-//     success: true,
-//     values: {
-//         names: {
-//             first: { success: true },
-//             last: { success: true }
-//         }
-//     }
-// }
+// => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-// => {
-//     success: true,
-//     values: {
-//         names: {
-//             first: { success: true }
-//         }
-//     }
-// }
+// => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-// => {
-//     success: false,
-//     values: {
-//         names: {
-//             first: {
-//                 success: false,
-//                 message: "Invalid value for data",
-//                 validationErrors: [
-//                     {
-//                         validator: "isNumber",
-//                         message: "Invalid value for data",
-//                     },
-//                 ],
-//             },
-//         },
-//     },
-// }
+// => {success: false, values: { names: { first: { success: false, message: 'Invalid value for data' } } }}
 ```
 
-Returns **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Object representing what passed and what failed
+Returns **{success: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean), values: TMsg}** Object representing what passed and what failed
