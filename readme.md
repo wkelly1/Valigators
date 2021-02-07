@@ -446,14 +446,475 @@ new Valigator(options);
 
 ### Table of Contents
 
--   [Valigator](#valigator)
+-   [getDecimalPoints](#getdecimalpoints)
     -   [Parameters](#parameters)
+-   [curry](#curry)
+    -   [Parameters](#parameters-1)
+-   [run](#run)
+    -   [Parameters](#parameters-2)
+-   [containsLower](#containslower)
+    -   [Parameters](#parameters-3)
+-   [containsNumber](#containsnumber)
+    -   [Parameters](#parameters-4)
+-   [containsRegex](#containsregex)
+    -   [Parameters](#parameters-5)
+-   [containsSymbol](#containssymbol)
+    -   [Parameters](#parameters-6)
+-   [containsUpper](#containsupper)
+    -   [Parameters](#parameters-7)
+-   [decimalPoints](#decimalpoints)
+    -   [Parameters](#parameters-8)
+-   [equals](#equals)
+    -   [Parameters](#parameters-9)
+-   [isArray](#isarray)
+    -   [Parameters](#parameters-10)
+-   [isBoolean](#isboolean)
+    -   [Parameters](#parameters-11)
+-   [isCube](#iscube)
+    -   [Parameters](#parameters-12)
+-   [isEven](#iseven)
+    -   [Parameters](#parameters-13)
+-   [isInstanceOf](#isinstanceof)
+    -   [Parameters](#parameters-14)
+-   [isNegative](#isnegative)
+    -   [Parameters](#parameters-15)
+-   [isNull](#isnull)
+    -   [Parameters](#parameters-16)
+-   [isNumber](#isnumber)
+    -   [Parameters](#parameters-17)
+-   [isOdd](#isodd)
+    -   [Parameters](#parameters-18)
+-   [isPositive](#ispositive)
+    -   [Parameters](#parameters-19)
+-   [isPrime](#isprime)
+    -   [Parameters](#parameters-20)
+-   [isSquare](#issquare)
+    -   [Parameters](#parameters-21)
+-   [isString](#isstring)
+    -   [Parameters](#parameters-22)
+-   [length](#length)
+    -   [Parameters](#parameters-23)
+-   [maxDecimalPoint](#maxdecimalpoint)
+    -   [Parameters](#parameters-24)
+-   [maxLength](#maxlength)
+    -   [Parameters](#parameters-25)
+-   [minDecimalPoint](#mindecimalpoint)
+    -   [Parameters](#parameters-26)
+-   [minLength](#minlength)
+    -   [Parameters](#parameters-27)
+-   [minMaxLength](#minmaxlength)
+    -   [Parameters](#parameters-28)
+-   [oneOf](#oneof)
+    -   [Parameters](#parameters-29)
+-   [or](#or)
+    -   [Parameters](#parameters-30)
+-   [substring](#substring)
+    -   [Parameters](#parameters-31)
+-   [Valigator](#valigator)
+    -   [Parameters](#parameters-32)
     -   [validate](#validate)
-        -   [Parameters](#parameters-1)
+        -   [Parameters](#parameters-33)
         -   [Examples](#examples)
     -   [validate_more](#validate_more)
-        -   [Parameters](#parameters-2)
+        -   [Parameters](#parameters-34)
         -   [Examples](#examples-1)
+
+## getDecimalPoints
+
+Helper function to get the number of decimal points of a number
+
+### Parameters
+
+-   `value` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Value to get
+
+Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Number of decimal points number has
+
+## curry
+
+See: <https://codeburst.io/perpetual-currying-in-javascript-5ae1c749adc5> for good explanation of this function and currying
+
+### Parameters
+
+-   `fn` **function (...args: [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;any>): any** Function to curry
+-   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+
+Returns **any** Curried function
+
+## run
+
+Wraps a function in a try catch to make it safe
+
+### Parameters
+
+-   `func` **TValidator** 
+-   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `fn`  Function to convert
+
+Returns **TValidator** Safe function
+
+## containsLower
+
+Checks whether the value converted to string contains an lower case character
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an lower case character
+
+## containsNumber
+
+Checks whether the value converted to string contains a number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a number
+
+## containsRegex
+
+Checks whether the value converted to string contains a specified regex
+With arrays it will check that any of the values match the regex
+
+Type: TValidator
+
+### Parameters
+
+-   `reg`  Regex to test
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a specified regex
+
+## containsSymbol
+
+Checks whether the value converted to string contains a symbol
+With arrays it will check that any of the values contain a symbol
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a symbol
+
+## containsUpper
+
+Checks whether the value converted to string contains an upper case character
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an upper case character
+
+## decimalPoints
+
+Checks whether a number has exactly the specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `n`  Value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## equals
+
+Checks whether the value is equal to a specified value using ===
+
+Type: TValidator
+
+### Parameters
+
+-   `equal`  Value to check equals to
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** {boolean} Boolean representing if they are equal
+
+## isArray
+
+Checks if value is an array
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether array or not
+
+## isBoolean
+
+Checks if value is a boolean
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether boolean or not
+
+## isCube
+
+Checks whether a value is a number and whether that number is a cube number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a cube or not
+
+## isEven
+
+Checks whether a value is a number and whether that number is even
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a even or not
+
+## isInstanceOf
+
+Tests the presence of constructor.prototype in object's prototype chain
+
+Type: TValidator
+
+### Parameters
+
+-   `typeClass`  function to test against
+-   `value`  Object to test
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean
+
+## isNegative
+
+Checks whether a value is a number and whether that number is a negative number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a negative number or not
+
+## isNull
+
+Checks if value is null
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether null or not
+
+## isNumber
+
+Checks if value is a number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether number or not
+
+## isOdd
+
+Checks whether a value is a number and whether that number is odd
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a odd or not
+
+## isPositive
+
+Checks whether a value is a number and whether that number is a positive number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a positive number or not
+
+## isPrime
+
+Checks whether a value is a number and whether that number is prime
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
+
+## isSquare
+
+Checks whether a value is a number and whether that number is a square number
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
+
+## isString
+
+Checks if value is a string
+
+Type: TValidator
+
+### Parameters
+
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether string or not
+
+## length
+
+Checks whether a value converted to a string has a specific length
+
+Type: TValidator
+
+### Parameters
+
+-   `n`  Length
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## maxDecimalPoint
+
+Checks whether a number has less than or equal to a specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `max`  Max value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## maxLength
+
+Checks that a value has length less than max value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `max`  Max value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## minDecimalPoint
+
+Checks whether a number has greater than or equal to a specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `min`  Min value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## minLength
+
+Checks that a value has length greater than min value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `min`  Min value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## minMaxLength
+
+Checks whether a value has length between min and max value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `min`  Min value
+-   `max`  Max value
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## oneOf
+
+Takes an array and checks that the value matches on of the elements in the array
+
+Type: TValidator
+
+### Parameters
+
+-   `elems`  Elements value could be
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether the value matches one of the elems
+
+## or
+
+Used if you you don't mind if some of the validators fail as long as one passes
+
+Type: TValidator
+
+### Parameters
+
+-   `validators`  Functions to run
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value if one of the functions passes
+
+## substring
+
+Checks whether a value converted to a string contains a specific substring inner
+
+Type: TValidator
+
+### Parameters
+
+-   `inner`  Substring to check for (converted to string)
+-   `value`  Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether it contains substring
 
 ## Valigator
 
