@@ -6,8 +6,6 @@
 
 Valigators is a simple library for validating that data matches a specific 'shape'
 
-Note: This is still is not yet at release stage and is still in development
-
 ## Usage
 
 ### In Node.js
