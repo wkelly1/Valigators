@@ -61,6 +61,7 @@ export {
     isPositive,
     equals,
     customValidator,
+    Valigator,
 };
 
 export default Valigator;

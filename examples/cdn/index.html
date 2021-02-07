@@ -9,10 +9,9 @@
         <h1>Check out your console</h1>
         <script src="./node_modules/valigators/dist/bundle.usm.js"></script>
         <script>
-            const {Valigator} = window.Valigators;
-            const {minLength} = window.Valigators.validators;
+            const {Valigator, minLength} = window.Valigators;
 
-            let valigator = new Valigator();
+            const valigator = new Valigator();
 
             const valid_data = {
                 name: "bob",

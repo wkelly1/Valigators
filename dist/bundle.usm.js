@@ -42,9 +42,9 @@
      * @param fn Function to curry
      * @returns Curried function
      */
-    function curry(fn) {
+    function curry(fn, id) {
         var innerFn = function (N, args) {
-            return function () {
+            var func = function () {
                 var x = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     x[_i] = arguments[_i];
@@ -52,9 +52,14 @@
                 if (N <= x.length) {
                     return fn.apply(void 0, __spreadArrays(args, x));
                 }
-                return innerFn(N - x.length, __spreadArrays(args, x));
+                var _innerFn = innerFn(N - x.length, __spreadArrays(args, x));
+                // _innerFn.id = id;
+                return _innerFn;
             };
+            func.id = id;
+            return func;
         };
+        innerFn.id = id;
         return innerFn(fn.length, []);
     }
     /**
@@ -62,9 +67,9 @@
      * @param fn Function to convert
      * @returns Safe function
      */
-    function run(func) {
+    function run(func, id) {
         try {
-            return func;
+            return curry(func, id);
         }
         catch (ex) {
             return function () {
@@ -77,81 +82,6 @@
         }
     }
 
-    /**
-     * Checks if value is a string
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether string or not
-     */
-    function _isString(value) {
-        return typeof value === "string";
-    }
-    /**
-     * Checks if value is a number
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether number or not
-     */
-    function _isNumber(value) {
-        return typeof value === "number";
-    }
-    /**
-     * Checks if value is an array
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether array or not
-     */
-    function _isArray(value) {
-        return Array.isArray(value);
-    }
-    /**
-     * Checks if value is a boolean
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether boolean or not
-     */
-    function _isBoolean(value) {
-        return typeof value === "boolean";
-    }
-    /**
-     * Checks if value is null
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether null or not
-     */
-    function _isNull(value) {
-        return value === null;
-    }
-    /**
-     * Checks that a value has length greater than min value inclusive
-     * @param min Min value
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether right length or not
-     */
-    function _minLength(min, value) {
-        if (Array.isArray(value)) {
-            return value.length >= min;
-        }
-        else {
-            return String(value).length >= min;
-        }
-    }
-    /**
-     * Checks that a value has length less than max value inclusive
-     * @param max Max value
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether right length or not
-     */
-    function _maxLength(max, value) {
-        if (Array.isArray(value)) {
-            return value.length <= max;
-        }
-        else {
-            return String(value).length <= max;
-        }
-    }
-    /**
-     * Checks whether a value has length between min and max value inclusive
-     * @param min Min value
-     * @param max Max value
-     * @param value Value to check
-     * @returns {boolean} Boolean value representing whether right length or not
-     */
     function _minMaxLength(min, max, value) {
         if (Array.isArray(value)) {
             return value.length >= min && value.length <= max;
@@ -161,11 +91,82 @@
         }
     }
     /**
-     * Checks whether a value converted to a string has a specific length
-     * @param n Length
+     * Checks whether a value has length between min and max value inclusive
+     * @param min Min value
+     * @param max Max value
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether right length or not
      */
+    var minMaxLength = run(_minMaxLength, "minMaxLength");
+
+    var _minLength;
+    _minLength = function (min, value) {
+        if (Array.isArray(value)) {
+            return value.length >= min;
+        }
+        else {
+            return String(value).length >= min;
+        }
+    };
+    /**
+     * Checks that a value has length greater than min value inclusive
+     * @param min Min value
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether right length or not
+     */
+    var minLength = run(_minLength, "minLength");
+
+    function _maxLength(max, value) {
+        if (Array.isArray(value)) {
+            return value.length <= max;
+        }
+        else {
+            return String(value).length <= max;
+        }
+    }
+    /**
+     * Checks that a value has length less than max value inclusive
+     * @param max Max value
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether right length or not
+     */
+    var maxLength = run(_maxLength, "maxLength");
+
+    function customValidator(func, identifier) {
+        return run(func, identifier ? identifier : "");
+    }
+
+    var _isString;
+    _isString = function (value) {
+        return typeof value === "string";
+    };
+    /**
+     * Checks if value is a string
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether string or not
+     */
+    var isString = run(_isString, "isString");
+
+    function _isBoolean(value) {
+        return typeof value === "boolean";
+    }
+    /**
+     * Checks if value is a boolean
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether boolean or not
+     */
+    var isBoolean = run(_isBoolean, "isBoolean");
+
+    function _isNull(value) {
+        return value === null;
+    }
+    /**
+     * Checks if value is null
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether null or not
+     */
+    var isNull = run(_isNull, "isNull");
+
     function _length(n, value) {
         if (Array.isArray(value)) {
             return value.length === n;
@@ -175,13 +176,40 @@
         }
     }
     /**
-     * Checks whether a value converted to a string contains a specific substring inner
-     * @param inner Substring to check for (converted to string)
+     * Checks whether a value converted to a string has a specific length
+     * @param n Length
      * @param value Value to check
-     * @returns {boolean} Boolean value representing whether it contains substring
+     * @returns {boolean} Boolean value representing whether right length or not
      */
-    function _substring(inner, value) {
-        return String(value).includes(inner.toString());
+    var length = run(_length, "length");
+
+    function _isNumber(value) {
+        return typeof value === "number";
+    }
+    /**
+     * Checks if value is a number
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether number or not
+     */
+    var isNumber = run(_isNumber, "isNumber");
+
+    function _isArray(value) {
+        return Array.isArray(value);
+    }
+    /**
+     * Checks if value is an array
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether array or not
+     */
+    var isArray = run(_isArray, "isArray");
+
+    function _maxDecimalPoint(max, value) {
+        if (typeof value === "number") {
+            return getDecimalPoints(value) <= max;
+        }
+        else {
+            return false;
+        }
     }
     /**
      * Checks whether a number has less than or equal to a specified number of decimal points
@@ -189,9 +217,11 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing has correct decimal points
      */
-    function _maxDecimalPoint(max, value) {
+    var maxDecimalPoint = run(_maxDecimalPoint, "maxDecimalPoint");
+
+    function _minDecimalPoint(min, value) {
         if (typeof value === "number") {
-            return getDecimalPoints(value) <= max;
+            return getDecimalPoints(value) >= min;
         }
         else {
             return false;
@@ -203,9 +233,22 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing has correct decimal points
      */
-    function _minDecimalPoint(min, value) {
+    var minDecimalPoint = run(_minDecimalPoint, "minDecimalPoint");
+
+    function _oneOf(elems, value) {
+        return elems.includes(value);
+    }
+    /**
+     * Takes an array and checks that the value matches on of the elements in the array
+     * @param elems Elements value could be
+     * @param value Value to check
+     * @returns {boolean} Boolean representing whether the value matches one of the elems
+     */
+    var oneOf = run(_oneOf, "oneOf");
+
+    function _decimalPoints(n, value) {
         if (typeof value === "number") {
-            return getDecimalPoints(value) >= min;
+            return getDecimalPoints(value) === n;
         }
         else {
             return false;
@@ -217,31 +260,24 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing has correct decimal points
      */
-    function _decimalPoints(n, value) {
-        if (typeof value === "number") {
-            return getDecimalPoints(value) === n;
+    var decimalPoints = run(_decimalPoints, "decimalPoints");
+
+    function _containsNumber(value) {
+        if (value instanceof Array || isNumber(value) || isString(value)) {
+            return /\d/.test(String(value));
         }
-        else {
-            return false;
-        }
-    }
-    /**
-     * Takes an array and checks that the value matches on of the elements in the array
-     * @param elems Elements value could be
-     * @param value Value to check
-     * @returns {boolean} Boolean representing whether the value matches one of the elems
-     */
-    function _oneOf(elems, value) {
-        return elems.includes(value);
+        return false;
     }
     /**
      * Checks whether the value converted to string contains a number
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether contains a number
      */
-    function _containsNumber(value) {
-        if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /\d/.test(String(value));
+    var containsNumber = run(_containsNumber, "containsNumber");
+
+    function _containsUpper(value) {
+        if (value instanceof Array || isNumber(value) || isString(value)) {
+            return /[A-Z]/.test(String(value));
         }
         return false;
     }
@@ -250,9 +286,11 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether contains an upper case character
      */
-    function _containsUpper(value) {
-        if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /[A-Z]/.test(String(value));
+    var containsUpper = run(_containsUpper, "containsUpper");
+
+    function _containsLower(value) {
+        if (value instanceof Array || isNumber(value) || isString(value)) {
+            return /[a-z]/.test(String(value));
         }
         return false;
     }
@@ -261,9 +299,16 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether contains an lower case character
      */
-    function _containsLower(value) {
-        if (value instanceof Array || _isNumber(value) || _isString(value)) {
-            return /[a-z]/.test(String(value));
+    var containsLower = run(_containsLower, "containsLower");
+
+    function _containsSymbol(value) {
+        if (isNumber(value) || isString(value)) {
+            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(String(value));
+        }
+        if (value instanceof Array) {
+            return value.some(function (val) {
+                return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString());
+            });
         }
         return false;
     }
@@ -274,14 +319,14 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether contains a symbol
      */
-    function _containsSymbol(value) {
-        if (_isNumber(value) || _isString(value)) {
-            return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(String(value));
+    var containsSymbol = run(_containsSymbol, "containsSymbol");
+
+    function _containsRegex(reg, value) {
+        if (isNumber(value) || isString(value)) {
+            return reg.test(String(value));
         }
         if (value instanceof Array) {
-            return value.some(function (val) {
-                return /[[\]|\\/~^:,;?!&%$@*+\-_#}{<>.=_)(£]/.test(val.toString());
-            });
+            return value.some(function (val) { return reg.test(val.toString()); });
         }
         return false;
     }
@@ -293,14 +338,11 @@
      * @param value Value to check
      * @returns {boolean} Boolean value representing whether contains a specified regex
      */
-    function _containsRegex(reg, value) {
-        if (_isNumber(value) || _isString(value)) {
-            return reg.test(String(value));
-        }
-        if (value instanceof Array) {
-            return value.some(function (val) { return reg.test(val.toString()); });
-        }
-        return false;
+    var containsRegex = run(_containsRegex, "containsRegex");
+
+    function _or(validators, value) {
+        console.log("res: ", run(validators[0], "")(value));
+        return validators.some(function (validator) { return run(validator, "")(value); });
     }
     /**
      * Used if you you don't mind if some of the validators fail as long as one passes
@@ -309,9 +351,10 @@
      * @param value Value to check
      * @returns {boolean} Boolean value if one of the functions passes
      */
-    function _or(validators, value) {
-        console.log("res: ", run(validators[0])(value));
-        return validators.some(function (validator) { return run(validator)(value); });
+    var or = run(_or, "or");
+
+    function _isInstanceOf(typeClass, value) {
+        return value instanceof typeClass;
     }
     /**
      * Tests the presence of constructor.prototype in object's prototype chain
@@ -319,14 +362,8 @@
      * @param value Object to test
      * @returns {boolean} Boolean
      */
-    function _isInstanceOf(typeClass, value) {
-        return value instanceof typeClass;
-    }
-    /**
-     * Checks whether a value is a number and whether that number is even
-     * @param value Value to check
-     * @returns {boolean} Boolean representing whether is a even or not
-     */
+    var isInstanceOf = run(_isInstanceOf, "isInstanceOf");
+
     function _isEven(value) {
         if (typeof value === "number") {
             if (value === 0) {
@@ -337,10 +374,12 @@
         return false;
     }
     /**
-     * Checks whether a value is a number and whether that number is odd
+     * Checks whether a value is a number and whether that number is even
      * @param value Value to check
-     * @returns {boolean} Boolean representing whether is a odd or not
+     * @returns {boolean} Boolean representing whether is a even or not
      */
+    var isEven = run(_isEven, "isEven");
+
     function _isOdd(value) {
         if (typeof value !== "number") {
             return false;
@@ -348,13 +387,15 @@
         if (value === 0 || value < 0) {
             return false;
         }
-        return !_isEven(value);
+        return !isEven(value);
     }
     /**
-     * Checks whether a value is a number and whether that number is prime
+     * Checks whether a value is a number and whether that number is odd
      * @param value Value to check
-     * @returns {boolean} Boolean representing whether is a prime or not
+     * @returns {boolean} Boolean representing whether is a odd or not
      */
+    var isOdd = run(_isOdd, "isOdd");
+
     function _isPrime(value) {
         if (typeof value === "number") {
             if (value <= 1) {
@@ -378,10 +419,12 @@
         return false;
     }
     /**
-     * Checks whether a value is a number and whether that number is a square number
+     * Checks whether a value is a number and whether that number is prime
      * @param value Value to check
      * @returns {boolean} Boolean representing whether is a prime or not
      */
+    var isPrime = run(_isPrime, "isPrime");
+
     function _isSquare(value) {
         if (typeof value === "number") {
             return value > 0 && Math.sqrt(value) % 1 === 0;
@@ -389,11 +432,12 @@
         return false;
     }
     /**
-     * Checks whether a value is a number and whether that number is a cube number
-     *
+     * Checks whether a value is a number and whether that number is a square number
      * @param value Value to check
-     * @returns {boolean} Boolean representing whether is a cube or not
+     * @returns {boolean} Boolean representing whether is a prime or not
      */
+    var isSquare = run(_isSquare, "isSquare");
+
     function _isCube(value) {
         if (typeof value === "number") {
             var start = 1;
@@ -414,13 +458,29 @@
         return false;
     }
     /**
+     * Checks whether a value is a number and whether that number is a cube number
+     *
+     * @param value Value to check
+     * @returns {boolean} Boolean representing whether is a cube or not
+     */
+    var isCube = run(_isCube, "isCube");
+
+    function _isNegative(value) {
+        if (typeof value === "number") {
+            return value < 0;
+        }
+        return false;
+    }
+    /**
      * Checks whether a value is a number and whether that number is a negative number
      * @param value Value to check
      * @returns {boolean} Boolean representing whether is a negative number or not
      */
-    function _isNegative(value) {
+    var isNegative = run(_isNegative, "isNegative");
+
+    function _isPositive(value) {
         if (typeof value === "number") {
-            return value < 0;
+            return value > 0;
         }
         return false;
     }
@@ -429,18 +489,8 @@
      * @param value Value to check
      * @returns {boolean} Boolean representing whether is a positive number or not
      */
-    function _isPositive(value) {
-        if (typeof value === "number") {
-            return value > 0;
-        }
-        return false;
-    }
-    /**
-     * Checks whether the value is equal to a specified value using ===
-     * @param equal Value to check equals to
-     * @param value Value to check
-     * @returns {boolean} {boolean} Boolean representing if they are equal
-     */
+    var isPositive = run(_isPositive, "isPositive");
+
     function _equals(equal, value) {
         if (typeof equal === "object" && typeof value === "object") {
             // SOURCE: https://gomakethings.com/check-if-two-arrays-or-objects-are-equal-with-javascript/
@@ -495,6 +545,26 @@
         }
         return equal === value;
     }
+    /**
+     * Checks whether the value is equal to a specified value using ===
+     * @param equal Value to check equals to
+     * @param value Value to check
+     * @returns {boolean} {boolean} Boolean representing if they are equal
+     */
+    var equals = run(_equals, "equals");
+
+    function _substring(inner, value) {
+        return String(value).includes(inner.toString());
+    }
+    /**
+     * Checks whether a value converted to a string contains a specific substring inner
+     * @param inner Substring to check for (converted to string)
+     * @param value Value to check
+     * @returns {boolean} Boolean value representing whether it contains substring
+     */
+    var substring = run(_substring, "substring");
+
+    var emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     /*
     Whats the point of this?
@@ -540,35 +610,6 @@
     - onError -> (error) => {}
 
     */
-    var isString = run(_isString);
-    var isNumber = run(_isNumber);
-    var isArray = run(_isArray);
-    var isBoolean = run(_isBoolean);
-    var isNull = run(_isNull);
-    var minLength = run(curry(_minLength));
-    var maxLength = run(curry(_maxLength));
-    var minMaxLength = run(curry(_minMaxLength));
-    var length = run(curry(_length));
-    var substring = run(curry(_substring));
-    var maxDecimalPoint = run(curry(_maxDecimalPoint));
-    var minDecimalPoint = run(curry(_minDecimalPoint));
-    var decimalPoints = run(curry(_decimalPoints));
-    var oneOf = run(curry(_oneOf));
-    var containsNumber = run(_containsNumber);
-    var containsUpper = run(_containsUpper);
-    var containsLower = run(_containsLower);
-    var containsSymbol = run(_containsSymbol);
-    var containsRegex = run(curry(_containsRegex));
-    var or = run(curry(_or));
-    var isInstanceOf = run(curry(_isInstanceOf));
-    var isEven = run(curry(_isEven));
-    var isOdd = run(curry(_isOdd));
-    var isPrime = run(curry(_isPrime));
-    var isSquare = run(curry(_isSquare));
-    var isCube = run(curry(_isCube));
-    var isNegative = run(curry(_isNegative));
-    var isPositive = run(curry(_isPositive));
-    var equals = run(curry(_equals));
     /**
      * Valigator class is used to check that some data matches some specified shape
      */
@@ -594,6 +635,9 @@
                 null: {
                     validators: [isNull],
                 },
+                email: {
+                    validators: [isString, containsRegex(emailRegex)],
+                },
             };
             this.messages = {
                 invalidValue: "Invalid value for data",
@@ -606,7 +650,11 @@
                 type: "type",
                 required: "required",
                 validators: "validators",
+                messages: "messages",
+                validationErrors: "validationErrors",
+                validator: "validator",
             };
+            this.requiredValues = [""];
             if (options) {
                 if (options.messages) {
                     if (options.messages.invalidValue) {
@@ -636,10 +684,18 @@
                     if (options.keys.validators) {
                         this.keys.validators = options.keys.validators;
                     }
+                    if (options.keys.messages) {
+                        this.keys.messages = options.keys.messages;
+                    }
+                    if (options.keys.validationErrors) {
+                        this.keys.validationErrors = options.keys.validationErrors;
+                    }
+                    if (options.keys.validator) {
+                        this.keys.validator = options.keys.validator;
+                    }
                 }
                 if (options.types) {
                     for (var key in options.types) {
-                        console.log(options.types[key]);
                         if (Object.keys(options.types[key]).length === 1 &&
                             options.types[key].validators) {
                             if (!options.types[key].validators) {
@@ -651,7 +707,9 @@
                         }
                     }
                 }
-                console.log(this.types);
+                if (options.requiredValues) {
+                    this.requiredValues = options.requiredValues;
+                }
             }
         }
         Valigator.prototype.isType = function (val) {
@@ -775,8 +833,11 @@
                     return shape[key][_this.keys.required] === undefined ||
                         shape[key][_this.keys.required] === true;
                 });
-                // console.log(found, shapeRequired, found.every(val => shapeRequired.includes(val)));
-                if (!shapeRequired.every(function (val) { return found_1.includes(val); })) {
+                if (!shapeRequired.every(function (val) {
+                    return found_1.includes(val) &&
+                        data &&
+                        !_this.requiredValues.includes(data[val]);
+                })) {
                     return false;
                 }
             }
@@ -785,7 +846,7 @@
         Valigator.prototype.buildErrorMessageObject = function (shape, message) {
             var output = {};
             for (var key in shape) {
-                if (typeof shape[key] !== "object") {
+                if (this.isShape(shape[key])) {
                     var cur = {};
                     cur[this.keys.success] = false;
                     cur[this.keys.message] = message;
@@ -797,21 +858,86 @@
             }
             return output;
         };
-        // {
-        //   name: {
-        //     type: "text",
-        //     validators: [minLength(1)],
-        //   },
+        Valigator.prototype.getValidationMessages = function (data, shape) {
+            var validators = shape[this.keys.validators];
+            // Run any user defined validators
+            var msgs = [];
+            if (validators) {
+                if (Array.isArray(validators)) {
+                    for (var i = 0; i < validators.length; i++) {
+                        if (!validators[i](data)) {
+                            if ((shape[this.keys.messages] || {})[validators[i]().id]) {
+                                var error = {};
+                                error[this.keys.validator] = validators[i]().id;
+                                error[this.keys.message] =
+                                    shape[this.keys.messages][validators[i]().id];
+                                msgs.push(error);
+                            }
+                            else {
+                                var error = {};
+                                error[this.keys.validator] = validators[i]().id;
+                                (error[this.keys.message] = this.messages.invalidValue),
+                                    msgs.push(error);
+                            }
+                        }
+                    }
+                }
+            }
+            var test = shape[this.keys.type];
+            if (typeof test === "string") {
+                // Now run the default validators for the type
+                var defaultValidators = this.types[test].validators;
+                for (var i = 0; i < defaultValidators.length; i++) {
+                    if (!defaultValidators[i](data)) {
+                        if ((shape[this.keys.messages] || {})[defaultValidators[i]().id]) {
+                            var error = {};
+                            error[this.keys.validator] = defaultValidators[i]().id;
+                            error[this.keys.message] =
+                                shape[this.keys.messages][defaultValidators[i]().id];
+                            msgs.push(error);
+                        }
+                        else {
+                            var error = {};
+                            error[this.keys.validator] = defaultValidators[i]().id;
+                            (error[this.keys.message] = this.messages.invalidValue),
+                                msgs.push(error);
+                        }
+                    }
+                }
+            }
+            else {
+                throw Error("Invalid shape object");
+            }
+            return msgs;
+        };
         Valigator.prototype.checkDataShapeMore = function (data, shape) {
             var output = {};
             if (typeof data !== "object" || Array.isArray(data)) {
                 // data is some primative type; string, number etc
                 if (this.isShape(shape)) {
                     if (!this.runValidations(data, shape)) {
-                        // Invalid data
+                        // let msg: string[];
+                        // if (shape.messages) {
+                        //     let temp: string[] = this.getValidationMessages(
+                        //         data,
+                        //         shape
+                        //     );
+                        //     if (temp.length > 0) {
+                        //         msg = temp;
+                        //     } else {
+                        //         msg = [this.messages.invalidValue];
+                        //     }
+                        // } else {
+                        //     msg = [this.messages.invalidValue];
+                        // }
+                        // // Invalid data
+                        // const cur = {};
+                        // cur[this.keys.success] = false;
+                        // cur[this.keys.message] = msg;
                         var cur = {};
                         cur[this.keys.success] = false;
                         cur[this.keys.message] = this.messages.invalidValue;
+                        cur[this.keys.validationErrors] = this.getValidationMessages(data, shape);
                         return cur;
                     }
                     else {
@@ -833,9 +959,23 @@
                         if (this.isShape(shape[key])) {
                             // Reached depth
                             if (!this.runValidations(data[key], shape[key])) {
+                                // if (shape[key]["messages"]) {
+                                //     let temp: string[] = this.getValidationMessages(
+                                //         data[key],
+                                //         shape[key] as TShape
+                                //     );
+                                //     if (temp.length > 0) {
+                                //         msg = temp;
+                                //     } else {
+                                //         msg = [this.messages.invalidValue];
+                                //     }
+                                // } else {
+                                //     msg = [this.messages.invalidValue];
+                                // }
                                 var cur = {};
                                 cur[this.keys.success] = false;
                                 cur[this.keys.message] = this.messages.invalidValue;
+                                cur[this.keys.validationErrors] = this.getValidationMessages(data[key], shape[key]);
                                 // Invalid data
                                 output[key] = cur;
                             }
@@ -877,16 +1017,20 @@
                         }
                     }
                 }
-                for (var key in data) {
+                // Make sure every value in the shape has is checked
+                for (var key in shape) {
                     if (!output[key]) {
                         if (typeof data !== "object") {
                             output[key] = this.checkDataShapeMore(data[key], {});
                         }
                         else {
-                            var cur = {};
-                            cur[this.keys.success] = false;
-                            cur[this.keys.message] = this.messages.unexpectedValue;
-                            output[key] = cur;
+                            if (shape[key][this.keys.required] === true ||
+                                shape[key][this.keys.required] === undefined) {
+                                var cur = {};
+                                cur[this.keys.success] = false;
+                                cur[this.keys.message] = this.messages.required;
+                                output[key] = cur;
+                            }
                         }
                     }
                 }
@@ -925,76 +1069,60 @@
          *
          * const valigator = new Valigator();
          * valigator.validate_more(10, {type: "number"});
-         * // => {success: true}
+         * // => {success: true, values: {success: true}}
          *
          * const valigator = new Valigator();
          * valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-         * // => { names: { first: { success: true }, last: { success: true } } }
+         * // => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
          *
          * const valigator = new Valigator();
          * valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-         * // => { names: { first: { success: true }, last: { success: true } } }
+         * // => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
          *
          * const valigator = new Valigator();
          * valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-         * // => { names: { first: { success: false, message: 'Invalid value for data' } } }
+         * // => {success: false, values: { names: { first: { success: false, message: 'Invalid value for data' } } }}
          */
         Valigator.prototype.validate_more = function (data, shape) {
             this.validateShape(shape);
             var res = this.checkDataShapeMore(data, shape);
-            return res;
+            return { success: this.checkDataShape(data, shape), values: res };
         };
         return Valigator;
     }());
-    // const val = new Valigator();
-    // let test = curry<boolean>(_minLength)(1);
-    // const data = { example: "sdf" };
-    // const shape: TShape = {
-    //     example: {
-    //         example: {
-    //             type: "text",
-    //             validators: [minLength(1)],
-    //         },
-    //     },
-    // };
-    // console.log(val.validate_more(data, shape));
-    // let test2: boolean = minLength(1);
-    // console.log(test);
-
-    var validators = {
-        isString: isString,
-        isNumber: isNumber,
-        isArray: isArray,
-        isBoolean: isBoolean,
-        isNull: isNull,
-        minLength: minLength,
-        maxLength: maxLength,
-        minMaxLength: minMaxLength,
-        length: length,
-        substring: substring,
-        maxDecimalPoint: maxDecimalPoint,
-        minDecimalPoint: minDecimalPoint,
-        decimalPoints: decimalPoints,
-        oneOf: oneOf,
-        containsNumber: containsNumber,
-        containsUpper: containsUpper,
-        containsLower: containsLower,
-        containsSymbol: containsSymbol,
-        containsRegex: containsRegex,
-        or: or,
-        isInstanceOf: isInstanceOf,
-        isEven: isEven,
-        isOdd: isOdd,
-        isPrime: isPrime,
-        isSquare: isSquare,
-        isCube: isCube,
-        isNegative: isNegative,
-        isPositive: isPositive,
-        equals: equals,
-    };
 
     exports.Valigator = Valigator;
-    exports.validators = validators;
+    exports.containsLower = containsLower;
+    exports.containsNumber = containsNumber;
+    exports.containsRegex = containsRegex;
+    exports.containsSymbol = containsSymbol;
+    exports.containsUpper = containsUpper;
+    exports.customValidator = customValidator;
+    exports.decimalPoints = decimalPoints;
+    exports.default = Valigator;
+    exports.equals = equals;
+    exports.isArray = isArray;
+    exports.isBoolean = isBoolean;
+    exports.isCube = isCube;
+    exports.isEven = isEven;
+    exports.isInstanceOf = isInstanceOf;
+    exports.isNegative = isNegative;
+    exports.isNull = isNull;
+    exports.isNumber = isNumber;
+    exports.isOdd = isOdd;
+    exports.isPositive = isPositive;
+    exports.isPrime = isPrime;
+    exports.isSquare = isSquare;
+    exports.isString = isString;
+    exports.length = length;
+    exports.maxDecimalPoint = maxDecimalPoint;
+    exports.maxLength = maxLength;
+    exports.minDecimalPoint = minDecimalPoint;
+    exports.minLength = minLength;
+    exports.minMaxLength = minMaxLength;
+    exports.oneOf = oneOf;
+    exports.or = or;
+    exports.substring = substring;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
