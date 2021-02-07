@@ -5,6 +5,9 @@
     "main": "dist/bundle.cjs.js",
     "module": "dist/bundle.esm.js",
     "sideEffects": false,
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "predev": "rimraf build",
         "dev": "tsc --watch",
@@ -13,7 +16,8 @@
         "prebuild": "rimraf dist",
         "build": "rollup -c",
         "lint": "eslint --ext .ts .",
-        "lint:fix": "eslint --fix --ext .ts ."
+        "lint:fix": "eslint --fix --ext .ts .",
+        "prepublish": "npm run build"
     },
     "husky": {
         "hooks": {
