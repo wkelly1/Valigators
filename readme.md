@@ -446,111 +446,72 @@ new Valigator(options);
 
 ### Table of Contents
 
--   [getDecimalPoints](#getdecimalpoints)
-    -   [Parameters](#parameters)
--   [curry](#curry)
-    -   [Parameters](#parameters-1)
--   [run](#run)
-    -   [Parameters](#parameters-2)
 -   [containsLower](#containslower)
-    -   [Parameters](#parameters-3)
+    -   [Parameters](#parameters)
 -   [containsNumber](#containsnumber)
-    -   [Parameters](#parameters-4)
+    -   [Parameters](#parameters-1)
 -   [containsRegex](#containsregex)
-    -   [Parameters](#parameters-5)
+    -   [Parameters](#parameters-2)
 -   [containsSymbol](#containssymbol)
-    -   [Parameters](#parameters-6)
+    -   [Parameters](#parameters-3)
 -   [containsUpper](#containsupper)
-    -   [Parameters](#parameters-7)
+    -   [Parameters](#parameters-4)
 -   [decimalPoints](#decimalpoints)
-    -   [Parameters](#parameters-8)
+    -   [Parameters](#parameters-5)
 -   [equals](#equals)
-    -   [Parameters](#parameters-9)
+    -   [Parameters](#parameters-6)
 -   [isArray](#isarray)
-    -   [Parameters](#parameters-10)
+    -   [Parameters](#parameters-7)
 -   [isBoolean](#isboolean)
-    -   [Parameters](#parameters-11)
+    -   [Parameters](#parameters-8)
 -   [isCube](#iscube)
-    -   [Parameters](#parameters-12)
+    -   [Parameters](#parameters-9)
 -   [isEven](#iseven)
-    -   [Parameters](#parameters-13)
+    -   [Parameters](#parameters-10)
 -   [isInstanceOf](#isinstanceof)
-    -   [Parameters](#parameters-14)
+    -   [Parameters](#parameters-11)
 -   [isNegative](#isnegative)
-    -   [Parameters](#parameters-15)
+    -   [Parameters](#parameters-12)
 -   [isNull](#isnull)
-    -   [Parameters](#parameters-16)
+    -   [Parameters](#parameters-13)
 -   [isNumber](#isnumber)
-    -   [Parameters](#parameters-17)
+    -   [Parameters](#parameters-14)
 -   [isOdd](#isodd)
-    -   [Parameters](#parameters-18)
+    -   [Parameters](#parameters-15)
 -   [isPositive](#ispositive)
-    -   [Parameters](#parameters-19)
+    -   [Parameters](#parameters-16)
 -   [isPrime](#isprime)
-    -   [Parameters](#parameters-20)
+    -   [Parameters](#parameters-17)
 -   [isSquare](#issquare)
-    -   [Parameters](#parameters-21)
+    -   [Parameters](#parameters-18)
 -   [isString](#isstring)
-    -   [Parameters](#parameters-22)
+    -   [Parameters](#parameters-19)
 -   [length](#length)
-    -   [Parameters](#parameters-23)
+    -   [Parameters](#parameters-20)
 -   [maxDecimalPoint](#maxdecimalpoint)
-    -   [Parameters](#parameters-24)
+    -   [Parameters](#parameters-21)
 -   [maxLength](#maxlength)
-    -   [Parameters](#parameters-25)
+    -   [Parameters](#parameters-22)
 -   [minDecimalPoint](#mindecimalpoint)
-    -   [Parameters](#parameters-26)
+    -   [Parameters](#parameters-23)
 -   [minLength](#minlength)
-    -   [Parameters](#parameters-27)
+    -   [Parameters](#parameters-24)
 -   [minMaxLength](#minmaxlength)
-    -   [Parameters](#parameters-28)
+    -   [Parameters](#parameters-25)
 -   [oneOf](#oneof)
-    -   [Parameters](#parameters-29)
+    -   [Parameters](#parameters-26)
 -   [or](#or)
-    -   [Parameters](#parameters-30)
+    -   [Parameters](#parameters-27)
 -   [substring](#substring)
-    -   [Parameters](#parameters-31)
+    -   [Parameters](#parameters-28)
 -   [Valigator](#valigator)
-    -   [Parameters](#parameters-32)
+    -   [Parameters](#parameters-29)
     -   [validate](#validate)
-        -   [Parameters](#parameters-33)
+        -   [Parameters](#parameters-30)
         -   [Examples](#examples)
     -   [validate_more](#validate_more)
-        -   [Parameters](#parameters-34)
+        -   [Parameters](#parameters-31)
         -   [Examples](#examples-1)
-
-## getDecimalPoints
-
-Helper function to get the number of decimal points of a number
-
-### Parameters
-
--   `value` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Value to get
-
-Returns **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Number of decimal points number has
-
-## curry
-
-See: <https://codeburst.io/perpetual-currying-in-javascript-5ae1c749adc5> for good explanation of this function and currying
-
-### Parameters
-
--   `fn` **function (...args: [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)&lt;any>): any** Function to curry
--   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
-
-Returns **any** Curried function
-
-## run
-
-Wraps a function in a try catch to make it safe
-
-### Parameters
-
--   `func` **TValidator** 
--   `id` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `fn`  Function to convert
-
-Returns **TValidator** Safe function
 
 ## containsLower
 
