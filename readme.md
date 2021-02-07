@@ -394,19 +394,50 @@ Checks whether some data matches a specified shape and returns an object contain
 ```javascript
 const valigator = new Valigator();
 valigator.validate_more(10, {type: "number"});
-// => {success: true}
+// => { success: true, values: { success: true } }
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-// => { names: { first: { success: true }, last: { success: true } } }
+// => {
+//     success: true,
+//     values: {
+//         names: {
+//             first: { success: true },
+//             last: { success: true }
+//         }
+//     }
+// }
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-// => { names: { first: { success: true }, last: { success: true } } }
+// => {
+//     success: true,
+//     values: {
+//         names: {
+//             first: { success: true }
+//         }
+//     }
+// }
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-// => { names: { first: { success: false, message: 'Invalid value for data' } } }
+// => {
+//     success: false,
+//     values: {
+//         names: {
+//             first: {
+//                 success: false,
+//                 message: "Invalid value for data",
+//                 validationErrors: [
+//                     {
+//                         validator: "isNumber",
+//                         message: "Invalid value for data",
+//                     },
+//                 ],
+//             },
+//         },
+//     },
+// }
 ```
 
 Returns **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Object representing what passed and what failed

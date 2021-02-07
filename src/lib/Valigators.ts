@@ -443,7 +443,6 @@ export class Valigator {
             if (Array.isArray(validators)) {
                 for (let i = 0; i < validators.length; i++) {
                     if (!validators[i](data)) {
-                        console.log(validators[i](data));
                         if (
                             (shape[this.keys.messages] || {})[
                                 validators[i]().id
@@ -466,6 +465,37 @@ export class Valigator {
                 }
             }
         }
+
+        const test = shape[this.keys.type];
+        if (typeof test === "string") {
+            // Now run the default validators for the type
+            const defaultValidators = this.types[test].validators;
+            for (let i = 0; i < defaultValidators.length; i++) {
+                if (!defaultValidators[i](data)) {
+                    if (
+                        (shape[this.keys.messages] || {})[
+                            defaultValidators[i]().id
+                        ]
+                    ) {
+                        let error = {};
+                        error[this.keys.validator] = defaultValidators[i]().id;
+                        error[this.keys.message] =
+                            shape[this.keys.messages][
+                                defaultValidators[i]().id
+                            ];
+                        msgs.push(error);
+                    } else {
+                        let error = {};
+                        error[this.keys.validator] = defaultValidators[i]().id;
+                        (error[this.keys.message] = this.messages.invalidValue),
+                            msgs.push(error);
+                    }
+                }
+            }
+        } else {
+            throw Error("Invalid shape object");
+        }
+
         return msgs;
     }
 
@@ -685,22 +715,3 @@ export class Valigator {
         return { success: this.checkDataShape(data, shape), values: res };
     }
 }
-
-const val = new Valigator();
-
-console.log(
-    val.validate_more(
-        { foo: "dsf" },
-        {
-            foo: {
-                type: "text",
-                validators: [minLength(5)],
-                messages: {
-                    minLength: "Test message",
-                },
-            },
-        }
-    ).values
-);
-console.log(isString.id);
-console.log(minLength(1).id);
