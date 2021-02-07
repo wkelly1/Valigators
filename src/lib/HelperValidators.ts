@@ -8,9 +8,11 @@ export type ValidatorFunc = (...args) => boolean;
  * @param value Value to check
  * @returns {boolean} Boolean value representing whether string or not
  */
-export function _isString<T>(value: T): boolean {
+let _isString: TValidator;
+_isString = function (value: unknown): boolean {
     return typeof value === "string";
-}
+};
+export { _isString };
 
 /**
  * Checks if value is a number
@@ -54,13 +56,15 @@ export function _isNull<T>(value: T): boolean {
  * @param value Value to check
  * @returns {boolean} Boolean value representing whether right length or not
  */
-export function _minLength(min: number, value: unknown): boolean {
+let _minLength: TValidator;
+_minLength = function (min: number, value: unknown): boolean {
     if (Array.isArray(value)) {
         return value.length >= min;
     } else {
         return String(value).length >= min;
     }
-}
+};
+export { _minLength };
 
 /**
  * Checks that a value has length less than max value inclusive
@@ -248,8 +252,8 @@ export function _containsRegex<T>(reg: RegExp, value: T): boolean {
  * @returns {boolean} Boolean value if one of the functions passes
  */
 export function _or(validators: TValidator[], value: unknown): boolean {
-    console.log("res: ", run(validators[0])(value));
-    return validators.some((validator) => run(validator)(value));
+    console.log("res: ", run(validators[0], "")(value));
+    return validators.some((validator) => run(validator, "")(value));
 }
 
 /**

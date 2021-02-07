@@ -28,36 +28,36 @@ import { Valigator } from "valigators";
 const valigator = new Valigator();
 
 const valid_data = {
-  name: "bob",
-  age: 12,
-  example: {
-    foo: "bar",
-  },
+    name: "bob",
+    age: 12,
+    example: {
+        foo: "bar",
+    },
 };
 
 const invalid_data = {
-  // name: "bob" <- removed this value
-  age: 12,
-  example: {
-    foo: "bar",
-  },
+    // name: "bob" <- removed this value
+    age: 12,
+    example: {
+        foo: "bar",
+    },
 };
 
 const shape = {
-  name: {
-    type: "text", // Required attribute
-    validators: [], // Optional list is extra validators to run
-  },
-  age: {
-    type: "number",
-  },
-  example: {
-    // Works with nested objects
-    foo: {
-      type: "text",
-      required: false,
+    name: {
+        type: "text", // Required attribute
+        validators: [], // Optional list is extra validators to run
     },
-  },
+    age: {
+        type: "number",
+    },
+    example: {
+        // Works with nested objects
+        foo: {
+            type: "text",
+            required: false,
+        },
+    },
 };
 
 valigator.validate(valid_data, shape); // Returns true
@@ -90,8 +90,8 @@ This is where we define what the data should look like.
 
 ### Attributes
 
-- `type` - this is the type that the data should be (required attribute)
-- `required` - Is the value required in the data structure
+-   `type` - this is the type that the data should be (required attribute)
+-   `required` - Is the value required in the data structure
 
 ### Types
 
@@ -105,17 +105,19 @@ For example the `text` type runs the validators
 
 Available default types:
 
-| Type       | Validations   |
-| ---------- | ------------- |
-| `text`     | `[isString]`  |
-| `number`   | `[isNumber]`  |
-| `array`    | `[isArray]`   |
-| `boolean`  | `[isBoolean]` |
-| `email`    | TODO          |
-| `phone`    | TODO          |
-| `date`     | TODO          |
-| `time`     | TODO          |
-| `password` | TODO          |
+| Type       | Validations                             |
+| ---------- | --------------------------------------- |
+| `text`     | `[isString]`                            |
+| `number`   | `[isNumber]`                            |
+| `array`    | `[isArray]`                             |
+| `boolean`  | `[isBoolean]`                           |
+| `email`    | `[isString, containsRegex(emailRegex)]` |
+| `phone`    | TODO                                    |
+| `date`     | TODO                                    |
+| `time`     | TODO                                    |
+| `password` | TODO                                    |
+
+See [here](https://github.com/wkelly1/Valigators/blob/development/src/lib/Regex.ts) for raw regex
 
 ### Extending default types
 
@@ -123,11 +125,11 @@ If you have a specific type you want to use you can specify it as an option
 
 ```javascript
 const valigator = new Valigator({
-  types: {
-    your_new_type: {
-      validators: [myValidator],
+    types: {
+        your_new_type: {
+            validators: [myValidator],
+        },
     },
-  },
 });
 ```
 
@@ -222,8 +224,8 @@ Example with array on its own:
 ```js
 const data = [1, 2, 3];
 const shape = {
-  type: "array",
-  validators: [],
+    type: "array",
+    validators: [],
 };
 val.validate_more(data, shape);
 // => { success: true }
@@ -234,10 +236,10 @@ Example with nested array:
 ```js
 const data = { example: [1, 2, 3] };
 const shape = {
-  example: {
-    type: "array",
-    validators: [],
-  },
+    example: {
+        type: "array",
+        validators: [],
+    },
 };
 val.validate_more(data, shape);
 // => { example: { success: true } }
@@ -300,13 +302,13 @@ Sometimes your data will match the keys we use in the shape as well as in the ou
 
 ```js
 const options = {
-  keys: {
-    success: "newKey1",
-    message: "newKey2",
-    type: "newKey3",
-    required: "newKey4",
-    validators: "newKey5",
-  },
+    keys: {
+        success: "newKey1",
+        message: "newKey2",
+        type: "newKey3",
+        required: "newKey4",
+        validators: "newKey5",
+    },
 };
 
 new Valigator(options);
@@ -318,11 +320,11 @@ If you don't like the way we validate our default types you can override them. Y
 
 ```js
 const options = {
-  types: {
-    string: {
-      validators: [someValidator, someOtherValidator],
+    types: {
+        string: {
+            validators: [someValidator, someOtherValidator],
+        },
     },
-  },
 };
 
 new Valigator(options);
@@ -334,14 +336,14 @@ new Valigator(options);
 
 ### Table of Contents
 
-- [Valigator](#valigator)
-  - [Parameters](#parameters)
-  - [validate](#validate)
-    - [Parameters](#parameters-1)
-    - [Examples](#examples)
-  - [validate_more](#validate_more)
-    - [Parameters](#parameters-2)
-    - [Examples](#examples-1)
+-   [Valigator](#valigator)
+    -   [Parameters](#parameters)
+    -   [validate](#validate)
+        -   [Parameters](#parameters-1)
+        -   [Examples](#examples)
+    -   [validate_more](#validate_more)
+        -   [Parameters](#parameters-2)
+        -   [Examples](#examples-1)
 
 ## Valigator
 
@@ -349,7 +351,7 @@ Valigator class is used to check that some data matches some specified shape
 
 ### Parameters
 
-- `options` **options?**
+-   `options` **options?**
 
 ### validate
 
@@ -357,8 +359,8 @@ Checks whether some data matches a specified shape and just returns a boolean va
 
 #### Parameters
 
-- `data` **any** Data to check
-- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `data` **any** Data to check
+-   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 
@@ -384,8 +386,8 @@ Checks whether some data matches a specified shape and returns an object contain
 
 #### Parameters
 
-- `data` **any** Data to check
-- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `data` **any** Data to check
+-   `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
 
 #### Examples
 

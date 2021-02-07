@@ -79,40 +79,53 @@ import {
 import { emailRegex } from "./Regex";
 import { TValidator, TTypes, TOptions, TShape, TMsg } from "./Valigators.types";
 
-export const isString: TValidator = run(_isString);
-export const isNumber: TValidator = run(_isNumber);
-export const isArray: TValidator = run(_isArray);
-export const isBoolean: TValidator = run(_isBoolean);
-export const isNull: TValidator = run(_isNull);
-export const minLength: TValidator = run(curry(_minLength));
-export const maxLength: TValidator = run(curry(_maxLength));
-export const minMaxLength: TValidator = run(curry(_minMaxLength));
-export const length: TValidator = run(curry(_length));
-export const substring: TValidator = run(curry(_substring));
-export const maxDecimalPoint: TValidator = run(curry(_maxDecimalPoint));
-export const minDecimalPoint: TValidator = run(curry(_minDecimalPoint));
-export const decimalPoints: TValidator = run(curry(_decimalPoints));
-export const oneOf: TValidator = run(curry(_oneOf));
-export const containsNumber: TValidator = run(_containsNumber);
-export const containsUpper: TValidator = run(_containsUpper);
-export const containsLower: TValidator = run(_containsLower);
-export const containsSymbol: TValidator = run(_containsSymbol);
-export const containsRegex: TValidator = run(curry(_containsRegex));
-export const or: TValidator = run(curry(_or));
-export const isInstanceOf: TValidator = run(curry(_isInstanceOf));
-export const isEven: TValidator = run(curry(_isEven));
-export const isOdd: TValidator = run(curry(_isOdd));
-export const isPrime: TValidator = run(curry(_isPrime));
-export const isSquare: TValidator = run(curry(_isSquare));
-export const isCube: TValidator = run(curry(_isCube));
-export const isNegative: TValidator = run(curry(_isNegative));
-export const isPositive: TValidator = run(curry(_isPositive));
-export const equals: TValidator = run(curry(_equals));
+export const isString: TValidator = run(_isString, "isString");
+export const isNumber: TValidator = run(_isNumber, "isNumber");
+export const isArray: TValidator = run(_isArray, "isArray");
+export const isBoolean: TValidator = run(_isBoolean, "isBoolean");
+export const isNull: TValidator = run(_isNull, "isNull");
+export const minLength: TValidator = run(_minLength, "minLength");
+export const maxLength: TValidator = run(_maxLength, "maxLength");
+export const minMaxLength: TValidator = run(_minMaxLength, "minMaxLength");
+export const length: TValidator = run(_length, "length");
+export const substring: TValidator = run(_substring, "substring");
+export const maxDecimalPoint: TValidator = run(
+    _maxDecimalPoint,
+    "maxDecimalPoint"
+);
+export const minDecimalPoint: TValidator = run(
+    _minDecimalPoint,
+    "minDecimalPoint"
+);
+export const decimalPoints: TValidator = run(_decimalPoints, "decimalPoints");
+export const oneOf: TValidator = run(_oneOf, "oneOf");
+export const containsNumber: TValidator = run(
+    _containsNumber,
+    "containsNumber"
+);
+export const containsUpper: TValidator = run(_containsUpper, "containsUpper");
+export const containsLower: TValidator = run(_containsLower, "containsLower");
+export const containsSymbol: TValidator = run(
+    _containsSymbol,
+    "containsSymbol"
+);
+export const containsRegex: TValidator = run(_containsRegex, "containsRegex");
+export const or: TValidator = run(_or, "or");
+export const isInstanceOf: TValidator = run(_isInstanceOf, "isInstanceOf");
+export const isEven: TValidator = run(_isEven, "isEven");
+export const isOdd: TValidator = run(_isOdd, "isOdd");
+export const isPrime: TValidator = run(_isPrime, "isPrime");
+export const isSquare: TValidator = run(_isSquare, "isSquare");
+export const isCube: TValidator = run(_isCube, "isCube");
+export const isNegative: TValidator = run(_isNegative, "isNegative");
+export const isPositive: TValidator = run(_isPositive, "isPositive");
+export const equals: TValidator = run(_equals, "equals");
 
 export function customValidator<T extends (...args: unknown[]) => boolean>(
-    func: T
+    func: T,
+    identifier?: string
 ): TValidator {
-    return run(curry(func));
+    return run(func, identifier ? identifier : "");
 }
 
 /**
@@ -156,12 +169,14 @@ export class Valigator {
         type: string;
         required: string;
         validators: string;
+        validationErrors: string;
     } = {
         success: "success",
         message: "message",
         type: "type",
         required: "required",
         validators: "validators",
+        validationErrors: "validationErrors",
     };
 
     private requiredValues: unknown[] = [""];
@@ -204,7 +219,6 @@ export class Valigator {
 
             if (options.types) {
                 for (const key in options.types) {
-                    console.log(options.types[key]);
                     if (
                         Object.keys(options.types[key]).length === 1 &&
                         options.types[key].validators
@@ -223,8 +237,6 @@ export class Valigator {
             if (options.requiredValues) {
                 this.requiredValues = options.requiredValues;
             }
-
-            console.log(this.types);
         }
     }
 
@@ -366,15 +378,7 @@ export class Valigator {
                         shape[key][this.keys.required] === undefined ||
                         shape[key][this.keys.required] === true
                 );
-            // console.log(found, shapeRequired, found.every(val => shapeRequired.includes(val)));
 
-            console.log(
-                "here",
-                this.requiredValues,
-                found,
-                shapeRequired,
-                data && data
-            );
             if (
                 !shapeRequired.every(
                     (val) =>
@@ -383,7 +387,6 @@ export class Valigator {
                         !this.requiredValues.includes(data[val])
                 )
             ) {
-                console.log("here");
                 return false;
             }
         }
@@ -393,11 +396,13 @@ export class Valigator {
 
     private buildErrorMessageObject(shape: TShape, message: string): TMsg {
         const output = {};
+
         for (const key in shape) {
-            if (typeof shape[key] !== "object") {
+            if (this.isShape(shape[key])) {
                 const cur = {};
                 cur[this.keys.success] = false;
                 cur[this.keys.message] = message;
+
                 output[key] = cur;
             } else {
                 output[key] = this.buildErrorMessageObject(
@@ -410,21 +415,53 @@ export class Valigator {
         return output;
     }
 
-    // {
-    //   name: {
-    //     type: "text",
-    //     validators: [minLength(1)],
-    //   },
+    private getValidationMessages(data: unknown, shape: TShape): string[] {
+        const validators = (shape[
+            this.keys.validators
+        ] as unknown) as TValidator[];
+        // Run any user defined validators
+
+        let msgs: string[] = [];
+        if (validators) {
+            if (Array.isArray(validators)) {
+                for (let i = 0; i < validators.length; i++) {
+                    if (!validators[i](data)) {
+                        console.log(validators[i](data));
+                        if (shape.messages[validators[i]().id]) {
+                            msgs.push(shape.messages[validators[i]().id]);
+                        }
+                    }
+                }
+            }
+        }
+        return msgs;
+    }
+
     private checkDataShapeMore(data: unknown, shape: TShape): TMsg {
         const output = {};
         if (typeof data !== "object" || Array.isArray(data)) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
                 if (!this.runValidations(data, shape)) {
+                    let msg: string[];
+                    if (shape.messages) {
+                        let temp: string[] = this.getValidationMessages(
+                            data,
+                            shape
+                        );
+                        if (temp.length > 0) {
+                            msg = temp;
+                        } else {
+                            msg = [this.messages.invalidValue];
+                        }
+                    } else {
+                        msg = [this.messages.invalidValue];
+                    }
+
                     // Invalid data
                     const cur = {};
                     cur[this.keys.success] = false;
-                    cur[this.keys.message] = this.messages.invalidValue;
+                    cur[this.keys.message] = msg;
                     return cur;
                 } else {
                     // valid data
@@ -451,9 +488,26 @@ export class Valigator {
                                 shape[key] as TShape
                             )
                         ) {
+                            let msg: string[];
+
+                            if (shape[key]["messages"]) {
+                                let temp: string[] = this.getValidationMessages(
+                                    data[key],
+                                    shape[key] as TShape
+                                );
+
+                                if (temp.length > 0) {
+                                    msg = temp;
+                                } else {
+                                    msg = [this.messages.invalidValue];
+                                }
+                            } else {
+                                msg = [this.messages.invalidValue];
+                            }
+
                             const cur = {};
                             cur[this.keys.success] = false;
-                            cur[this.keys.message] = this.messages.invalidValue;
+                            cur[this.keys.message] = msg;
 
                             // Invalid data
                             output[key] = cur;
@@ -504,19 +558,26 @@ export class Valigator {
                 }
             }
 
-            for (const key in data) {
+            // Make sure every value in the shape has is checked
+            for (const key in shape) {
                 if (!output[key]) {
                     if (typeof data !== "object") {
                         output[key] = this.checkDataShapeMore(data[key], {});
                     } else {
-                        const cur = {};
-                        cur[this.keys.success] = false;
-                        cur[this.keys.message] = this.messages.unexpectedValue;
-                        output[key] = cur;
+                        if (
+                            shape[key][this.keys.required] === true ||
+                            shape[key][this.keys.required] === undefined
+                        ) {
+                            const cur = {};
+                            cur[this.keys.success] = false;
+                            cur[this.keys.message] = this.messages.required;
+                            output[key] = cur;
+                        }
                     }
                 }
             }
         }
+
         return output;
     }
 
@@ -578,19 +639,21 @@ export class Valigator {
     }
 }
 
-// const val = new Valigator();
+const val = new Valigator();
 
-// let test = curry<boolean>(_minLength)(1);
-// const data = { example: "sdf" };
-// const shape: TShape = {
-//     example: {
-//         example: {
-//             type: "text",
-//             validators: [minLength(1)],
-//         },
-//     },
-// };
-// console.log(val.validate_more(data, shape));
-
-// let test2: boolean = minLength(1);
-// console.log(test);
+console.log(
+    val.validate_more(
+        { foo: "dsf" },
+        {
+            foo: {
+                type: "text",
+                validators: [minLength(5)],
+                messages: {
+                    minLength: "Test message",
+                },
+            },
+        }
+    ).values
+);
+console.log(isString.id);
+console.log(minLength(1).id);

@@ -657,6 +657,63 @@ test("Testing default validators", () => {
             type: "number",
         })
     ).toBe(false);
+
+    expect(
+        validate.validate(
+            { name: [1, 2, 3] },
+            {
+                name: {
+                    type: "array",
+                },
+            }
+        )
+    ).toBe(true);
+
+    expect(
+        validate.validate("hi", {
+            type: "array",
+        })
+    ).toBe(false);
+
+    expect(
+        validate.validate(
+            { name: true },
+            {
+                name: {
+                    type: "boolean",
+                },
+            }
+        )
+    ).toBe(true);
+
+    expect(
+        validate.validate("hi", {
+            type: "boolean",
+        })
+    ).toBe(false);
+
+    expect(
+        validate.validate(
+            { name: "test@test.com" },
+            {
+                name: {
+                    type: "email",
+                },
+            }
+        )
+    ).toBe(true);
+
+    expect(
+        validate.validate("hi", {
+            type: "email",
+        })
+    ).toBe(false);
+
+    expect(
+        validate.validate(1, {
+            type: "email",
+        })
+    ).toBe(false);
 });
 
 test("Testing additional validators", () => {
@@ -782,4 +839,223 @@ test("Testing required", () => {
             { person: { name: { lastName: { type: "text" } } } }
         )
     ).toBe(true);
+});
+
+test("Testing validate_more", () => {
+    const validate = new Valigator();
+    // Shape matches data
+    expect(
+        validate.validate_more(
+            { name: "sdf", nested: { inner: "hi" } },
+            {
+                name: {
+                    type: "text",
+                },
+                nested: {
+                    inner: {
+                        type: "text",
+                    },
+                },
+            }
+        )
+    ).toEqual({
+        success: true,
+        values: {
+            name: {
+                success: true,
+            },
+            nested: {
+                inner: {
+                    success: true,
+                },
+            },
+        },
+    });
+
+    // Data has more values than shape
+    expect(
+        validate.validate_more(
+            { name: "sdf", nested: { inner: "hi" } },
+            {
+                name: {
+                    type: "text",
+                },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            name: {
+                success: true,
+            },
+            nested: {
+                success: false,
+                message: ["Value you provided is unexpected"],
+            },
+        },
+    });
+
+    // Data has extra nested values than shape
+    expect(
+        validate.validate_more(
+            { nested: { inner: "hi" } },
+            {
+                nested: { inner: { extra: { type: "text" } } },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            nested: {
+                inner: {
+                    extra: {
+                        success: false,
+                        message: ["Value you provided is unexpected"],
+                    },
+                },
+            },
+        },
+    });
+
+    // Shape has optional value that data does have
+    // TODO: Make decide whether this is the behavior I want
+    expect(
+        validate.validate_more(
+            { foo: "dsf", bar: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                },
+                bar: {
+                    type: "text",
+                    required: false,
+                },
+            }
+        )
+    ).toEqual({
+        success: true,
+        values: {
+            foo: {
+                success: true,
+            },
+            bar: {
+                success: true,
+            },
+        },
+    });
+
+    // Shape has optional value that data does not have
+    expect(
+        validate.validate_more(
+            { foo: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                },
+                bar: {
+                    type: "text",
+                    required: false,
+                },
+            }
+        )
+    ).toEqual({
+        success: true,
+        values: {
+            foo: {
+                success: true,
+            },
+        },
+    });
+
+    // Shape has required value that shape does not have
+    expect(
+        validate.validate_more(
+            { foo: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                },
+                bar: {
+                    type: "text",
+                },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            bar: {
+                success: false,
+                message: ["Value is required but is missing"],
+            },
+            foo: {
+                success: true,
+            },
+        },
+    });
+
+    // Additional validators pass
+    expect(
+        validate.validate_more(
+            { foo: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                    validators: [minLength(2)],
+                },
+            }
+        )
+    ).toEqual({
+        success: true,
+        values: {
+            foo: {
+                success: true,
+            },
+        },
+    });
+
+    // Additional validators fail
+    expect(
+        validate.validate_more(
+            { foo: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                    validators: [minLength(5)],
+                },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            foo: {
+                success: false,
+                message: ["Invalid value for data"],
+            },
+        },
+    });
+
+    // Custom error messages
+    expect(
+        validate.validate_more(
+            { foo: "dsf" },
+            {
+                foo: {
+                    type: "text",
+                    validators: [minLength(5), maxLength(3)],
+                    messages: {
+                        minLength: "Test message",
+                        maxLength: "Test message 2",
+                    },
+                },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            foo: {
+                success: false,
+                message: ["Test message", "Test message 2"],
+            },
+        },
+    });
 });

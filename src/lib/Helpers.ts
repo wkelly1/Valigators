@@ -15,16 +15,20 @@ export function getDecimalPoints(value: number): number {
  * @param fn Function to curry
  * @returns Curried function
  */
-export function curry<T>(fn: (...args: any[]) => T) {
+export function curry(fn: (...args: any[]) => any, id: string) {
     const innerFn = (N: number, args: unknown[]) => {
-        return (...x: unknown[]) => {
+        let func: TValidator = (...x: unknown[]) => {
             if (N <= x.length) {
                 return fn(...args, ...x);
             }
-            return innerFn(N - x.length, [...args, ...x]);
+            let _innerFn = innerFn(N - x.length, [...args, ...x]);
+            // _innerFn.id = id;
+            return _innerFn;
         };
+        func.id = id;
+        return func;
     };
-
+    innerFn.id = id;
     return innerFn(fn.length, []);
 }
 
@@ -33,9 +37,9 @@ export function curry<T>(fn: (...args: any[]) => T) {
  * @param fn Function to convert
  * @returns Safe function
  */
-export function run(func: TValidator): TValidator {
+export function run(func: TValidator, id: string): TValidator {
     try {
-        return func;
+        return curry(func, id);
     } catch (ex) {
         return (...args) => false;
     }
