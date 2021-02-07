@@ -43,8 +43,26 @@ validate_callback(data, shape, onError, onSuccess?)
 
 */
 
-import { curry, run } from "./Helpers";
-import { emailRegex } from "./Regex";
+import {
+    containsLower,
+    containsNumber,
+    containsSymbol,
+    containsUpper,
+    isInstanceOf,
+    minLength,
+} from "..";
+
+import {
+    credit_card_number,
+    dateRegex,
+    emailRegex,
+    ipv4_address,
+    ipv6_address,
+    longitude_latitude,
+    phoneRegex,
+    url,
+    time,
+} from "./Regex";
 import { containsRegex } from "./validators/containsRegex";
 import { isArray } from "./validators/isArray";
 import { isBoolean } from "./validators/isBoolean";
@@ -75,6 +93,43 @@ export class Valigator {
         },
         email: {
             validators: [isString, containsRegex(emailRegex)],
+        },
+        password: {
+            validators: [
+                isString,
+                containsUpper,
+                containsLower,
+                containsSymbol,
+                containsNumber,
+                minLength(8),
+            ],
+        },
+        phone: {
+            validators: [isString, containsRegex(phoneRegex)],
+        },
+        date: {
+            validators: [isInstanceOf(Date)],
+        },
+        date_string: {
+            validators: [isString, containsRegex(dateRegex)],
+        },
+        time_string: {
+            validators: [isString, containsRegex(time)],
+        },
+        longitude_latitude: {
+            validators: [isString, containsRegex(longitude_latitude)],
+        },
+        credit_card_number: {
+            validators: [isString, containsRegex(credit_card_number)],
+        },
+        ipv4_address: {
+            validators: [isString, containsRegex(ipv4_address)],
+        },
+        ipv6_address: {
+            validators: [isString, containsRegex(ipv6_address)],
+        },
+        url: {
+            validators: [isString, containsRegex(url)],
         },
     };
 

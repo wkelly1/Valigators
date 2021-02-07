@@ -28,6 +28,7 @@ import equals from "../src/lib/validators/equals";
 
 import { TShape, TValidator } from "../src/lib/Valigators.types";
 import Valigator, { substring } from "../src";
+import isDateString from "../src/lib/validators/isDateString";
 
 test("Testing isString", () => {
     expect(isString("t")).toBe(true);
@@ -459,6 +460,18 @@ test("Testing equals", () => {
         equals({ test: { test: "test2" } })({ test: { test2: "test2" } })
     ).toBe(false);
 });
+
+// test("Testing isDateString", () => {
+//     expect(isDateString("")).toBe(false);
+//     expect(isDateString("01")).toBe(false);
+//     expect(isDateString("01/02")).toBe(false);
+//     expect(isDateString("01/02/2020")).toBe(true);
+//     expect(isDateString("1st July 2020")).toBe(false);
+//     expect(isDateString("01 July 2020")).toBe(true);
+//     expect(isDateString("1 July 2020")).toBe(true);
+//     expect(isDateString("1 July 2020 00:00:00")).toBe(true);
+//     expect(isDateString("1 July 2020 00:00:00 GMT")).toBe(true);
+// });
 
 test("Testing Validate catches incorrect shape", () => {
     const validate = new Valigator();
