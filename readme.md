@@ -9,13 +9,13 @@ Note: This is still is not yet at release stage and is still in development
 ### In Node.js
 
 ```javascript
-const { Valigator } = require("valigators");
+const Valigator = require("valigators");
 ```
 
 ### ESM
 
 ```javascript
-import { Valigator } from "valigators";
+import Valigator from "valigators";
 ```
 
 ### Browser
@@ -24,7 +24,11 @@ import { Valigator } from "valigators";
 <script src="bundle.usm.js"></script>
 ```
 
+### Example
+
 ```javascript
+import Valigator, { minLength } from "valigators";
+
 const valigator = new Valigator();
 
 const valid_data = {
@@ -46,7 +50,7 @@ const invalid_data = {
 const shape = {
     name: {
         type: "text", // Required attribute
-        validators: [], // Optional list is extra validators to run
+        validators: [minLength(2)], // Optional list is extra validators to run
     },
     age: {
         type: "number",

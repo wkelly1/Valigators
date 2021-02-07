@@ -44,89 +44,14 @@ validate_callback(data, shape, onError, onSuccess?)
 */
 
 import { curry, run } from "./Helpers";
-import {
-    _containsLower,
-    _containsNumber,
-    _containsRegex,
-    _containsSymbol,
-    _containsUpper,
-    _decimalPoints,
-    _isArray,
-    _isInstanceOf,
-    _isNumber,
-    _isString,
-    _length,
-    _maxDecimalPoint,
-    _maxLength,
-    _minDecimalPoint,
-    _minLength,
-    _minMaxLength,
-    _oneOf,
-    _or,
-    _substring,
-    _isEven,
-    _isOdd,
-    _isPrime,
-    _isSquare,
-    _isNegative,
-    _isPositive,
-    _isCube,
-    _equals,
-    _isBoolean,
-    _isNull,
-} from "./HelperValidators";
-
 import { emailRegex } from "./Regex";
+import { containsRegex } from "./validators/containsRegex";
+import { isArray } from "./validators/isArray";
+import { isBoolean } from "./validators/isBoolean";
+import { isNull } from "./validators/isNull";
+import { isNumber } from "./validators/isNumber";
+import { isString } from "./validators/isString";
 import { TValidator, TTypes, TOptions, TShape, TMsg } from "./Valigators.types";
-
-export const isString: TValidator = run(_isString, "isString");
-export const isNumber: TValidator = run(_isNumber, "isNumber");
-export const isArray: TValidator = run(_isArray, "isArray");
-export const isBoolean: TValidator = run(_isBoolean, "isBoolean");
-export const isNull: TValidator = run(_isNull, "isNull");
-export const minLength: TValidator = run(_minLength, "minLength");
-export const maxLength: TValidator = run(_maxLength, "maxLength");
-export const minMaxLength: TValidator = run(_minMaxLength, "minMaxLength");
-export const length: TValidator = run(_length, "length");
-export const substring: TValidator = run(_substring, "substring");
-export const maxDecimalPoint: TValidator = run(
-    _maxDecimalPoint,
-    "maxDecimalPoint"
-);
-export const minDecimalPoint: TValidator = run(
-    _minDecimalPoint,
-    "minDecimalPoint"
-);
-export const decimalPoints: TValidator = run(_decimalPoints, "decimalPoints");
-export const oneOf: TValidator = run(_oneOf, "oneOf");
-export const containsNumber: TValidator = run(
-    _containsNumber,
-    "containsNumber"
-);
-export const containsUpper: TValidator = run(_containsUpper, "containsUpper");
-export const containsLower: TValidator = run(_containsLower, "containsLower");
-export const containsSymbol: TValidator = run(
-    _containsSymbol,
-    "containsSymbol"
-);
-export const containsRegex: TValidator = run(_containsRegex, "containsRegex");
-export const or: TValidator = run(_or, "or");
-export const isInstanceOf: TValidator = run(_isInstanceOf, "isInstanceOf");
-export const isEven: TValidator = run(_isEven, "isEven");
-export const isOdd: TValidator = run(_isOdd, "isOdd");
-export const isPrime: TValidator = run(_isPrime, "isPrime");
-export const isSquare: TValidator = run(_isSquare, "isSquare");
-export const isCube: TValidator = run(_isCube, "isCube");
-export const isNegative: TValidator = run(_isNegative, "isNegative");
-export const isPositive: TValidator = run(_isPositive, "isPositive");
-export const equals: TValidator = run(_equals, "equals");
-
-export function customValidator<T extends (...args: unknown[]) => boolean>(
-    func: T,
-    identifier?: string
-): TValidator {
-    return run(func, identifier ? identifier : "");
-}
 
 /**
  * Valigator class is used to check that some data matches some specified shape
