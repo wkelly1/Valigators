@@ -9,13 +9,13 @@ Note: This is still is not yet at release stage and is still in development
 ### In Node.js
 
 ```javascript
-const { Valigator } = require("valigators");
+const Valigator = require("valigators");
 ```
 
 ### ESM
 
 ```javascript
-import { Valigator } from "valigators";
+import Valigator from "valigators";
 ```
 
 ### Browser
@@ -24,40 +24,44 @@ import { Valigator } from "valigators";
 <script src="bundle.usm.js"></script>
 ```
 
+### Example
+
 ```javascript
+import Valigator, { minLength } from "valigators";
+
 const valigator = new Valigator();
 
 const valid_data = {
-  name: "bob",
-  age: 12,
-  example: {
-    foo: "bar",
-  },
+    name: "bob",
+    age: 12,
+    example: {
+        foo: "bar",
+    },
 };
 
 const invalid_data = {
-  // name: "bob" <- removed this value
-  age: 12,
-  example: {
-    foo: "bar",
-  },
+    // name: "bob" <- removed this value
+    age: 12,
+    example: {
+        foo: "bar",
+    },
 };
 
 const shape = {
-  name: {
-    type: "text", // Required attribute
-    validators: [], // Optional list is extra validators to run
-  },
-  age: {
-    type: "number",
-  },
-  example: {
-    // Works with nested objects
-    foo: {
-      type: "text",
-      required: false,
+    name: {
+        type: "text", // Required attribute
+        validators: [minLength(2)], // Optional list is extra validators to run
     },
-  },
+    age: {
+        type: "number",
+    },
+    example: {
+        // Works with nested objects
+        foo: {
+            type: "text",
+            required: false,
+        },
+    },
 };
 
 valigator.validate(valid_data, shape); // Returns true
@@ -66,22 +70,23 @@ valigator.validate(invalid_data, shape); // Returns false
 
 valigator.validate_more(valid_data, shape);
 // => {
-//      name: { success: true },
-//      age: { success: true },
-//      example: { foo: { success: true } }
-//     }
+//     success: true,
+//     values: {
+//         name: { success: true },
+//         age: { success: true },
+//         example: { foo: { success: true } },
+//     },
+// };
 
 valigator.validate_more(invalid_data, shape);
 // => {
-//   name: {
-//     success: false,
-//     message: "Value is required but is missing",
-//   },
 //   age: { success: true },
-//   example: {
-//     foo: { success: true },
-//   },
-// };
+//   example: { foo: { success: true } },
+//   name: {
+//       success: false,
+//       message: 'Value is required but is missing'
+//     }
+// }
 ```
 
 ## The shape object
@@ -90,8 +95,8 @@ This is where we define what the data should look like.
 
 ### Attributes
 
-- `type` - this is the type that the data should be (required attribute)
-- `required` - Is the value required in the data structure
+-   `type` - this is the type that the data should be (required attribute)
+-   `required` - Is the value required in the data structure
 
 ### Types
 
@@ -105,17 +110,19 @@ For example the `text` type runs the validators
 
 Available default types:
 
-| Type       | Validations   |
-| ---------- | ------------- |
-| `text`     | `[isString]`  |
-| `number`   | `[isNumber]`  |
-| `array`    | `[isArray]`   |
-| `boolean`  | `[isBoolean]` |
-| `email`    | TODO          |
-| `phone`    | TODO          |
-| `date`     | TODO          |
-| `time`     | TODO          |
-| `password` | TODO          |
+| Type       | Validations                             |
+| ---------- | --------------------------------------- |
+| `text`     | `[isString]`                            |
+| `number`   | `[isNumber]`                            |
+| `array`    | `[isArray]`                             |
+| `boolean`  | `[isBoolean]`                           |
+| `email`    | `[isString, containsRegex(emailRegex)]` |
+| `phone`    | TODO                                    |
+| `date`     | TODO                                    |
+| `time`     | TODO                                    |
+| `password` | TODO                                    |
+
+See [here](https://github.com/wkelly1/Valigators/blob/development/src/lib/Regex.ts) for raw regex
 
 ### Extending default types
 
@@ -123,11 +130,11 @@ If you have a specific type you want to use you can specify it as an option
 
 ```javascript
 const valigator = new Valigator({
-  types: {
-    your_new_type: {
-      validators: [myValidator],
+    types: {
+        your_new_type: {
+            validators: [myValidator],
+        },
     },
-  },
 });
 ```
 
@@ -222,8 +229,8 @@ Example with array on its own:
 ```js
 const data = [1, 2, 3];
 const shape = {
-  type: "array",
-  validators: [],
+    type: "array",
+    validators: [],
 };
 val.validate_more(data, shape);
 // => { success: true }
@@ -234,10 +241,10 @@ Example with nested array:
 ```js
 const data = { example: [1, 2, 3] };
 const shape = {
-  example: {
-    type: "array",
-    validators: [],
-  },
+    example: {
+        type: "array",
+        validators: [],
+    },
 };
 val.validate_more(data, shape);
 // => { example: { success: true } }
@@ -256,6 +263,105 @@ To actually check the contents of the array you can use any of the array validat
 
 Note: you can also perform other checks such as `maxLength` on arrays using the [validators](#validators)
 
+## Messages
+
+By default valigators will display a message detailing what went wrong when you call `validate_more`. If any of the validators fail then you will get details about that in the `validationErrors` key:
+
+```js
+const valigator = new Valigator();
+
+const invalid_data = {
+    example: "bar",
+};
+
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(4)],
+    },
+};
+
+valigator.validate_more(invalid_data, shape);
+// => {
+//     success: false, // Overall success
+//     values: {
+//         example: {
+//             success: false, // Individual success
+//             message: "Invalid value for data", // Individual error message
+//             validationErrors: [
+//                 {
+//                     validator: "minLength",
+//                     message: "Invalid value for data",
+//                 },
+//             ], // List of which validators failed
+//         },
+//     },
+// };
+```
+
+When a validator failed you will get the default error message "Invalid value for data" (Default can be overwritten [see here](#Custom-default-error-messages)). However you may want individual custom messages for each validator. To do this:
+
+```js
+const valigator = new Valigator();
+
+const invalid_data = {
+    example: "bar",
+};
+
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(4)],
+        messages: {
+            minLength: "Oh no, minLength failed", // New message
+        },
+    },
+};
+
+valigator.validate_more(invalid_data, shape);
+// => {
+//     success: false, // Overall success
+//     values: {
+//         example: {
+//             success: false, // Individual success
+//             message: "Invalid value for data", // Individual error message
+//             validationErrors: [
+//                 {
+//                     validator: "minLength",
+//                     message: "Oh no, minLength failed", // <- now showing your message
+//                 },
+//             ], // List of which validators failed
+//         },
+//     },
+// };
+```
+
+The key in the messages field matches the validator function name.
+
+### Custom messages with custom validators
+
+If you have written your own validator then to be able to provide a custom message you need to make sure you provide an id to the validator.
+
+```js
+const my_validator = customValidator((a, b, value) = {
+    return (value % a) === b;
+}, "myValidator") // <- make sure you define the identifier
+```
+
+Now when adding custom messages you can reference it via the identifer (e.g. `myValidator`)
+
+```js
+const shape = {
+    example: {
+        type: "text",
+        validators: [my_validator],
+        messages: {
+            myValidator: "myValidator failed",
+        },
+    },
+};
+```
+
 ## Options
 
 You can specify a set of options for the `Valigator`
@@ -273,6 +379,9 @@ const options = {
     type?: string;
     required?: string;
     validators?: string;
+    messages?: string;
+    validationErrors?: string;
+    validator?: string;
   };
   types?: object
 }
@@ -300,13 +409,16 @@ Sometimes your data will match the keys we use in the shape as well as in the ou
 
 ```js
 const options = {
-  keys: {
-    success: "newKey1",
-    message: "newKey2",
-    type: "newKey3",
-    required: "newKey4",
-    validators: "newKey5",
-  },
+    keys: {
+        success: "newKey1",
+        message: "newKey2",
+        type: "newKey3",
+        required: "newKey4",
+        validators: "newKey5",
+        messages: "newKey6",
+        validationErrors: "newKey7",
+        validator: "newKey8",
+    },
 };
 
 new Valigator(options);
@@ -318,11 +430,11 @@ If you don't like the way we validate our default types you can override them. Y
 
 ```js
 const options = {
-  types: {
-    string: {
-      validators: [someValidator, someOtherValidator],
+    types: {
+        string: {
+            validators: [someValidator, someOtherValidator],
+        },
     },
-  },
 };
 
 new Valigator(options);
@@ -334,14 +446,462 @@ new Valigator(options);
 
 ### Table of Contents
 
-- [Valigator](#valigator)
-  - [Parameters](#parameters)
-  - [validate](#validate)
+- [Valigators](#valigators)
+  - [Usage](#usage)
+    - [In Node.js](#in-nodejs)
+    - [ESM](#esm)
+    - [Browser](#browser)
+    - [Example](#example)
+  - [The shape object](#the-shape-object)
+    - [Attributes](#attributes)
+    - [Types](#types)
+    - [Extending default types](#extending-default-types)
+  - [Validators](#validators)
+    - [Custom validator](#custom-validator)
+  - [Arrays](#arrays)
+  - [Messages](#messages)
+    - [Custom messages with custom validators](#custom-messages-with-custom-validators)
+  - [Options](#options)
+    - [Custom default error messages](#custom-default-error-messages)
+    - [Naming conflicts](#naming-conflicts)
+    - [Default type overriding](#default-type-overriding)
+- [API](#api)
+    - [Table of Contents](#table-of-contents)
+  - [containsLower](#containslower)
+    - [Parameters](#parameters)
+  - [containsNumber](#containsnumber)
     - [Parameters](#parameters-1)
-    - [Examples](#examples)
-  - [validate_more](#validate_more)
+  - [containsRegex](#containsregex)
     - [Parameters](#parameters-2)
-    - [Examples](#examples-1)
+  - [containsSymbol](#containssymbol)
+    - [Parameters](#parameters-3)
+  - [containsUpper](#containsupper)
+    - [Parameters](#parameters-4)
+  - [decimalPoints](#decimalpoints)
+    - [Parameters](#parameters-5)
+  - [equals](#equals)
+    - [Parameters](#parameters-6)
+  - [isArray](#isarray)
+    - [Parameters](#parameters-7)
+  - [isBoolean](#isboolean)
+    - [Parameters](#parameters-8)
+  - [isCube](#iscube)
+    - [Parameters](#parameters-9)
+  - [isEven](#iseven)
+    - [Parameters](#parameters-10)
+  - [isInstanceOf](#isinstanceof)
+    - [Parameters](#parameters-11)
+  - [isNegative](#isnegative)
+    - [Parameters](#parameters-12)
+  - [isNull](#isnull)
+    - [Parameters](#parameters-13)
+  - [isNumber](#isnumber)
+    - [Parameters](#parameters-14)
+  - [isOdd](#isodd)
+    - [Parameters](#parameters-15)
+  - [isPositive](#ispositive)
+    - [Parameters](#parameters-16)
+  - [isPrime](#isprime)
+    - [Parameters](#parameters-17)
+  - [isSquare](#issquare)
+    - [Parameters](#parameters-18)
+  - [isString](#isstring)
+    - [Parameters](#parameters-19)
+  - [length](#length)
+    - [Parameters](#parameters-20)
+  - [maxDecimalPoint](#maxdecimalpoint)
+    - [Parameters](#parameters-21)
+  - [maxLength](#maxlength)
+    - [Parameters](#parameters-22)
+  - [minDecimalPoint](#mindecimalpoint)
+    - [Parameters](#parameters-23)
+  - [minLength](#minlength)
+    - [Parameters](#parameters-24)
+  - [minMaxLength](#minmaxlength)
+    - [Parameters](#parameters-25)
+  - [oneOf](#oneof)
+    - [Parameters](#parameters-26)
+  - [or](#or)
+    - [Parameters](#parameters-27)
+  - [substring](#substring)
+    - [Parameters](#parameters-28)
+  - [Valigator](#valigator)
+    - [Parameters](#parameters-29)
+    - [validate](#validate)
+      - [Parameters](#parameters-30)
+      - [Examples](#examples)
+    - [validate_more](#validate_more)
+      - [Parameters](#parameters-31)
+      - [Examples](#examples-1)
+- [Contributing](#contributing)
+  - [Build](#build)
+  - [Code of Conduct](#code-of-conduct)
+  - [Contributing Guide](#contributing-guide)
+  - [Licence](#licence)
+
+## containsLower
+
+Checks whether the value converted to string contains an lower case character
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an lower case character
+
+## containsNumber
+
+Checks whether the value converted to string contains a number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a number
+
+## containsRegex
+
+Checks whether the value converted to string contains a specified regex
+With arrays it will check that any of the values match the regex
+
+Type: TValidator
+
+### Parameters
+
+-   `reg` Regex to test
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a specified regex
+
+## containsSymbol
+
+Checks whether the value converted to string contains a symbol
+With arrays it will check that any of the values contain a symbol
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains a symbol
+
+## containsUpper
+
+Checks whether the value converted to string contains an upper case character
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether contains an upper case character
+
+## decimalPoints
+
+Checks whether a number has exactly the specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `n` Value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## equals
+
+Checks whether the value is equal to a specified value using ===
+
+Type: TValidator
+
+### Parameters
+
+-   `equal` Value to check equals to
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** {boolean} Boolean representing if they are equal
+
+## isArray
+
+Checks if value is an array
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether array or not
+
+## isBoolean
+
+Checks if value is a boolean
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether boolean or not
+
+## isCube
+
+Checks whether a value is a number and whether that number is a cube number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a cube or not
+
+## isEven
+
+Checks whether a value is a number and whether that number is even
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a even or not
+
+## isInstanceOf
+
+Tests the presence of constructor.prototype in object's prototype chain
+
+Type: TValidator
+
+### Parameters
+
+-   `typeClass` function to test against
+-   `value` Object to test
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean
+
+## isNegative
+
+Checks whether a value is a number and whether that number is a negative number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a negative number or not
+
+## isNull
+
+Checks if value is null
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether null or not
+
+## isNumber
+
+Checks if value is a number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether number or not
+
+## isOdd
+
+Checks whether a value is a number and whether that number is odd
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a odd or not
+
+## isPositive
+
+Checks whether a value is a number and whether that number is a positive number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a positive number or not
+
+## isPrime
+
+Checks whether a value is a number and whether that number is prime
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
+
+## isSquare
+
+Checks whether a value is a number and whether that number is a square number
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a prime or not
+
+## isString
+
+Checks if value is a string
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether string or not
+
+## length
+
+Checks whether a value converted to a string has a specific length
+
+Type: TValidator
+
+### Parameters
+
+-   `n` Length
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## maxDecimalPoint
+
+Checks whether a number has less than or equal to a specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `max` Max value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## maxLength
+
+Checks that a value has length less than max value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `max` Max value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## minDecimalPoint
+
+Checks whether a number has greater than or equal to a specified number of decimal points
+
+Type: TValidator
+
+### Parameters
+
+-   `min` Min value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing has correct decimal points
+
+## minLength
+
+Checks that a value has length greater than min value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `min` Min value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## minMaxLength
+
+Checks whether a value has length between min and max value inclusive
+
+Type: TValidator
+
+### Parameters
+
+-   `min` Min value
+-   `max` Max value
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether right length or not
+
+## oneOf
+
+Takes an array and checks that the value matches on of the elements in the array
+
+Type: TValidator
+
+### Parameters
+
+-   `elems` Elements value could be
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether the value matches one of the elems
+
+## or
+
+Used if you you don't mind if some of the validators fail as long as one passes
+
+Type: TValidator
+
+### Parameters
+
+-   `validators` Functions to run
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value if one of the functions passes
+
+## substring
+
+Checks whether a value converted to a string contains a specific substring inner
+
+Type: TValidator
+
+### Parameters
+
+-   `inner` Substring to check for (converted to string)
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean value representing whether it contains substring
 
 ## Valigator
 
@@ -349,7 +909,7 @@ Valigator class is used to check that some data matches some specified shape
 
 ### Parameters
 
-- `options` **options?**
+-   `options` **TOptions?** Optional settings
 
 ### validate
 
@@ -357,8 +917,8 @@ Checks whether some data matches a specified shape and just returns a boolean va
 
 #### Parameters
 
-- `data` **any** Data to check
-- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `data` **any** Data to check
+-   `shape` **TShape** Shape the data is supposed to match
 
 #### Examples
 
@@ -384,27 +944,51 @@ Checks whether some data matches a specified shape and returns an object contain
 
 #### Parameters
 
-- `data` **any** Data to check
-- `shape` **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Shape the data is supposed to match
+-   `data` **any** Data to check
+-   `shape` **TShape** Shape the data is supposed to match
 
 #### Examples
 
 ```javascript
 const valigator = new Valigator();
 valigator.validate_more(10, {type: "number"});
-// => {success: true}
+// => {success: true, values: {success: true}}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh", last: "Chugtai" }, {names: {first: {type: "text"}, last: {type: "text"}}});
-// => { names: { first: { success: true }, last: { success: true } } }
+// => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
-// => { names: { first: { success: true }, last: { success: true } } }
+// => {success: true, values: { names: { first: { success: true }, last: { success: true } } }}
 
 const valigator = new Valigator();
 valigator.validate_more({names: {first: "Dinesh" }}, {names: {first: {type: "number"}}});
-// => { names: { first: { success: false, message: 'Invalid value for data' } } }
+// => {success: false, values: { names: { first: { success: false, message: 'Invalid value for data' } } }}
 ```
 
-Returns **Record&lt;[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), any>** Object representing what passed and what failed
+Returns **{success: [boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean), values: TMsg}** Object representing what passed and what failed
+
+# Contributing
+
+## Build
+
+To build the project
+
+```bash
+yarn build
+# or
+npm run build
+```
+
+## [Code of Conduct](CODE_OF_CONDUCT.md)
+
+Please see full [code of conduct](CODE_OF_CONDUCT.md)
+
+## [Contributing Guide](.github/CONTRIBUTING.md)
+
+To contribute to the project please see the [contributing guide](.github/CONTRIBUTING.md)
+
+## Licence
+
+Valigators is [MIT licensed](LICENCE)

@@ -4,6 +4,10 @@
     "private": true,
     "main": "index.js",
     "dependencies": {
+        "serve": "^11.3.2",
         "valigators": "file:../.."
+    },
+    "scripts": {
+        "start": "serve"
     }
 }

@@ -6,9 +6,10 @@
     "module": "dist/bundle.esm.js",
     "sideEffects": false,
     "scripts": {
+        "predev": "rimraf build",
         "dev": "tsc --watch",
         "test": "jest --coverage",
-        "updateReadme": "documentation readme src/Valigators.ts --section=API --parse-extension ts",
+        "updateReadme": "documentation readme src --section=API --parse-extension ts",
         "prebuild": "rimraf dist",
         "build": "rollup -c",
         "lint": "eslint --ext .ts .",

@@ -1,10 +1,10 @@
 // rollup.config.js
 import typescript from "rollup-plugin-typescript";
 
-const dist = 'dist';
+const dist = "dist";
 
 export default {
-  input: "src/Valigators.ts",
+  input: "src/index.ts",
   plugins: [typescript()],
   output: [
     {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Valigator, isString, minLength } from "valigators";
+import Valigator, { isString, minLength } from "valigators";
 
 function App() {
     const [output, setOutput] = useState("");
