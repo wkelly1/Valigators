@@ -8,6 +8,14 @@ Valigators is a simple library for validating that data matches a specific 'shap
 
 ## Usage
 
+### Install 
+
+```
+npm i valigators --save
+or
+yarn add valigators
+```
+
 ### In Node.js
 
 ```javascript
