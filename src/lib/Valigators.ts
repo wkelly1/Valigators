@@ -164,6 +164,7 @@ export class Valigator {
         messages: string;
         validationErrors: string;
         validator: string;
+        onError: string;
     } = {
         success: "success",
         message: "message",
@@ -173,6 +174,7 @@ export class Valigator {
         messages: "messages",
         validationErrors: "validationErrors",
         validator: "validator",
+        onError: "onError",
     };
 
     private requiredValues: unknown[] = [""];
@@ -220,6 +222,9 @@ export class Valigator {
                 }
                 if (options.keys.validator) {
                     this.keys.validator = options.keys.validator;
+                }
+                if (options.keys.onError) {
+                    this.keys.onError = options.keys.onError;
                 }
             }
 
@@ -331,71 +336,236 @@ export class Valigator {
         return true;
     }
 
-    private checkDataShape(data: unknown, shape: TShape): boolean {
-        if (typeof data !== "object" || Array.isArray(data)) {
-            // data is some primative type; string, number etc
+    /**
+     * @private
+     * Takes some data that may or might not be a shape object and checks whether it contains the onError key.
+     * If it does it executes it
+     * @param shape Shape to find onError callback and execute
+     */
+    private executeOnErrorCallback(shape: unknown): void {
+        if (this.isShape(shape)) {
+            if (
+                shape &&
+                typeof shape === "object" &&
+                shape[this.keys.onError]
+            ) {
+                shape[this.keys.onError]();
+            }
+        }
+    }
+
+    // private checkDataShape(
+    //     data: unknown,
+    //     shape: TShape,
+    //     stopAtError?: boolean
+    // ): boolean {
+    //     let error = false;
+    //     if (typeof data !== "object" || Array.isArray(data)) {
+    //         // data is some primitive type; string, number etc
+    //         if (this.isShape(shape)) {
+    //             if (!this.runValidations(data, shape)) {
+    //                 // Invalid data
+
+    //                 this.executeOnErrorCallback(shape);
+    //                 return false;
+    //             }
+
+    //         } else {
+    //             // Invalid shape
+
+    //             // Don't need to executeOnErrorCallback here as we know its not going to be a shape object
+    //             return false;
+    //         }
+    //     } else {
+    //         // Check that the number of keys in the data match the shape
+    //         const union: string[] = Array.from(
+    //             new Set([
+    //                 ...Object.keys((data || {}) as Record<string, unknown>),
+    //                 ...Object.keys(shape || {}),
+    //             ])
+    //         );
+
+    //         if (union.length > Object.keys(shape || {}).length) {
+    //             // Too many keys have been provided
+    //             if (stopAtError) {
+    //                 return false;
+    //             } else {
+    //                 error = true;
+    //             }
+    //         }
+
+    //         const found: string[] = [];
+    //         // data is an object
+    //         // Check that every value in data exists in shape
+    //         for (const key in data) {
+    //             if (this.isShape(shape[key])) {
+    //                 // Reached depth
+    //                 if (!this.runValidations(data[key], shape[key] as TShape)) {
+    //                     // Invalid data
+    //                     if (stopAtError) {
+    //                         this.executeOnErrorCallback(shape[key]);
+    //                         return false;
+    //                     } else {
+    //                         this.executeOnErrorCallback(shape[key]);
+    //                         error = true;
+    //                     }
+    //                 }
+
+    //                 found.push(key);
+    //             } else {
+    //                 if (!this.checkDataShape(data[key], shape[key] as TShape)) {
+    //                     if (stopAtError) {
+    //                         this.executeOnErrorCallback(shape[key]);
+    //                         return false;
+    //                     } else {
+    //                         this.executeOnErrorCallback(shape[key]);
+    //                         error = true;
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         const shapeRequired: string[] = Object.keys(shape)
+    //             .filter((key) => this.isShape(shape[key]))
+    //             .filter(
+    //                 (key) =>
+    //                     shape[key][this.keys.required] === undefined ||
+    //                     shape[key][this.keys.required] === true
+    //             );
+
+    //         if (
+    //             !shapeRequired.every(
+    //                 (val) =>
+    //                     found.includes(val) &&
+    //                     data &&
+    //                     !this.requiredValues.includes(data[val])
+    //             )
+    //         ) {
+    //             if (stopAtError) {
+    //                 return false;
+    //             } else {
+    //                 error = true;
+    //             }
+    //         }
+    //     }
+
+    //     return !error;
+    // }
+
+    private checkDataShape(
+        data: unknown,
+        shape: TShape,
+        stopAtError?: boolean
+    ): boolean {
+        let success = true;
+        let output = {};
+        if (
+            typeof data !== "object" ||
+            Array.isArray(data) ||
+            (data &&
+                typeof data === "object" &&
+                data.constructor.name !== "Object")
+        ) {
+            // data is some primitive type; string, number etc
             if (this.isShape(shape)) {
-                if (!this.runValidations(data, shape)) {
-                    // Invalid data
+                if (
+                    !this.runValidations(data, shape) ||
+                    this.requiredValues.includes(data)
+                ) {
+                    this.executeOnErrorCallback(shape);
                     return false;
+                } else {
+                    return true;
                 }
             } else {
                 // Invalid shape
                 return false;
             }
         } else {
-            // Check that the number of keys in the data match the shape
-            const union: string[] = Array.from(
-                new Set([
-                    ...Object.keys(data as Record<string, unknown>),
-                    ...Object.keys(shape),
-                ])
-            );
-
-            if (union.length > Object.keys(shape).length) {
-                // Too many keys have been provided
-                return false;
-            }
-
-            const found: string[] = [];
-            // data is an object
-            for (const key in data) {
-                if (this.isShape(shape[key])) {
-                    // Reached depth
-                    if (!this.runValidations(data[key], shape[key] as TShape)) {
-                        // Invalid data
-                        return false;
+            // First check that every required value in shape is in data
+            for (const key in shape) {
+                // If data includes the value from shape
+                if (Object.keys(data || {}).includes(key)) {
+                    if (this.isShape(shape[key])) {
+                        // Reached depth
+                        if (
+                            !this.runValidations(
+                                (data || {})[key],
+                                shape[key] as TShape
+                            ) ||
+                            this.requiredValues.includes((data || {})[key])
+                        ) {
+                            success = false;
+                            output[key] = false;
+                            this.executeOnErrorCallback(shape[key]);
+                        } else {
+                            output[key] = true;
+                        }
+                    } else {
+                        if (!shape[key]) {
+                            output[key] = false;
+                            success = false;
+                        } else {
+                            success = this.checkDataShape(
+                                (data || {})[key],
+                                shape[key] as TShape,
+                                stopAtError
+                            );
+                            output[key] = success;
+                        }
                     }
-
-                    found.push(key);
                 } else {
-                    if (!this.checkDataShape(data[key], shape[key] as TShape)) {
-                        return false;
+                    // Data does not have a value that shape does not
+                    if (this.isShape(shape[key])) {
+                        // The shape value is does not contain any more nested objects
+                        if (
+                            shape[key][this.keys.required] === undefined ||
+                            shape[key][this.keys.required] === true
+                        ) {
+                            // It is a required value so throw error
+                            success = false;
+                            output[key] = false;
+                            this.executeOnErrorCallback(shape[key]);
+                        } else {
+                            // It is not a required value so it does not matter
+                            output[key] = true;
+                        }
+                    } else {
+                        output[key] = false;
+                        // The shape value has more nested elements
+                        success = false;
                     }
                 }
             }
 
-            const shapeRequired: string[] = Object.keys(shape)
-                .filter((key) => this.isShape(shape[key]))
-                .filter(
-                    (key) =>
-                        shape[key][this.keys.required] === undefined ||
-                        shape[key][this.keys.required] === true
-                );
+            // Make sure every value in the data has is checked
+            for (const key in data) {
+                // The output has not checked this value
+                if (!output[key]) {
+                    if (typeof data !== "object") {
+                        // data is not a primitive value
+                        output[key] = this.checkDataShapeMore(data[key], {});
+                    } else {
+                        success = false;
 
-            if (
-                !shapeRequired.every(
-                    (val) =>
-                        found.includes(val) &&
-                        data &&
-                        !this.requiredValues.includes(data[val])
-                )
-            ) {
-                return false;
+                        output[key] = false;
+                        // if (
+                        //     shape[key][this.keys.required] === true ||
+                        //     shape[key][this.keys.required] === undefined
+                        // ) {
+                        //     //
+                        //     const cur = {};
+                        //     cur[this.keys.success] = false;
+                        //     cur[this.keys.message] = this.messages.required;
+                        //     output[key] = cur;
+                        //     this.executeOnErrorCallback(shape[key]);
+                        // }
+                    }
+                }
             }
         }
 
-        return true;
+        return success;
     }
 
     private buildErrorMessageObject(shape: TShape, message: string): TMsg {
@@ -491,30 +661,24 @@ export class Valigator {
 
     private checkDataShapeMore(data: unknown, shape: TShape): TMsg {
         const output = {};
-        if (typeof data !== "object" || Array.isArray(data)) {
+        if (
+            typeof data !== "object" ||
+            Array.isArray(data) ||
+            (data &&
+                typeof data === "object" &&
+                data.constructor.name !== "Object")
+        ) {
             // data is some primative type; string, number etc
             if (this.isShape(shape)) {
+                if (this.requiredValues.includes(data)) {
+                    const cur = {};
+                    cur[this.keys.success] = false;
+                    cur[this.keys.message] = this.messages.required;
+                    this.executeOnErrorCallback(shape);
+                    return cur;
+                }
+
                 if (!this.runValidations(data, shape)) {
-                    // let msg: string[];
-                    // if (shape.messages) {
-                    //     let temp: string[] = this.getValidationMessages(
-                    //         data,
-                    //         shape
-                    //     );
-                    //     if (temp.length > 0) {
-                    //         msg = temp;
-                    //     } else {
-                    //         msg = [this.messages.invalidValue];
-                    //     }
-                    // } else {
-                    //     msg = [this.messages.invalidValue];
-                    // }
-
-                    // // Invalid data
-                    // const cur = {};
-                    // cur[this.keys.success] = false;
-                    // cur[this.keys.message] = msg;
-
                     const cur = {};
                     cur[this.keys.success] = false;
                     cur[this.keys.message] = this.messages.invalidValue;
@@ -522,7 +686,7 @@ export class Valigator {
                     cur[
                         this.keys.validationErrors
                     ] = this.getValidationMessages(data, shape);
-
+                    this.executeOnErrorCallback(shape);
                     return cur;
                 } else {
                     // valid data
@@ -539,43 +703,33 @@ export class Valigator {
             }
         } else {
             // First check that every required value in shape is in data
-            for (const key in data) {
-                if (Object.keys(data).includes(key)) {
+            for (const key in shape) {
+                // If data includes the value from shape
+                if (Object.keys(data || {}).includes(key)) {
                     if (this.isShape(shape[key])) {
-                        // Reached depth
-                        if (
+                        if (this.requiredValues.includes((data || {})[key])) {
+                            const cur = {};
+                            cur[this.keys.success] = false;
+                            cur[this.keys.message] = this.messages.required;
+                            this.executeOnErrorCallback(shape);
+                            return cur;
+                        } else if (
                             !this.runValidations(
-                                data[key],
+                                (data || {})[key],
                                 shape[key] as TShape
                             )
                         ) {
-                            let msg: string[];
-
-                            // if (shape[key]["messages"]) {
-                            //     let temp: string[] = this.getValidationMessages(
-                            //         data[key],
-                            //         shape[key] as TShape
-                            //     );
-
-                            //     if (temp.length > 0) {
-                            //         msg = temp;
-                            //     } else {
-                            //         msg = [this.messages.invalidValue];
-                            //     }
-                            // } else {
-                            //     msg = [this.messages.invalidValue];
-                            // }
-
+                            // Reached depth
                             const cur = {};
                             cur[this.keys.success] = false;
                             cur[this.keys.message] = this.messages.invalidValue;
                             cur[
                                 this.keys.validationErrors
                             ] = this.getValidationMessages(
-                                data[key],
+                                (data || {})[key],
                                 shape[key] as TShape
                             );
-
+                            this.executeOnErrorCallback(shape[key]);
                             // Invalid data
                             output[key] = cur;
                         } else {
@@ -594,29 +748,35 @@ export class Valigator {
                             output[key] = cur;
                         } else {
                             output[key] = this.checkDataShapeMore(
-                                data[key],
+                                (data || {})[key],
                                 shape[key] as TShape
                             );
                         }
                     }
                 } else {
+                    // Data does not have a value that shape does not
                     if (this.isShape(shape[key])) {
+                        // The shape value is does not contain any more nested objects
                         if (
                             shape[key][this.keys.required] === undefined ||
                             shape[key][this.keys.required] === true
                         ) {
+                            // It is a required value so throw error
                             const cur = {};
                             cur[this.keys.success] = false;
                             cur[this.keys.message] = this.messages.required;
 
                             output[key] = cur;
+                            this.executeOnErrorCallback(shape[key]);
                         } else {
+                            // It is not a required value so it does not matter
                             const cur = {};
                             cur[this.keys.success] = true;
 
                             output[key] = cur;
                         }
                     } else {
+                        // The shape value has more nested elements
                         output[key] = this.buildErrorMessageObject(
                             shape[key] as TShape,
                             this.messages.required
@@ -625,21 +785,30 @@ export class Valigator {
                 }
             }
 
-            // Make sure every value in the shape has is checked
-            for (const key in shape) {
+            // Make sure every value in the data has is checked
+            for (const key in data) {
+                // The output has not checked this value
                 if (!output[key]) {
                     if (typeof data !== "object") {
+                        // data is not a primitive value
                         output[key] = this.checkDataShapeMore(data[key], {});
                     } else {
-                        if (
-                            shape[key][this.keys.required] === true ||
-                            shape[key][this.keys.required] === undefined
-                        ) {
-                            const cur = {};
-                            cur[this.keys.success] = false;
-                            cur[this.keys.message] = this.messages.required;
-                            output[key] = cur;
-                        }
+                        const cur = {};
+                        cur[this.keys.success] = false;
+                        cur[this.keys.message] = this.messages.unexpectedValue;
+
+                        output[key] = cur;
+                        // if (
+                        //     shape[key][this.keys.required] === true ||
+                        //     shape[key][this.keys.required] === undefined
+                        // ) {
+                        //     //
+                        //     const cur = {};
+                        //     cur[this.keys.success] = false;
+                        //     cur[this.keys.message] = this.messages.required;
+                        //     output[key] = cur;
+                        //     this.executeOnErrorCallback(shape[key]);
+                        // }
                     }
                 }
             }
@@ -667,9 +836,13 @@ export class Valigator {
      * valigator.validate({names: {first: "Dinesh" }, {names: {first: {type: "text"}, last: {type: "text", required: false}}});
      * // => true
      */
-    public validate(data: unknown, shape: TShape): boolean {
+    public validate(
+        data: unknown,
+        shape: TShape,
+        stopAtError?: boolean
+    ): boolean {
         this.validateShape(shape);
-        return this.checkDataShape(data, shape);
+        return this.checkDataShape(data, shape, stopAtError);
     }
 
     /**
@@ -700,6 +873,7 @@ export class Valigator {
         shape: TShape
     ): { success: boolean; values: TMsg } {
         this.validateShape(shape);
+
         const res = this.checkDataShapeMore(data, shape);
 
         return { success: this.checkDataShape(data, shape), values: res };

@@ -1306,6 +1306,9 @@ test("Testing validate_more", () => {
             foo: {
                 success: true,
             },
+            bar: {
+                success: true,
+            },
         },
     });
 

@@ -25,6 +25,7 @@ export type TOptions = {
         messages?: string;
         validationErrors?: string;
         validator?: string;
+        onError?: string;
     };
     types?: Record<string, TTypes>;
     requiredValues?: unknown[];
