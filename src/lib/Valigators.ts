@@ -343,7 +343,6 @@ export class Valigator {
      * @param shape Shape to find onError callback and execute
      */
     private executeOnErrorCallback(shape: unknown): void {
-        console.log("execuyinh", shape);
         if (this.isShape(shape)) {
             if (
                 shape &&
@@ -355,111 +354,12 @@ export class Valigator {
         }
     }
 
-    // private checkDataShape(
-    //     data: unknown,
-    //     shape: TShape,
-    //     stopAtError?: boolean
-    // ): boolean {
-    //     let error = false;
-    //     if (typeof data !== "object" || Array.isArray(data)) {
-    //         // data is some primitive type; string, number etc
-    //         if (this.isShape(shape)) {
-    //             if (!this.runValidations(data, shape)) {
-    //                 // Invalid data
-
-    //                 this.executeOnErrorCallback(shape);
-    //                 return false;
-    //             }
-
-    //         } else {
-    //             // Invalid shape
-
-    //             // Don't need to executeOnErrorCallback here as we know its not going to be a shape object
-    //             return false;
-    //         }
-    //     } else {
-    //         // Check that the number of keys in the data match the shape
-    //         const union: string[] = Array.from(
-    //             new Set([
-    //                 ...Object.keys((data || {}) as Record<string, unknown>),
-    //                 ...Object.keys(shape || {}),
-    //             ])
-    //         );
-
-    //         if (union.length > Object.keys(shape || {}).length) {
-    //             // Too many keys have been provided
-    //             if (stopAtError) {
-    //                 return false;
-    //             } else {
-    //                 error = true;
-    //             }
-    //         }
-
-    //         const found: string[] = [];
-    //         // data is an object
-    //         // Check that every value in data exists in shape
-    //         for (const key in data) {
-    //             if (this.isShape(shape[key])) {
-    //                 // Reached depth
-    //                 if (!this.runValidations(data[key], shape[key] as TShape)) {
-    //                     // Invalid data
-    //                     if (stopAtError) {
-    //                         this.executeOnErrorCallback(shape[key]);
-    //                         return false;
-    //                     } else {
-    //                         this.executeOnErrorCallback(shape[key]);
-    //                         error = true;
-    //                     }
-    //                 }
-
-    //                 found.push(key);
-    //             } else {
-    //                 if (!this.checkDataShape(data[key], shape[key] as TShape)) {
-    //                     if (stopAtError) {
-    //                         this.executeOnErrorCallback(shape[key]);
-    //                         return false;
-    //                     } else {
-    //                         this.executeOnErrorCallback(shape[key]);
-    //                         error = true;
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         const shapeRequired: string[] = Object.keys(shape)
-    //             .filter((key) => this.isShape(shape[key]))
-    //             .filter(
-    //                 (key) =>
-    //                     shape[key][this.keys.required] === undefined ||
-    //                     shape[key][this.keys.required] === true
-    //             );
-
-    //         if (
-    //             !shapeRequired.every(
-    //                 (val) =>
-    //                     found.includes(val) &&
-    //                     data &&
-    //                     !this.requiredValues.includes(data[val])
-    //             )
-    //         ) {
-    //             if (stopAtError) {
-    //                 return false;
-    //             } else {
-    //                 error = true;
-    //             }
-    //         }
-    //     }
-
-    //     return !error;
-    // }
-
     private checkDataShape(
         data: unknown,
         shape: TShape,
         stopAtError?: boolean,
         runOnError?: boolean
     ): boolean {
-        console.log(data, shape);
         let success = true;
         let output = {};
         if (
@@ -483,7 +383,6 @@ export class Valigator {
                     return true;
                 }
             } else {
-                console.log("here");
                 if (runOnError) {
                     this.executeSubOnErrors(shape);
                 }
@@ -582,17 +481,6 @@ export class Valigator {
                             return success;
                         }
                         output[key] = false;
-                        // if (
-                        //     shape[key][this.keys.required] === true ||
-                        //     shape[key][this.keys.required] === undefined
-                        // ) {
-                        //     //
-                        //     const cur = {};
-                        //     cur[this.keys.success] = false;
-                        //     cur[this.keys.message] = this.messages.required;
-                        //     output[key] = cur;
-                        //     this.executeOnErrorCallback(shape[key]);
-                        // }
                     }
                 }
             }
@@ -703,7 +591,6 @@ export class Valigator {
     }
 
     private checkDataShapeMore(data: unknown, shape: TShape): TMsg {
-        console.log(data, shape);
         const output = {};
         if (
             typeof data !== "object" ||
@@ -739,7 +626,6 @@ export class Valigator {
                     return cur;
                 }
             } else {
-                console.log("here");
                 this.executeSubOnErrors(shape);
                 // Invalid shape
                 return this.buildErrorMessageObject(
