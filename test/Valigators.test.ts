@@ -1214,6 +1214,43 @@ test("Testing validate_more", () => {
         },
     });
 
+    expect(
+        validate.validate_more(
+            { name: "test", email: "", message: "", cv: false },
+            {
+                name: {
+                    type: "text",
+                    validators: [minMaxLength(1, 100)],
+                },
+                email: {
+                    type: "text",
+                    validators: [minMaxLength(1, 100)],
+                },
+                message: {
+                    type: "text",
+                    validators: [minMaxLength(5, 512)],
+                },
+                cv: { type: "boolean" },
+            }
+        )
+    ).toEqual({
+        success: false,
+        values: {
+            name: {
+                success: true,
+            },
+            email: {
+                success: false,
+                message: "Value is required but is missing",
+            },
+            message: {
+                success: false,
+                message: "Value is required but is missing",
+            },
+            cv: { success: true },
+        },
+    });
+
     // Data has more values than shape
     expect(
         validate.validate_more(

@@ -8,7 +8,6 @@ Valigators is a simple library for validating that data matches a specific 'shap
 
 ## Usage
 
-
 ### Install
 
 ```bash
@@ -20,7 +19,7 @@ yarn add valigators
 ### In Node.js
 
 ```javascript
-const Valigator = require("valigators");
+const { Valigator } = require("valigators");
 ```
 
 ### ESM
@@ -442,8 +441,33 @@ const options = {
     onError?: string;
   };
   types?: object
+  requiredValues?: any[]
 }
 ```
+
+### Overriding the requiredValues
+
+This field defines what should be caught when a value in the shape is set to required.
+
+By default you will get a require error when the value does not exist in the data or when the value is just an empty string.
+
+If you don't want it to check for empty string you can overwrite it.
+
+```js
+requiredValues: [];
+```
+
+Or if you want to add to it:
+
+```js
+requiredValues: [null, "foo"];
+```
+
+This will throw a value is required error whenever the value:
+
+-   Does not exist in the data
+-   Exists but is null
+-   Exists but is equal to `"foo"`
 
 ### Custom default error messages
 
@@ -523,6 +547,7 @@ new Valigator(options);
     - [Custom messages with custom validators](#custom-messages-with-custom-validators)
   - [onError callback](#onerror-callback)
   - [Options](#options)
+    - [Overriding the requiredValues](#overriding-the-requiredvalues)
     - [Custom default error messages](#custom-default-error-messages)
     - [Naming conflicts](#naming-conflicts)
     - [Default type overriding](#default-type-overriding)
