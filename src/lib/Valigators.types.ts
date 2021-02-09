@@ -36,7 +36,13 @@ type TMessages = {
 };
 
 export type TShape = {
-    [key: string]: string | TValidatorVal[] | boolean | TShape | TMessages;
+    [key: string]:
+        | string
+        | TValidatorVal[]
+        | boolean
+        | TShape
+        | TMessages
+        | Function;
 };
 
 export type TMsg = {

@@ -343,6 +343,7 @@ export class Valigator {
      * @param shape Shape to find onError callback and execute
      */
     private executeOnErrorCallback(shape: unknown): void {
+        console.log("execuyinh", shape);
         if (this.isShape(shape)) {
             if (
                 shape &&
@@ -455,8 +456,10 @@ export class Valigator {
     private checkDataShape(
         data: unknown,
         shape: TShape,
-        stopAtError?: boolean
+        stopAtError?: boolean,
+        runOnError?: boolean
     ): boolean {
+        console.log(data, shape);
         let success = true;
         let output = {};
         if (
@@ -472,12 +475,18 @@ export class Valigator {
                     !this.runValidations(data, shape) ||
                     this.requiredValues.includes(data)
                 ) {
-                    this.executeOnErrorCallback(shape);
+                    if (runOnError) {
+                        this.executeOnErrorCallback(shape);
+                    }
                     return false;
                 } else {
                     return true;
                 }
             } else {
+                console.log("here");
+                if (runOnError) {
+                    this.executeSubOnErrors(shape);
+                }
                 // Invalid shape
                 return false;
             }
@@ -497,7 +506,13 @@ export class Valigator {
                         ) {
                             success = false;
                             output[key] = false;
-                            this.executeOnErrorCallback(shape[key]);
+                            if (runOnError) {
+                                this.executeOnErrorCallback(shape[key]);
+                            }
+
+                            if (stopAtError) {
+                                return success;
+                            }
                         } else {
                             output[key] = true;
                         }
@@ -505,6 +520,9 @@ export class Valigator {
                         if (!shape[key]) {
                             output[key] = false;
                             success = false;
+                            if (stopAtError) {
+                                return success;
+                            }
                         } else {
                             success = this.checkDataShape(
                                 (data || {})[key],
@@ -512,6 +530,11 @@ export class Valigator {
                                 stopAtError
                             );
                             output[key] = success;
+                            if (!success) {
+                                if (stopAtError) {
+                                    return false;
+                                }
+                            }
                         }
                     }
                 } else {
@@ -525,7 +548,12 @@ export class Valigator {
                             // It is a required value so throw error
                             success = false;
                             output[key] = false;
-                            this.executeOnErrorCallback(shape[key]);
+                            if (runOnError) {
+                                this.executeOnErrorCallback(shape[key]);
+                            }
+                            if (stopAtError) {
+                                return success;
+                            }
                         } else {
                             // It is not a required value so it does not matter
                             output[key] = true;
@@ -534,6 +562,9 @@ export class Valigator {
                         output[key] = false;
                         // The shape value has more nested elements
                         success = false;
+                        if (stopAtError) {
+                            return success;
+                        }
                     }
                 }
             }
@@ -547,7 +578,9 @@ export class Valigator {
                         output[key] = this.checkDataShapeMore(data[key], {});
                     } else {
                         success = false;
-
+                        if (stopAtError) {
+                            return success;
+                        }
                         output[key] = false;
                         // if (
                         //     shape[key][this.keys.required] === true ||
@@ -566,6 +599,16 @@ export class Valigator {
         }
 
         return success;
+    }
+
+    private executeSubOnErrors(shape: TShape): void {
+        for (const key in shape) {
+            if (this.isShape(shape[key])) {
+                this.executeOnErrorCallback(shape[key]);
+            } else {
+                this.executeSubOnErrors(shape[key] as TShape);
+            }
+        }
     }
 
     private buildErrorMessageObject(shape: TShape, message: string): TMsg {
@@ -660,6 +703,7 @@ export class Valigator {
     }
 
     private checkDataShapeMore(data: unknown, shape: TShape): TMsg {
+        console.log(data, shape);
         const output = {};
         if (
             typeof data !== "object" ||
@@ -668,7 +712,7 @@ export class Valigator {
                 typeof data === "object" &&
                 data.constructor.name !== "Object")
         ) {
-            // data is some primative type; string, number etc
+            // data is some primitive type; string, number etc
             if (this.isShape(shape)) {
                 if (this.requiredValues.includes(data)) {
                     const cur = {};
@@ -695,6 +739,8 @@ export class Valigator {
                     return cur;
                 }
             } else {
+                console.log("here");
+                this.executeSubOnErrors(shape);
                 // Invalid shape
                 return this.buildErrorMessageObject(
                     shape,
@@ -842,7 +888,7 @@ export class Valigator {
         stopAtError?: boolean
     ): boolean {
         this.validateShape(shape);
-        return this.checkDataShape(data, shape, stopAtError);
+        return this.checkDataShape(data, shape, stopAtError, true);
     }
 
     /**
@@ -876,6 +922,9 @@ export class Valigator {
 
         const res = this.checkDataShapeMore(data, shape);
 
-        return { success: this.checkDataShape(data, shape), values: res };
+        return {
+            success: this.checkDataShape(data, shape, false, false),
+            values: res,
+        };
     }
 }

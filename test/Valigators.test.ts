@@ -1414,3 +1414,170 @@ test("Testing validate_more", () => {
         },
     });
 });
+
+test("Testing onError callback for validate_more", () => {
+    const validate = new Valigator();
+    let value = false;
+    validate.validate_more(
+        { foo: 1 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value = true;
+                },
+            },
+        }
+    );
+    expect(value).toEqual(true);
+
+    let value2 = 1;
+    validate.validate_more(
+        { foo: 1, bar: 2 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value2 += 1;
+                },
+            },
+            bar: {
+                type: "text",
+                onError: () => {
+                    value2 += 1;
+                },
+            },
+        }
+    );
+    expect(value2).toEqual(3);
+
+    let value3 = 1;
+    validate.validate_more(
+        { foo: 1 },
+        {
+            foo: {
+                bar: {
+                    type: "text",
+                    onError: () => {
+                        value3 += 1;
+                    },
+                },
+            },
+        }
+    );
+    expect(value3).toEqual(2);
+
+    let value4 = 1;
+    validate.validate_more(
+        { foo: 1 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value4 += 1;
+                },
+            },
+            bar: {
+                type: "text",
+                onError: () => {
+                    value4 += 1;
+                },
+            },
+        }
+    );
+    expect(value4).toEqual(3);
+
+    let value5 = 1;
+    validate.validate_more(
+        { foo: 1 },
+        {
+            foo: {
+                type: "number",
+                onError: () => {
+                    value5 += 1;
+                },
+            },
+            bar: {
+                type: "text",
+                onError: () => {
+                    value5 += 1;
+                },
+            },
+        }
+    );
+    expect(value5).toEqual(2);
+
+    value = false;
+    validate.validate_more(
+        { foo: 1 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value = true;
+                },
+            },
+        }
+    );
+    expect(value).toEqual(true);
+});
+
+test("Testing onError callback for validate", () => {
+    const validate = new Valigator();
+
+    let value2 = 1;
+    validate.validate(
+        { foo: 1, bar: 2 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value2 += 1;
+                },
+            },
+            bar: {
+                type: "text",
+                onError: () => {
+                    value2 += 1;
+                },
+            },
+        }
+    );
+    expect(value2).toEqual(3);
+
+    let value3 = 1;
+    validate.validate(
+        { foo: 1 },
+        {
+            foo: {
+                bar: {
+                    type: "text",
+                    onError: () => {
+                        value3 += 1;
+                    },
+                },
+            },
+        }
+    );
+    expect(value3).toEqual(2);
+
+    let value4 = 1;
+    validate.validate(
+        { foo: 1 },
+        {
+            foo: {
+                type: "text",
+                onError: () => {
+                    value4 += 1;
+                },
+            },
+            bar: {
+                type: "text",
+                onError: () => {
+                    value4 += 1;
+                },
+            },
+        }
+    );
+    expect(value4).toEqual(2);
+});
