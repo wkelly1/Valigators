@@ -1689,4 +1689,35 @@ test("Testing onError callback for validate", () => {
         }
     );
     expect(value6).toEqual(1);
+
+    let value7 = 1;
+    let value8 = 1;
+    let value9 = 1;
+    validate.validate(
+        {
+            email: "test@test.com",
+            name: "",
+            message: "abcdef",
+        },
+        {
+            email: {
+                type: "text",
+                validators: [minMaxLength(1, 100)],
+                onError: () => (value7 += 1),
+            },
+            name: {
+                type: "text",
+                validators: [minMaxLength(1, 100)],
+                onError: () => (value8 += 1),
+            },
+            message: {
+                type: "text",
+                validators: [minMaxLength(5, 512)],
+                onError: () => (value9 += 1),
+            },
+        }
+    );
+    expect(value7).toBe(1);
+    expect(value8).toBe(2);
+    expect(value9).toBe(1);
 });
