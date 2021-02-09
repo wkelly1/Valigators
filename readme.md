@@ -1,10 +1,13 @@
+[![npm version](https://shields.io/npm/v/valigators)](https://www.npmjs.com/package/valigators)
+[![licence](https://shields.io/npm/l/valigators)](https://github.com/wkelly1/Valigators/blob/master/LICENSE)
+[![npm downloads](https://shields.io/npm/dt/valigators)](https://www.npmjs.com/package/valigators)
+
 # Valigators
 
 Valigators is a simple library for validating that data matches a specific 'shape'
 
-Note: This is still is not yet at release stage and is still in development
-
 ## Usage
+
 
 ### Install
 
