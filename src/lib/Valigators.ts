@@ -645,7 +645,7 @@ export class Valigator {
                             cur[this.keys.success] = false;
                             cur[this.keys.message] = this.messages.required;
                             this.executeOnErrorCallback(shape);
-                            return cur;
+                            output[key] = cur;
                         } else if (
                             !this.runValidations(
                                 (data || {})[key],
