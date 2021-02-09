@@ -1520,6 +1520,42 @@ test("Testing onError callback for validate_more", () => {
         }
     );
     expect(value).toEqual(true);
+
+    let value6 = 1;
+    validate.validate_more(
+        { foo: 1, bar: 1 },
+        {
+            foo: {
+                type: "number",
+                onError: () => {
+                    value6 += 1;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: () => {
+                    value6 += 1;
+                },
+            },
+        }
+    );
+    expect(value6).toEqual(1);
+
+    let value7 = 1;
+    validate.validate_more(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                bar: {
+                    type: "number",
+                    onError: () => {
+                        value7 += 1;
+                    },
+                },
+            },
+        }
+    );
+    expect(value7).toEqual(1);
 });
 
 test("Testing onError callback for validate", () => {
@@ -1566,7 +1602,7 @@ test("Testing onError callback for validate", () => {
         { foo: 1 },
         {
             foo: {
-                type: "text",
+                type: "number",
                 onError: () => {
                     value4 += 1;
                 },
@@ -1580,4 +1616,40 @@ test("Testing onError callback for validate", () => {
         }
     );
     expect(value4).toEqual(2);
+
+    let value5 = 1;
+    validate.validate(
+        { foo: 1, bar: 1 },
+        {
+            foo: {
+                type: "number",
+                onError: () => {
+                    value5 += 1;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: () => {
+                    value5 += 1;
+                },
+            },
+        }
+    );
+    expect(value5).toEqual(1);
+
+    let value6 = 1;
+    validate.validate(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                bar: {
+                    type: "number",
+                    onError: () => {
+                        value6 += 1;
+                    },
+                },
+            },
+        }
+    );
+    expect(value6).toEqual(1);
 });

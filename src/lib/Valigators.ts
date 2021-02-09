@@ -426,7 +426,8 @@ export class Valigator {
                             success = this.checkDataShape(
                                 (data || {})[key],
                                 shape[key] as TShape,
-                                stopAtError
+                                stopAtError,
+                                runOnError
                             );
                             output[key] = success;
                             if (!success) {
