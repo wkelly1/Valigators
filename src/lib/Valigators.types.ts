@@ -25,6 +25,7 @@ export type TOptions = {
         messages?: string;
         validationErrors?: string;
         validator?: string;
+        onError?: string;
     };
     types?: Record<string, TTypes>;
     requiredValues?: unknown[];
@@ -35,7 +36,13 @@ type TMessages = {
 };
 
 export type TShape = {
-    [key: string]: string | TValidatorVal[] | boolean | TShape | TMessages;
+    [key: string]:
+        | string
+        | TValidatorVal[]
+        | boolean
+        | TShape
+        | TMessages
+        | Function;
 };
 
 export type TMsg = {

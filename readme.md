@@ -8,11 +8,12 @@ Valigators is a simple library for validating that data matches a specific 'shap
 
 ## Usage
 
-### Install 
 
-```
+### Install
+
+```bash
 npm i valigators --save
-or
+# or
 yarn add valigators
 ```
 
@@ -64,6 +65,9 @@ const shape = {
     },
     age: {
         type: "number",
+        onError: () => {
+            console.log("Error");
+        }, // <== you can optionally add a onError method that runs if this value is an error
     },
     example: {
         // Works with nested objects
@@ -383,6 +387,38 @@ const shape = {
 };
 ```
 
+## onError callback
+
+If you want a function to run when an error is found (for example to update some state to an error state) you can do it with the `onError` key in the shape object.
+
+```js
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(2)],
+        onError: () => {
+            console.log("error");
+        }, // <== This is that call back function
+    },
+};
+```
+
+Here is an example if your writing [React](https://reactjs.org/) code
+
+```js
+const [error, setError] = useState(false);
+
+const shape = {
+    example: {
+        type: "text",
+        validators: [minLength(2)],
+        onError: () => {
+            setError(true);
+        },
+    },
+};
+```
+
 ## Options
 
 You can specify a set of options for the `Valigator`
@@ -403,6 +439,7 @@ const options = {
     messages?: string;
     validationErrors?: string;
     validator?: string;
+    onError?: string;
   };
   types?: object
 }
@@ -439,6 +476,7 @@ const options = {
         messages: "newKey6",
         validationErrors: "newKey7",
         validator: "newKey8",
+        onError: "newKey9",
     },
 };
 
@@ -469,6 +507,7 @@ new Valigator(options);
 
 - [Valigators](#valigators)
   - [Usage](#usage)
+    - [Install](#install)
     - [In Node.js](#in-nodejs)
     - [ESM](#esm)
     - [Browser](#browser)
@@ -482,6 +521,7 @@ new Valigator(options);
   - [Arrays](#arrays)
   - [Messages](#messages)
     - [Custom messages with custom validators](#custom-messages-with-custom-validators)
+  - [onError callback](#onerror-callback)
   - [Options](#options)
     - [Custom default error messages](#custom-default-error-messages)
     - [Naming conflicts](#naming-conflicts)
@@ -508,51 +548,53 @@ new Valigator(options);
     - [Parameters](#parameters-8)
   - [isCube](#iscube)
     - [Parameters](#parameters-9)
-  - [isEven](#iseven)
+  - [isDateString](#isdatestring)
     - [Parameters](#parameters-10)
-  - [isInstanceOf](#isinstanceof)
+  - [isEven](#iseven)
     - [Parameters](#parameters-11)
-  - [isNegative](#isnegative)
+  - [isInstanceOf](#isinstanceof)
     - [Parameters](#parameters-12)
-  - [isNull](#isnull)
+  - [isNegative](#isnegative)
     - [Parameters](#parameters-13)
-  - [isNumber](#isnumber)
+  - [isNull](#isnull)
     - [Parameters](#parameters-14)
-  - [isOdd](#isodd)
+  - [isNumber](#isnumber)
     - [Parameters](#parameters-15)
-  - [isPositive](#ispositive)
+  - [isOdd](#isodd)
     - [Parameters](#parameters-16)
-  - [isPrime](#isprime)
+  - [isPositive](#ispositive)
     - [Parameters](#parameters-17)
-  - [isSquare](#issquare)
+  - [isPrime](#isprime)
     - [Parameters](#parameters-18)
-  - [isString](#isstring)
+  - [isSquare](#issquare)
     - [Parameters](#parameters-19)
-  - [length](#length)
+  - [isString](#isstring)
     - [Parameters](#parameters-20)
-  - [maxDecimalPoint](#maxdecimalpoint)
+  - [length](#length)
     - [Parameters](#parameters-21)
-  - [maxLength](#maxlength)
+  - [maxDecimalPoint](#maxdecimalpoint)
     - [Parameters](#parameters-22)
-  - [minDecimalPoint](#mindecimalpoint)
+  - [maxLength](#maxlength)
     - [Parameters](#parameters-23)
-  - [minLength](#minlength)
+  - [minDecimalPoint](#mindecimalpoint)
     - [Parameters](#parameters-24)
-  - [minMaxLength](#minmaxlength)
+  - [minLength](#minlength)
     - [Parameters](#parameters-25)
-  - [oneOf](#oneof)
+  - [minMaxLength](#minmaxlength)
     - [Parameters](#parameters-26)
-  - [or](#or)
+  - [oneOf](#oneof)
     - [Parameters](#parameters-27)
-  - [substring](#substring)
+  - [or](#or)
     - [Parameters](#parameters-28)
-  - [Valigator](#valigator)
+  - [substring](#substring)
     - [Parameters](#parameters-29)
+  - [Valigator](#valigator)
+    - [Parameters](#parameters-30)
     - [validate](#validate)
-      - [Parameters](#parameters-30)
+      - [Parameters](#parameters-31)
       - [Examples](#examples)
     - [validate_more](#validate_more)
-      - [Parameters](#parameters-31)
+      - [Parameters](#parameters-32)
       - [Examples](#examples-1)
 - [Contributing](#contributing)
   - [Build](#build)
@@ -684,6 +726,18 @@ Type: TValidator
 -   `value` Value to check
 
 Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a cube or not
+
+## isDateString
+
+Checks whether a value is a string in the format of a date
+
+Type: TValidator
+
+### Parameters
+
+-   `value` Value to check
+
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Boolean representing whether is a date string or not
 
 ## isEven
 
@@ -940,6 +994,7 @@ Checks whether some data matches a specified shape and just returns a boolean va
 
 -   `data` **any** Data to check
 -   `shape` **TShape** Shape the data is supposed to match
+-   `stopAtError` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?**
 
 #### Examples
 
