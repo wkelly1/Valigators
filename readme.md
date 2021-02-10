@@ -1,6 +1,7 @@
 [![npm version](https://shields.io/npm/v/valigators)](https://www.npmjs.com/package/valigators)
 [![licence](https://shields.io/npm/l/valigators)](https://github.com/wkelly1/Valigators/blob/master/LICENSE)
 [![npm downloads](https://shields.io/npm/dt/valigators)](https://www.npmjs.com/package/valigators)
+[![codecov](https://codecov.io/gh/wkelly1/Valigators/branch/master/graph/badge.svg?token=WVVZJV3PIH)](https://codecov.io/gh/wkelly1/Valigators)
 
 # Valigators
 
@@ -426,6 +427,7 @@ Here is an example if your writing [React](https://reactjs.org/) code
 
 ```js
 const [error, setError] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
 
 const shape = {
     example: {
