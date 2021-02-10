@@ -27,6 +27,13 @@ import isNegative from "../src/lib/validators/isNegative";
 import isPositive from "../src/lib/validators/isPositive";
 import equals from "../src/lib/validators/equals";
 import Valigator, { substring } from "../src";
+import all from "../src/lib/validators/all";
+import some from "../src/lib/validators/some";
+import between from "../src/lib/validators/between";
+import fromN from "../src/lib/validators/fromN";
+import upto from "../src/lib/validators/upto";
+import exact from "../src/lib/validators/exact";
+
 
 test("Testing isString", () => {
     expect(isString("t")).toBe(true);
@@ -469,6 +476,119 @@ test("Testing equals", () => {
     expect(
         equals({ test: { test: "test2" } })({ test: { test2: "test2" } })
     ).toBe(false);
+});
+
+test("Testing all", () => {
+    expect(all({ type: "number" })([1, 2, 3])).toBe(true);
+    expect(all({ type: "number" })([1, 2, "a"])).toBe(false);
+    expect(
+        all({ type: "text", validators: [minLength(2)] })(["a", "a", "a"])
+    ).toBe(false);
+    expect(
+        all({ type: "text", validators: [minLength(2)] })(["aa", "aa", "aa"])
+    ).toBe(true);
+    expect(all({ type: "text", validators: [minLength(2)] })(1)).toBe(false);
+});
+
+test("Testing some", () => {
+    expect(some({ type: "number" })([1, 2, 3])).toBe(true);
+    expect(some({ type: "number" })([1, 2, "a"])).toBe(true);
+    expect(
+        some({ type: "text", validators: [minLength(2)] })(["a", "a", "a"])
+    ).toBe(false);
+    expect(
+        some({ type: "text", validators: [minLength(2)] })(["aa", "aa", "aa"])
+    ).toBe(true);
+    expect(
+        some({ type: "text", validators: [minLength(2)] })([1, "aa", "aa"])
+    ).toBe(true);
+    expect(some({ type: "text", validators: [minLength(2)] })(1)).toBe(false);
+});
+
+test("Testing fromN", () => {
+    expect(fromN(0, { type: "number" })([1, 2, "s"])).toBe(false);
+    expect(fromN(0, { type: "number" })([1, 2, 1])).toBe(true);
+    expect(fromN(1, { type: "number" })(["a", 2, 1])).toBe(true);
+    expect(fromN(1, { type: "number" })([1, 2, 1])).toBe(true);
+    expect(fromN(2, { type: "number" })([1, 2, "s"])).toBe(false);
+    expect(fromN(2, { type: "number" })([1, 2, 2])).toBe(true);
+    expect(fromN(1, { type: "number" })(["a", 2, 2])).toBe(true);
+    expect(
+        fromN(1, { type: "text", validators: [minLength(2)] })(["a", "a", "a"])
+    ).toBe(false);
+    expect(
+        fromN(1, { type: "text", validators: [minLength(2)] })(["aa", "a", "a"])
+    ).toBe(false);
+    expect(
+        fromN(1, { type: "text", validators: [minLength(2)] })([
+            "a",
+            "aa",
+            "aa",
+        ])
+    ).toBe(true);
+    expect(fromN(1, { type: "text", validators: [minLength(2)] })(1)).toBe(
+        false
+    );
+});
+
+test("Testing between", () => {
+    expect(between(0, 1, { type: "number" })([1, 2, "s"])).toBe(true);
+    expect(between(0, 2, { type: "number" })([1, 2, "s"])).toBe(false);
+    expect(between(1, 2, { type: "number" })([1, 2, 2])).toBe(true);
+    expect(between(1, 2, { type: "number" })(["a", 2, 2])).toBe(true);
+    expect(
+        between(1, 2, { type: "text", validators: [minLength(2)] })([
+            "a",
+            "a",
+            "a",
+        ])
+    ).toBe(false);
+    expect(
+        between(1, 2, { type: "text", validators: [minLength(2)] })([
+            "aa",
+            "a",
+            "a",
+        ])
+    ).toBe(false);
+    expect(
+        between(1, 2, { type: "text", validators: [minLength(2)] })([
+            "a",
+            "aa",
+            "aa",
+        ])
+    ).toBe(true);
+    expect(between(1, 2, { type: "text", validators: [minLength(2)] })(1)).toBe(
+        false
+    );
+});
+
+test("Testing upto", () => {
+    expect(upto(1, { type: "number" })([1, 2, "s"])).toBe(true);
+    expect(upto(2, { type: "number" })([1, 2, "s"])).toBe(false);
+    expect(upto(2, { type: "number" })([1, 2, 2])).toBe(true);
+    expect(upto(2, { type: "number" })(["a", 2, 2])).toBe(false);
+    expect(
+        upto(2, { type: "text", validators: [minLength(2)] })(["a", "a", "a"])
+    ).toBe(false);
+    expect(
+        upto(2, { type: "text", validators: [minLength(2)] })(["aa", "a", "a"])
+    ).toBe(false);
+    expect(
+        upto(1, { type: "text", validators: [minLength(2)] })(["aa", "aa", "a"])
+    ).toBe(true);
+    expect(upto(1, { type: "text", validators: [minLength(2)] })(1)).toBe(
+        false
+    );
+});
+
+test("Testing exact", () => {
+    expect(exact([1, 2, 3])([1, 2, 3])).toBe(true);
+    expect(exact([1, 2, "s"])([1, 2, "s"])).toBe(true);
+    expect(exact(["s", 2, "s"])([1, 2, "s"])).toBe(false);
+    expect(exact([1, 2, 3])([1, 2, 3, 4])).toBe(false);
+    expect(exact([1, 2, 3, 4])([1, 2, 3])).toBe(false);
+    expect(exact([1, 2, 3, 4])("a")).toBe(false);
+    expect(exact([1, 2, 3, 4])(1)).toBe(false);
 });
 
 // test("Testing isDateString", () => {
@@ -1593,6 +1713,80 @@ test("Testing onError callback for validate_more", () => {
         }
     );
     expect(value7).toEqual(1);
+
+    let value10 = {};
+    validate.validate_more(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value10 = e;
+                },
+            },
+        }
+    );
+    expect(value10).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value11 = {};
+    let value12 = {};
+    validate.validate_more(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value11 = e;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: (e) => {
+                    value12 = e;
+                },
+            },
+        }
+    );
+    expect(value11).toEqual({});
+    expect(value12).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value13 = {};
+    let value14 = {};
+    validate.validate_more(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value13 = e;
+                },
+            },
+            bar: {
+                type: "text",
+                validators: [minLength(4)],
+                onError: (e) => {
+                    value14 = e;
+                },
+            },
+        }
+    );
+    expect(value13).toEqual({});
+    expect(value14).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "minLength" },
+        ],
+    });
 });
 
 test("Testing onError callback for validate", () => {
@@ -1689,4 +1883,109 @@ test("Testing onError callback for validate", () => {
         }
     );
     expect(value6).toEqual(1);
+
+    let value7 = 1;
+    let value8 = 1;
+    let value9 = 1;
+    validate.validate(
+        {
+            email: "test@test.com",
+            name: "",
+            message: "abcdef",
+        },
+        {
+            email: {
+                type: "text",
+                validators: [minMaxLength(1, 100)],
+                onError: () => (value7 += 1),
+            },
+            name: {
+                type: "text",
+                validators: [minMaxLength(1, 100)],
+                onError: () => (value8 += 1),
+            },
+            message: {
+                type: "text",
+                validators: [minMaxLength(5, 512)],
+                onError: () => (value9 += 1),
+            },
+        }
+    );
+    expect(value7).toBe(1);
+    expect(value8).toBe(2);
+    expect(value9).toBe(1);
+
+    let value10 = {};
+    validate.validate(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value10 = e;
+                },
+            },
+        }
+    );
+    expect(value10).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value11 = {};
+    let value12 = {};
+    validate.validate(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value11 = e;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: (e) => {
+                    value12 = e;
+                },
+            },
+        }
+    );
+    expect(value11).toEqual({});
+    expect(value12).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value13 = {};
+    let value14 = {};
+    validate.validate(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value13 = e;
+                },
+            },
+            bar: {
+                type: "text",
+                validators: [minLength(4)],
+                onError: (e) => {
+                    value14 = e;
+                },
+            },
+        }
+    );
+    expect(value13).toEqual({});
+    expect(value14).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "minLength" },
+        ],
+    });
 });

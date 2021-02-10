@@ -47,3 +47,23 @@ export function run(func: TValidator, id: string): TValidator {
         return (...args) => false;
     }
 }
+
+/**
+ * Checks that two values are both arrays and that they are equal
+ * @param a Value to check
+ * @param b Other value to check
+ */
+export function arraysEqual(a: unknown, b: unknown) {
+    if (a instanceof Array && b instanceof Array) {
+        if (a === b) return true;
+        if (a == null || b == null) return false;
+        if (a.length !== b.length) return false;
+
+        for (var i = 0; i < a.length; ++i) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    } else {
+        return false;
+    }
+}

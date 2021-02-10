@@ -342,14 +342,17 @@ export class Valigator {
      * If it does it executes it
      * @param shape Shape to find onError callback and execute
      */
-    private executeOnErrorCallback(shape: unknown): void {
+    private executeOnErrorCallback(
+        shape: unknown,
+        message: { [key: string]: string | { [key: string]: string }[] }
+    ): void {
         if (this.isShape(shape)) {
             if (
                 shape &&
                 typeof shape === "object" &&
                 shape[this.keys.onError]
             ) {
-                shape[this.keys.onError]();
+                shape[this.keys.onError](message);
             }
         }
     }
@@ -371,12 +374,24 @@ export class Valigator {
         ) {
             // data is some primitive type; string, number etc
             if (this.isShape(shape)) {
+                if (this.requiredValues.includes(data) && runOnError) {
+                    const cur = {};
+                    cur[this.keys.message] = this.messages.required;
+
+                    this.executeOnErrorCallback(shape, cur);
+                    return false;
+                }
                 if (
                     !this.runValidations(data, shape) ||
                     this.requiredValues.includes(data)
                 ) {
                     if (runOnError) {
-                        this.executeOnErrorCallback(shape);
+                        const cur = {};
+                        cur[this.keys.message] = this.messages.required;
+                        cur[
+                            this.keys.validationErrors
+                        ] = this.getValidationMessages(data, shape);
+                        this.executeOnErrorCallback(shape, cur);
                     }
                     return false;
                 } else {
@@ -395,18 +410,35 @@ export class Valigator {
                 // If data includes the value from shape
                 if (Object.keys(data || {}).includes(key)) {
                     if (this.isShape(shape[key])) {
-                        // Reached depth
-                        if (
+                        if (this.requiredValues.includes((data || {})[key])) {
+                            if (runOnError) {
+                                const cur = {};
+                                cur[this.keys.message] = this.messages.required;
+
+                                this.executeOnErrorCallback(shape[key], cur);
+                            }
+                        } else if (
                             !this.runValidations(
                                 (data || {})[key],
                                 shape[key] as TShape
                             ) ||
                             this.requiredValues.includes((data || {})[key])
                         ) {
+                            // Reached depth
                             success = false;
                             output[key] = false;
                             if (runOnError) {
-                                this.executeOnErrorCallback(shape[key]);
+                                const cur = {};
+                                cur[
+                                    this.keys.message
+                                ] = this.messages.invalidValue;
+                                cur[
+                                    this.keys.validationErrors
+                                ] = this.getValidationMessages(
+                                    (data || {})[key],
+                                    shape[key] as TShape
+                                );
+                                this.executeOnErrorCallback(shape[key], cur);
                             }
 
                             if (stopAtError) {
@@ -449,7 +481,9 @@ export class Valigator {
                             success = false;
                             output[key] = false;
                             if (runOnError) {
-                                this.executeOnErrorCallback(shape[key]);
+                                const cur = {};
+                                cur[this.keys.message] = this.messages.required;
+                                this.executeOnErrorCallback(shape[key], cur);
                             }
                             if (stopAtError) {
                                 return success;
@@ -493,7 +527,9 @@ export class Valigator {
     private executeSubOnErrors(shape: TShape): void {
         for (const key in shape) {
             if (this.isShape(shape[key])) {
-                this.executeOnErrorCallback(shape[key]);
+                let cur = {};
+                cur[this.keys.message] = this.messages.unexpectedValue;
+                this.executeOnErrorCallback(shape[key], cur);
             } else {
                 this.executeSubOnErrors(shape[key] as TShape);
             }
@@ -606,7 +642,10 @@ export class Valigator {
                     const cur = {};
                     cur[this.keys.success] = false;
                     cur[this.keys.message] = this.messages.required;
-                    this.executeOnErrorCallback(shape);
+                    const cur2 = {};
+                    cur2[this.keys.message] = this.messages.required;
+
+                    this.executeOnErrorCallback(shape, cur2);
                     return cur;
                 }
 
@@ -618,7 +657,13 @@ export class Valigator {
                     cur[
                         this.keys.validationErrors
                     ] = this.getValidationMessages(data, shape);
-                    this.executeOnErrorCallback(shape);
+                    const cur2 = {};
+                    cur2[this.keys.message] = this.messages.required;
+                    cur2[
+                        this.keys.validationErrors
+                    ] = this.getValidationMessages(data, shape);
+                    this.executeOnErrorCallback(shape, cur2);
+
                     return cur;
                 } else {
                     // valid data
@@ -644,7 +689,11 @@ export class Valigator {
                             const cur = {};
                             cur[this.keys.success] = false;
                             cur[this.keys.message] = this.messages.required;
-                            this.executeOnErrorCallback(shape);
+                            const cur2 = {};
+                            cur2[this.keys.message] = this.messages.required;
+
+                            this.executeOnErrorCallback(shape[key], cur2);
+
                             output[key] = cur;
                         } else if (
                             !this.runValidations(
@@ -662,7 +711,17 @@ export class Valigator {
                                 (data || {})[key],
                                 shape[key] as TShape
                             );
-                            this.executeOnErrorCallback(shape[key]);
+                            const cur2 = {};
+                            cur2[
+                                this.keys.message
+                            ] = this.messages.invalidValue;
+                            cur2[
+                                this.keys.validationErrors
+                            ] = this.getValidationMessages(
+                                (data || {})[key],
+                                shape[key] as TShape
+                            );
+                            this.executeOnErrorCallback(shape[key], cur2);
                             // Invalid data
                             output[key] = cur;
                         } else {
@@ -700,7 +759,10 @@ export class Valigator {
                             cur[this.keys.message] = this.messages.required;
 
                             output[key] = cur;
-                            this.executeOnErrorCallback(shape[key]);
+                            const cur2 = {};
+                            cur2[this.keys.message] = this.messages.required;
+
+                            this.executeOnErrorCallback(shape[key], cur2);
                         } else {
                             // It is not a required value so it does not matter
                             const cur = {};
