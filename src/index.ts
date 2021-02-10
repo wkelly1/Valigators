@@ -28,6 +28,12 @@ import isNegative from "../src/lib/validators/isNegative";
 import isPositive from "../src/lib/validators/isPositive";
 import equals from "../src/lib/validators/equals";
 import substring from "../src/lib/validators/substring";
+import all from "../src/lib/validators/all";
+import some from "../src/lib/validators/some";
+import between from "../src/lib/validators/between";
+import fromN from "../src/lib/validators/fromN";
+import upto from "../src/lib/validators/upto";
+import exact from "../src/lib/validators/exact";
 import { Valigator } from "./lib/Valigators";
 
 export {
@@ -60,6 +66,12 @@ export {
     isNegative,
     isPositive,
     equals,
+    all,
+    some,
+    between,
+    fromN,
+    upto,
+    exact,
     customValidator,
     Valigator,
 };
