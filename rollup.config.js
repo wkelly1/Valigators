@@ -17,7 +17,7 @@ export default {
         },
         {
             name: "Valigators",
-            file: `${dist}/Valigators.min.js`,
+            file: `${dist}/valigators.min.js`,
             format: "umd",
         },
     ],

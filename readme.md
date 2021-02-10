@@ -32,7 +32,7 @@ import Valigator from "valigators";
 ### Browser
 
 ```html
-<script src="Valigators.min.js"></script>
+<script src="valigators.min.js"></script>
 ```
 
 ### Example
