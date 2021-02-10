@@ -426,6 +426,7 @@ Here is an example if your writing [React](https://reactjs.org/) code
 
 ```js
 const [error, setError] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
 
 const shape = {
     example: {
