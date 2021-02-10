@@ -34,6 +34,7 @@ import fromN from "../src/lib/validators/fromN";
 import upto from "../src/lib/validators/upto";
 import exact from "../src/lib/validators/exact";
 
+
 test("Testing isString", () => {
     expect(isString("t")).toBe(true);
     expect(isString(1)).toBe(false);
