@@ -1593,6 +1593,80 @@ test("Testing onError callback for validate_more", () => {
         }
     );
     expect(value7).toEqual(1);
+
+    let value10 = {};
+    validate.validate_more(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value10 = e;
+                },
+            },
+        }
+    );
+    expect(value10).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value11 = {};
+    let value12 = {};
+    validate.validate_more(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value11 = e;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: (e) => {
+                    value12 = e;
+                },
+            },
+        }
+    );
+    expect(value11).toEqual({});
+    expect(value12).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value13 = {};
+    let value14 = {};
+    validate.validate_more(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value13 = e;
+                },
+            },
+            bar: {
+                type: "text",
+                validators: [minLength(4)],
+                onError: (e) => {
+                    value14 = e;
+                },
+            },
+        }
+    );
+    expect(value13).toEqual({});
+    expect(value14).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "minLength" },
+        ],
+    });
 });
 
 test("Testing onError callback for validate", () => {
@@ -1720,4 +1794,78 @@ test("Testing onError callback for validate", () => {
     expect(value7).toBe(1);
     expect(value8).toBe(2);
     expect(value9).toBe(1);
+
+    let value10 = {};
+    validate.validate(
+        { foo: { bar: 1 } },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value10 = e;
+                },
+            },
+        }
+    );
+    expect(value10).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value11 = {};
+    let value12 = {};
+    validate.validate(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value11 = e;
+                },
+            },
+            bar: {
+                type: "number",
+                onError: (e) => {
+                    value12 = e;
+                },
+            },
+        }
+    );
+    expect(value11).toEqual({});
+    expect(value12).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "isNumber" },
+        ],
+    });
+
+    let value13 = {};
+    let value14 = {};
+    validate.validate(
+        { foo: 1, bar: "hi" },
+        {
+            foo: {
+                type: "number",
+                onError: (e) => {
+                    value13 = e;
+                },
+            },
+            bar: {
+                type: "text",
+                validators: [minLength(4)],
+                onError: (e) => {
+                    value14 = e;
+                },
+            },
+        }
+    );
+    expect(value13).toEqual({});
+    expect(value14).toEqual({
+        message: "Invalid value for data",
+        validationErrors: [
+            { message: "Invalid value for data", validator: "minLength" },
+        ],
+    });
 });
