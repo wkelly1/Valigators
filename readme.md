@@ -35,6 +35,12 @@ import Valigator from "valigators";
 <script src="valigators.min.js"></script>
 ```
 
+#### CDN
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/valigators/1.3.1/valigators.min.js" integrity="sha512-xmQDNVmIKZZSVSeuJzUi5o+VwhVPQCGBK27om2EqhXH7wWFQeLUPBOVPjZ49rt4NRvUTsMI64zURKzy8wx107Q==" crossorigin="anonymous"></script>
+```
+
 ### Example
 
 ```javascript
