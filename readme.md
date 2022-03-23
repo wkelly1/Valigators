@@ -1,11 +1,15 @@
-[![npm version](https://shields.io/npm/v/valigators)](https://www.npmjs.com/package/valigators)
-[![licence](https://shields.io/npm/l/valigators)](https://github.com/wkelly1/Valigators/blob/master/LICENSE)
-[![npm downloads](https://shields.io/npm/dt/valigators)](https://www.npmjs.com/package/valigators)
-[![codecov](https://codecov.io/gh/wkelly1/Valigators/branch/master/graph/badge.svg?token=WVVZJV3PIH)](https://codecov.io/gh/wkelly1/Valigators)
 
-# Valigators
+<p align="center"><img src="/.github/gator.png" alt="Valigator" title="Valigator" width="200px"></p>
 
-Valigators is a simple library for validating that data matches a specific 'shape'
+<h1 align="center">Valigators</h1>
+<p align="center">
+    <a href="https://www.npmjs.com/package/valigators"><img src="https://shields.io/npm/v/valigators" alt="NPM version" title="NPM version"/></a>
+    <a href="https://github.com/wkelly1/Valigators/blob/master/LICENSE"><img src="https://shields.io/npm/l/valigators" alt="Licence" title="Licence"/></a>
+    <a href="https://www.npmjs.com/package/valigators"><img src="https://shields.io/npm/dt/valigators" alt="NPM downloads" title="NPM downloads"/></a>
+    <a href="https://codecov.io/gh/wkelly1/Valigators"><img src="https://codecov.io/gh/wkelly1/Valigators/branch/master/graph/badge.svg?token=WVVZJV3PIH" alt="Code coverage" title="Code coverage"/></a>
+</p>
+
+<p align="center">Valigators is a simple library for validating that data matches a specific 'shape'</p>
 
 ## Usage
 
