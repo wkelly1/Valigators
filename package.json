@@ -4,6 +4,7 @@
     "description": "A simple validation library for any data type",
     "main": "dist/bundle.cjs.js",
     "module": "dist/bundle.esm.js",
+    "types": "dist/types/src/index.d.ts",
     "sideEffects": false,
     "files": [
         "dist"
@@ -14,7 +15,7 @@
         "test": "jest --coverage",
         "updateReadme": "documentation readme src --section=API --parse-extension ts",
         "prebuild": "rimraf dist",
-        "build": "rollup -c",
+        "build": "npx tsc --emitDeclarationOnly && rollup -c",
         "lint": "eslint --ext .ts .",
         "lint:fix": "eslint --fix --ext .ts .",
         "prepublish": "npm run build"

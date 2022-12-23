@@ -5,7 +5,12 @@ const dist = "dist";
 
 export default {
     input: "src/index.ts",
-    plugins: [typescript()],
+    plugins: [
+        typescript({
+            declaration: true /* Generates corresponding '.d.ts' file. */,
+            declarationDir: `${dist}/types`,
+        }),
+    ],
     output: [
         {
             file: `${dist}/bundle.cjs.js`,

@@ -5,3 +5,4 @@
 /examples/cra/node_modules
 /examples/cdn/node_modules
 /dist
+.DS_Store
